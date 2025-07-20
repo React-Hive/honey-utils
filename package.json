@@ -1,0 +1,62 @@
+{
+  "name": "@react-hive/honey-utils",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "utils",
+    "typescript"
+  ],
+  "homepage": "https://github.com/React-Hive/honey-utils",
+  "bugs": {
+    "url": "https://github.com/React-Hive/honey-utils/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/React-Hive/honey-utils.git"
+  },
+  "author": "Mykhailo Aliinyk <m.aliynik@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack --config webpack.config.mjs",
+    "test": "jest --collect-coverage"
+  },
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.cjs"
+  },
+  "files": [
+    "dist",
+    "!dist/**/__mocks__",
+    "!dist/**/__tests__",
+    "!dist/**/jest*"
+  ],
+  "devDependencies": {
+    "@eslint/js": "9.31.0",
+    "@mdx-js/loader": "3.1.0",
+    "@types/jest": "29.5.14",
+    "@types/node": "22.16.5",
+    "copy-webpack-plugin": "13.0.0",
+    "eslint": "9.31.0",
+    "eslint-plugin-react": "7.37.5",
+    "html-webpack-plugin": "5.6.3",
+    "jest": "29.7.0",
+    "prettier": "3.6.2",
+    "ts-jest": "29.4.0",
+    "ts-loader": "9.5.2",
+    "typescript": "5.8.3",
+    "typescript-eslint": "8.37.0",
+    "webpack": "5.100.2",
+    "webpack-cli": "6.0.1"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom",
+    "testMatch": [
+      "**/src/**/__tests__/**/*.spec.ts?(x)"
+    ]
+  }
+}
