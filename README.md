@@ -93,7 +93,7 @@ difference([1, 2, 3, 4], [2, 4]); // [1, 3]
 ### Function Utilities
 
 ```typescript
-import { noop, invokeIfFunction } from '@react-hive/honey-utils';
+import { noop, invokeIfFunction, delay, retry } from '@react-hive/honey-utils';
 
 // No-operation function
 noop(); // does nothing
@@ -103,6 +103,33 @@ const fn = (x: number) => x * 2;
 
 invokeIfFunction(fn, 5); // 10
 invokeIfFunction('not a function', 5); // 'not a function'
+
+// Create a promise that resolves after a specified delay
+await delay(1000); // Waits for 1 second before continuing
+
+// Retry an async function with configurable options
+async function fetchData() {
+  const response = await fetch('/api/data');
+  
+  if (!response.ok) {
+    throw new Error('Network error');
+  }
+  
+  return await response.json();
+}
+
+const fetchWithRetry = retry(fetchData, {
+  maxAttempts: 5,
+  delayMs: 500,
+  backoff: true,
+  onRetry: (attempt, error) => {
+    console.warn(`Attempt ${attempt} failed:`, error);
+  }
+});
+
+fetchWithRetry()
+  .then(data => console.log('Success:', data))
+  .catch(error => console.error('Failed after retries:', error));
 ```
 
 ### Type Guards
@@ -258,6 +285,8 @@ function divide(a: number, b: number): number {
 
 - **noop(): void** - A no-operation function
 - **invokeIfFunction<Args extends any[], Result>(input: ((...args: Args) => Result) | Result, ...args: Args): Result** - Invokes the input if it's a function, otherwise returns it as-is
+- **delay(delayMs: number): Promise<void>** - Creates a promise that resolves after the specified delay in milliseconds
+- **retry<Task, TaskResult>(task: Task, options?: RetryOptions): Function** - Wraps an asynchronous function with retry logic, with configurable max attempts, delay between retries, exponential backoff, and retry callbacks
 
 ### Type Guards
 
