@@ -62,11 +62,28 @@ const hash = hashString('background-color: red;'); // 'e4k1z0x'
 ### Array Utilities
 
 ```typescript
-import { boolFilter } from '@react-hive/honey-utils';
+import { 
+  boolFilter, 
+  unique, 
+  chunk, 
+  intersection, 
+  difference 
+} from '@react-hive/honey-utils';
 
 // Filter out falsy values from an array
-const array = [0, 1, false, 2, '', 3, null, undefined, true];
-boolFilter(array); // [1, 2, 3, true]
+boolFilter([0, 1, false, 2, '', 3, null, undefined, true]); // [1, 2, 3, true]
+
+// Remove duplicate values from an array
+unique([1, 2, 2, 3, 1, 4]); // [1, 2, 3, 4]
+
+// Split an array into chunks of specified size
+chunk([1, 2, 3, 4, 5], 2); // [[1, 2], [3, 4], [5]]
+
+// Find common elements between arrays
+intersection([1, 2, 3], [2, 3, 4]); // [2, 3]
+
+// Find elements in one array not in another
+difference([1, 2, 3, 4], [2, 4]); // [1, 3]
 ```
 
 ### Function Utilities
@@ -228,6 +245,10 @@ function divide(a: number, b: number): number {
 ### Array Utilities
 
 - **boolFilter<T>(array: (T | false | null | undefined)[]): T[]** - Filters out falsy values from an array
+- **unique<T>(array: T[]): T[]** - Returns a new array with duplicate values removed
+- **chunk<T>(array: T[], size: number): T[][]** - Splits an array into chunks of the specified size
+- **intersection<T>(...arrays: T[][]): T[]** - Returns an array containing elements that exist in all provided arrays
+- **difference<T>(array: T[], exclude: T[]): T[]** - Returns elements from the first array that don't exist in the second array
 
 ### Function Utilities
 
