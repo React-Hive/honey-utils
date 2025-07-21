@@ -3,6 +3,10 @@
 [![npm version](https://img.shields.io/npm/v/@react-hive/honey-utils.svg)](https://www.npmjs.com/package/@react-hive/honey-utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+<p align="center">
+  <img src="./logo.png" alt="honey-utils logo" width="200" height="200">
+</p>
+
 A lightweight TypeScript utility library providing a collection of helper functions for common programming tasks.
 
 ## Features
