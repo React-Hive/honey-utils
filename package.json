@@ -1,10 +1,18 @@
 {
   "name": "@react-hive/honey-utils",
-  "version": "1.2.0",
-  "description": "",
+  "version": "1.3.0",
+  "description": "A lightweight TypeScript utility library providing a collection of helper functions for common programming tasks",
   "keywords": [
     "utils",
-    "typescript"
+    "typescript",
+    "type-guards",
+    "string-utils",
+    "array-utils",
+    "math-utils",
+    "function-utils",
+    "dom-utils",
+    "helpers",
+    "utility-functions"
   ],
   "homepage": "https://github.com/React-Hive/honey-utils",
   "bugs": {

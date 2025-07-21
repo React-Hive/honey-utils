@@ -95,7 +95,17 @@ import {
   isFunction, 
   isPromise, 
   isNil, 
-  isNilOrEmptyString 
+  isNilOrEmptyString,
+  isArray,
+  isEmptyArray,
+  isEmptyObject,
+  isNull,
+  isUndefined,
+  isDate,
+  isValidDate,
+  isRegExp,
+  isMap,
+  isSet
 } from '@react-hive/honey-utils';
 
 // Check if value is a string
@@ -131,6 +141,34 @@ isNil(''); // false
 isNilOrEmptyString(''); // true
 isNilOrEmptyString(null); // true
 isNilOrEmptyString('hello'); // false
+
+// Check if value is an array
+isArray([1, 2, 3]); // true
+isArray({}); // false
+
+// Check if value is an empty array
+isEmptyArray([]); // true
+isEmptyArray([1, 2, 3]); // false
+
+// Check if value is an empty object
+isEmptyObject({}); // true
+isEmptyObject({ key: 'value' }); // false
+
+// Check if value is a Date object
+isDate(new Date()); // true
+isDate('2023-01-01'); // false
+
+// Check if value is a valid Date object
+isValidDate(new Date()); // true
+isValidDate(new Date('invalid')); // false
+
+// Check if value is a RegExp
+isRegExp(/test/); // true
+isRegExp('test'); // false
+
+// Check if value is a Map or Set
+isMap(new Map()); // true
+isSet(new Set()); // true
 ```
 
 ### Math Utilities
@@ -206,6 +244,20 @@ function divide(a: number, b: number): number {
 - **isPromise<T = unknown>(value: unknown): value is Promise<T>** - Checks if a value is a Promise
 - **isNil(value: unknown): value is null | undefined** - Checks if a value is null or undefined
 - **isNilOrEmptyString(value: unknown): value is null | undefined** - Checks if a value is null, undefined, or an empty string
+- **isArray(value: unknown): value is unknown[]** - Checks if a value is an array
+- **isEmptyArray(value: unknown): value is []** - Checks if a value is an empty array
+- **isEmptyObject(value: unknown): value is Record<string, never>** - Checks if a value is an empty object
+- **isNull(value: unknown): value is null** - Checks if a value is null
+- **isUndefined(value: unknown): value is undefined** - Checks if a value is undefined
+- **isFiniteNumber(value: unknown): value is number** - Checks if a value is a finite number
+- **isInteger(value: unknown): value is number** - Checks if a value is an integer
+- **isNaN(value: unknown): boolean** - Checks if a value is NaN
+- **isDate(value: unknown): value is Date** - Checks if a value is a Date object
+- **isValidDate(value: unknown): value is Date** - Checks if a value is a valid Date object (not Invalid Date)
+- **isRegExp(value: unknown): value is RegExp** - Checks if a value is a RegExp object
+- **isMap(value: unknown): value is Map<unknown, unknown>** - Checks if a value is a Map
+- **isSet(value: unknown): value is Set<unknown>** - Checks if a value is a Set
+- **isSymbol(value: unknown): value is symbol** - Checks if a value is a Symbol
 
 ### Math Utilities
 
