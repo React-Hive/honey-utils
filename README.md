@@ -290,6 +290,7 @@ function divide(a: number, b: number): number {
 
 ### Type Guards
 
+- **assert(condition: any, message: string): asserts condition** - Asserts that a condition is truthy, throwing an error with the provided message if it's not
 - **isString(value: unknown): value is string** - Checks if a value is a string
 - **isNumber(value: unknown): value is number** - Checks if a value is a number
 - **isBool(value: unknown): value is boolean** - Checks if a value is a boolean
@@ -305,7 +306,6 @@ function divide(a: number, b: number): number {
 - **isUndefined(value: unknown): value is undefined** - Checks if a value is undefined
 - **isFiniteNumber(value: unknown): value is number** - Checks if a value is a finite number
 - **isInteger(value: unknown): value is number** - Checks if a value is an integer
-- **isNaN(value: unknown): boolean** - Checks if a value is NaN
 - **isDate(value: unknown): value is Date** - Checks if a value is a Date object
 - **isValidDate(value: unknown): value is Date** - Checks if a value is a valid Date object (not Invalid Date)
 - **isRegExp(value: unknown): value is RegExp** - Checks if a value is a RegExp object
@@ -322,10 +322,6 @@ function divide(a: number, b: number): number {
 ### DOM Utilities
 
 - **getTransformationValues(element: HTMLElement): { translateX: number, translateY: number }** - Gets transformation values from an HTML element
-
-### Other Utilities
-
-- **assert(condition: any, message: string): asserts condition** - Asserts that a condition is truthy, throwing an error with the provided message if it's not
 
 ## Contributing
 
