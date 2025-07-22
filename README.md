@@ -50,16 +50,24 @@ import * as HoneyUtils from '@react-hive/honey-utils';
 ```ts
 import { toKebabCase, camelToDashCase, splitStringIntoWords, hashString } from '@react-hive/honey-utils';
 
-// Convert string to kebab-case
+/**
+ * Convert string to kebab-case
+ */
 toKebabCase('helloWorld'); // 'hello-world'
 
-// Convert camelCase to dash-case
+/**
+ * Convert camelCase to dash-case
+ */
 camelToDashCase('helloWorld'); // 'hello-world'
 
-// Split string into words
+/**
+ * Split string into words
+ */
 splitStringIntoWords('hello world'); // ['hello', 'world']
 
-// Generate a hash from a string
+/**
+ * Generate a hash from a string
+ */
 const hash = hashString('background-color: red;'); // 'e4k1z0x'
 ```
 
@@ -67,95 +75,129 @@ const hash = hashString('background-color: red;'); // 'e4k1z0x'
 
 ```ts
 import {
-  boolFilter,
-  unique,
-  chunk,
-  intersection,
-  difference,
-  mapAsync,
-  forAsync,
-  reduceAsync,
-  filterAsync,
-  someAsync,
-  everyAsync,
-  findAsync,
+    boolFilter,
+    unique,
+    chunk,
+    intersection,
+    difference,
+    mapAsync,
+    forAsync,
+    reduceAsync,
+    filterAsync,
+    someAsync,
+    everyAsync,
+    findAsync,
+    pipe,
+    compose,
 } from '@react-hive/honey-utils';
 
-// Filter out falsy values from an array
-boolFilter([0, 1, false, 2, '', 3, null, undefined, true]); 
+/**
+ * Filter out falsy values from an array
+ */
+boolFilter([0, 1, false, 2, '', 3, null, undefined, true]);
 // ➜ [1, 2, 3, true]
 
-// Remove duplicate values from an array
-unique([1, 2, 2, 3, 1, 4]); 
+/**
+ * Remove duplicate values from an array
+ */
+unique([1, 2, 2, 3, 1, 4]);
 // ➜ [1, 2, 3, 4]
 
-// Split an array into chunks of specified size
-chunk([1, 2, 3, 4, 5], 2); 
+/**
+ * Split an array into chunks of specified size
+ */
+chunk([1, 2, 3, 4, 5], 2);
 // ➜ [[1, 2], [3, 4], [5]]
 
-// Find common elements between arrays
-intersection([1, 2, 3], [2, 3, 4]); 
+/**
+ * Find common elements between arrays
+ */
+intersection([1, 2, 3], [2, 3, 4]);
 // ➜ [2, 3]
 
-// Find elements in one array not in another
-difference([1, 2, 3, 4], [2, 4]); 
+/**
+ * Find elements in one array not in another
+ */
+difference([1, 2, 3, 4], [2, 4]);
 // ➜ [1, 3]
 
-// Run async operations in parallel and collect results
+/**
+ * Run async operations in parallel and collect results
+ */
 await mapAsync([1, 2, 3], async (n) => {
-  await delay(100);
-  
-  return n * 2;
+    await delay(100);
+    return n * 2;
 });
 // ➜ [2, 4, 6]
 
-// Run async operations sequentially and collect results
+/**
+ * Run async operations sequentially and collect results
+ */
 await forAsync([1, 2, 3], async (n, i) => {
-  await delay(100);
-  
-  return n * i;
+    await delay(100);
+    return n * i;
 });
 // ➜ [0, 2, 6]
 
-// Reduce array asynchronously
+/**
+ * Reduce array asynchronously
+ */
 await reduceAsync([1, 2, 3], async (acc, n) => {
-  await delay(50);
-  
-  return acc + n;
+    await delay(50);
+    return acc + n;
 }, 0);
 // ➜ 6
 
-// Filter array asynchronously
+/**
+ * Filter array asynchronously
+ */
 await filterAsync([1, 2, 3, 4], async (n) => {
-  await delay(30);
-  
-  return n % 2 === 0;
+    await delay(30);
+    return n % 2 === 0;
 });
 // ➜ [2, 4]
 
-// Check if some items match condition asynchronously
+/**
+ * Check if some items match condition asynchronously
+ */
 await someAsync([1, 3, 5], async (n) => {
-  await delay(10);
-  
-  return n % 2 === 0;
+    await delay(10);
+    return n % 2 === 0;
 });
 // ➜ false
 
-// Check if all items match condition asynchronously
+/**
+ * Check if all items match condition asynchronously
+ */
 await everyAsync([2, 4, 6], async (n) => {
-  await delay(10);
-  
-  return n % 2 === 0;
+    await delay(10);
+    return n % 2 === 0;
 });
 // ➜ true
 
-// Find first matching item asynchronously
+/**
+ * Find first matching item asynchronously
+ */
 await findAsync([1, 3, 4, 5], async (n) => {
-  await delay(20);
-  
-  return n % 2 === 0;
+    await delay(20);
+    return n % 2 === 0;
 });
 // ➜ 4
+
+/**
+ * Compose functions from left to right
+ */
+const double = (n: number) => n * 2;
+const increment = (n: number) => n + 1;
+
+pipe(double, increment)(3);
+// ➜ 7  → increment(double(3)) → increment(6)
+
+/**
+ * Compose functions from right to left
+ */
+compose(increment, double)(3);
+// ➜ 7  → increment(double(3)) → increment(6)
 ```
 
 ### Function Utilities
@@ -163,19 +205,27 @@ await findAsync([1, 3, 4, 5], async (n) => {
 ```ts
 import { noop, invokeIfFunction, delay, retry } from '@react-hive/honey-utils';
 
-// No-operation function
-noop(); // does nothing
+/**
+ * No-operation function. Does nothing
+ */
+noop();
 
-// Invoke if function, otherwise return value
+/**
+ * Invoke if function, otherwise return value
+ */
 const fn = (x: number) => x * 2;
 
 invokeIfFunction(fn, 5); // 10
 invokeIfFunction('not a function', 5); // 'not a function'
 
-// Create a promise that resolves after a specified delay
-await delay(1000); // Waits for 1 second before continuing
+/**
+ * Waits for 1 second before continuing
+ */
+await delay(1000);
 
-// Retry an async function with configurable options
+/**
+ * Retry an async function with configurable options
+ */
 async function fetchData() {
   const response = await fetch('/api/data');
   
@@ -224,65 +274,95 @@ import {
   isSet
 } from '@react-hive/honey-utils';
 
-// Check if value is a string
+/**
+ * Check if value is a string
+ */
 isString('hello'); // true
 isString(123); // false
 
-// Check if value is a number
+/**
+ * Check if value is a number
+ */
 isNumber(123); // true
 isNumber('123'); // false
 
-// Check if value is a boolean
+/**
+ * Check if value is a boolean
+ */
 isBool(true); // true
 isBool('true'); // false
 
-// Check if value is an object
+/**
+ * Check if value is an object
+ */
 isObject({}); // true
 isObject('object'); // false
 
-// Check if value is a function
+/**
+ * Check if value is a function
+ */
 isFunction(() => {}); // true
 isFunction({}); // false
 
-// Check if value is a Promise
+/**
+ * Check if value is a Promise
+ */
 isPromise(Promise.resolve()); // true
 isPromise({}); // false
 
-// Check if value is null or undefined
+/**
+ * Check if value is null or undefined
+ */
 isNil(null); // true
 isNil(undefined); // true
 isNil(''); // false
 
-// Check if value is null, undefined, or empty string
+/**
+ * Check if value is null, undefined, or empty string
+ */
 isNilOrEmptyString(''); // true
 isNilOrEmptyString(null); // true
 isNilOrEmptyString('hello'); // false
 
-// Check if value is an array
+/**
+ * Check if value is an array
+ */
 isArray([1, 2, 3]); // true
 isArray({}); // false
 
-// Check if value is an empty array
+/**
+ * Check if value is an empty array
+ */
 isEmptyArray([]); // true
 isEmptyArray([1, 2, 3]); // false
 
-// Check if value is an empty object
+/**
+ * Check if value is an empty object
+ */
 isEmptyObject({}); // true
 isEmptyObject({ key: 'value' }); // false
 
-// Check if value is a Date object
+/**
+ * Check if value is a Date object
+ */
 isDate(new Date()); // true
 isDate('2023-01-01'); // false
 
-// Check if value is a valid Date object
+/**
+ * Check if value is a valid Date object
+ */
 isValidDate(new Date()); // true
 isValidDate(new Date('invalid')); // false
 
-// Check if value is a RegExp
+/**
+ * Check if value is a RegExp
+ */
 isRegExp(/test/); // true
 isRegExp('test'); // false
 
-// Check if value is a Map or Set
+/**
+ * Check if value is a Map or Set
+ */
 isMap(new Map()); // true
 isSet(new Set()); // true
 ```
@@ -296,13 +376,19 @@ import {
   calculatePercentage 
 } from '@react-hive/honey-utils';
 
-// Calculate Euclidean distance between two points
+/**
+ * Calculate Euclidean distance between two points
+ */
 calculateEuclideanDistance(0, 0, 3, 4); // 5
 
-// Calculate moving speed
+/**
+ * Calculate moving speed
+ */
 calculateMovingSpeed(100, 5); // 20
 
-// Calculate percentage of a value
+/**
+ * Calculate percentage of a value
+ */
 calculatePercentage(200, 25); // 50
 ```
 
@@ -366,6 +452,8 @@ function divide(a: number, b: number): number {
 - `chunk<T>(array: T[], size: number): T[][]` - Splits an array into smaller arrays ("chunks") of the specified size.
 - `intersection<T>(...arrays: T[][]): T[]` - Returns an array of elements that exist in all provided arrays.
 - `difference<T>(array: T[], exclude: T[]): T[]` - Returns a new array that contains items from `array` that are not present in `exclude`.
+- `pipe(...fns: Function[]): Function` - Composes unary functions left-to-right. Returns a new function that applies all given functions in a sequence.
+- `compose(...fns: Function[]): Function` - Composes unary functions **right-to-left**. Same as `pipe`, but applies functions in reverse order.
 
 #### Asynchronous Utilities
 
@@ -387,27 +475,28 @@ function divide(a: number, b: number): number {
 ### Type Guards
 
 - `assert(condition: any, message: string): asserts condition` - Asserts that a condition is truthy, throwing an error with the provided message if it's not.
-- `isString(value: unknown): value is string` - Checks if a value is a string.
-- `isNumber(value: unknown): value is number` - Checks if a value is a number.
-- `isBool(value: unknown): value is boolean` - Checks if a value is a boolean.
-- `isObject(value: unknown): value is object` - Checks if a value is an object.
-- `isFunction(value: unknown): value is Function` - Checks if a value is a function.
-- `isPromise<T = unknown>(value: unknown): value is Promise<T>` - Checks if a value is a Promise.
-- `isNil(value: unknown): value is null | undefined` - Checks if a value is null or undefined.
-- `isNilOrEmptyString(value: unknown): value is null | undefined` - Checks if a value is null, undefined, or an empty string.
+- `isString(value: unknown): value is string` - Checks if a value is a `string`.
+- `isNumber(value: unknown): value is number` - Checks if a value is a `number`.
+- `isBool(value: unknown): value is boolean` - Checks if a value is a `boolean`.
+- `isObject(value: unknown): value is object` - Checks if a value is an `object`.
+- `isFunction(value: unknown): value is Function` - Checks if a value is a `function`.
+- `isPromise<T = unknown>(value: unknown): value is Promise<T>` - Checks if a value is a `Promise`.
+- `isNil(value: unknown): value is null | undefined` - Checks if a value is `null` or `undefined`.
+- `isNilOrEmptyString(value: unknown): value is null | undefined` - Checks if a value is `null`, `undefined`, or an empty string.
 - `isArray(value: unknown): value is unknown[]` - Checks if a value is an array.
 - `isEmptyArray(value: unknown): value is []` - Checks if a value is an empty array.
 - `isEmptyObject(value: unknown): value is Record<string, never>` - Checks if a value is an empty object.
-- `isNull(value: unknown): value is null` - Checks if a value is null.
-- `isUndefined(value: unknown): value is undefined` - Checks if a value is undefined.
+- `isNull(value: unknown): value is null` - Checks if a value is `null`.
+- `isUndefined(value: unknown): value is undefined` - Checks if a value is `undefined`.
+- `isDefined<T>(value: T): value is NonNullable<T>` - Checks if a value is neither `null` nor `undefined`.
 - `isFiniteNumber(value: unknown): value is number` - Checks if a value is a finite number.
 - `isInteger(value: unknown): value is number` - Checks if a value is an integer.
-- `isDate(value: unknown): value is Date` - Checks if a value is a Date object.
-- `isValidDate(value: unknown): value is Date` - Checks if a value is a valid Date object (not Invalid Date).
-- `isRegExp(value: unknown): value is RegExp` - Checks if a value is a RegExp object.
-- `isMap(value: unknown): value is Map<unknown, unknown>` - Checks if a value is a Map.
-- `isSet(value: unknown): value is Set<unknown>` - Checks if a value is a Set.
-- `isSymbol(value: unknown): value is symbol` - Checks if a value is a Symbol.
+- `isDate(value: unknown): value is Date` - Checks if a value is a `Date` object.
+- `isValidDate(value: unknown): value is Date` - Checks if a value is a valid `Date` object.
+- `isRegExp(value: unknown): value is RegExp` - Checks if a value is a `RegExp` object.
+- `isMap(value: unknown): value is Map<unknown, unknown>` - Checks if a value is a `Map`.
+- `isSet(value: unknown): value is Set<unknown>` - Checks if a value is a `Set`.
+- `isSymbol(value: unknown): value is symbol` - Checks if a value is a `Symbol`.
 
 ### Math Utilities
 

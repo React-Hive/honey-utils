@@ -14,6 +14,41 @@ export function assert(condition: any, message: string): asserts condition {
 export const isNull = (value: unknown): value is null => value === null;
 
 /**
+ * Checks if a value is null or undefined.
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is `null` or `undefined`, otherwise `false`.
+ */
+export const isNil = (value: unknown): value is null | undefined =>
+  value === undefined || value === null;
+
+/**
+ * Checks whether the provided value is considered "empty".
+ *
+ * A value is considered empty if it is:
+ * - `null`
+ * - `undefined`
+ * - `''`
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is empty; otherwise, `false`.
+ */
+export const isNilOrEmptyString = (value: unknown): value is null | undefined =>
+  value === '' || isNil(value);
+
+/**
+ * Checks if a value is neither `null` nor `undefined`.
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is defined (not `null` or `undefined`); otherwise, `false`.
+ */
+export const isDefined = <T>(value: T): value is NonNullable<T> =>
+  value !== null && value !== undefined;
+
+/**
  * Checks if a value is a string.
  *
  * @param value - The value to check.
@@ -97,31 +132,6 @@ export const isFunction = (value: unknown) => typeof value === 'function';
  */
 export const isPromise = <T = unknown>(value: unknown): value is Promise<T> =>
   isFunction((value as Promise<T>)?.then);
-
-/**
- * Checks if a value is null or undefined.
- *
- * @param value - The value to check.
- *
- * @returns `true` if the value is `null` or `undefined`, otherwise `false`.
- */
-export const isNil = (value: unknown): value is null | undefined =>
-  value === undefined || value === null;
-
-/**
- * Checks whether the provided value is considered "empty".
- *
- * A value is considered empty if it is:
- * - `null`
- * - `undefined`
- * - `''`
- *
- * @param value - The value to check.
- *
- * @returns `true` if the value is empty; otherwise, `false`.
- */
-export const isNilOrEmptyString = (value: unknown): value is null | undefined =>
-  value === '' || isNil(value);
 
 /**
  * Checks if a value is a Date object.
