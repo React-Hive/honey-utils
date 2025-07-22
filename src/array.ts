@@ -118,9 +118,9 @@ export const difference = <T>(array: T[], exclude: T[]): T[] =>
  * Useful when order or timing matters (e.g., rate limits, UI updates, animations).
  *
  * @param array - The array of items to iterate over.
- * @param callbackFn - An async function to execute for each item. Must return a value.
+ * @param predicate - An async function to execute for each item. Must return a value.
  *
- * @returns A promise that resolves with an array of results from each callback call.
+ * @returns A promise that resolves with an array of results from each predicate call.
  *
  * @example
  * ```ts
@@ -135,12 +135,12 @@ export const difference = <T>(array: T[], exclude: T[]): T[] =>
  */
 export const forAsync = async <Item, Result>(
   array: Item[],
-  callbackFn: (item: Item, index: number, array: Item[]) => Promise<Result>,
+  predicate: (item: Item, index: number, array: Item[]) => Promise<Result>,
 ): Promise<Result[]> => {
   const results: Result[] = [];
 
   for (let i = 0; i < array.length; i++) {
-    results.push(await callbackFn(array[i], i, array));
+    results.push(await predicate(array[i], i, array));
   }
 
   return results;
@@ -150,14 +150,14 @@ export const forAsync = async <Item, Result>(
  * Executes an asynchronous operation on each element of an array and waits for all promises to resolve.
  *
  * @param array - The array of items to operate on.
- * @param callbackFn - The asynchronous operation to perform on each item.
+ * @param predicate - The asynchronous operation to perform on each item.
  *
  * @returns A promise that resolves with an array of results after all operations are completed.
  */
 export const mapAsync = async <Item, Return>(
   array: Item[],
-  callbackFn: (item: Item, index: number, array: Item[]) => Promise<Return>,
-): Promise<Return[]> => Promise.all(array.map(callbackFn));
+  predicate: (item: Item, index: number, array: Item[]) => Promise<Return>,
+): Promise<Return[]> => Promise.all(array.map(predicate));
 
 /**
  * A generic function that processes an array asynchronously and filters the results
@@ -167,16 +167,16 @@ export const mapAsync = async <Item, Return>(
  * @template Return - The type of the items returned by the condition.
  *
  * @param array - An array of items to be processed.
- * @param callbackFn - An async function that returns a condition for each item.
+ * @param predicate - An async function that returns a condition for each item.
  *
  * @returns A Promise that resolves to an array of items that match the condition.
  */
 export const filterAsync = async <Item>(
   array: Item[],
-  callbackFn: (item: Item, index: number, array: Item[]) => Promise<boolean>,
+  predicate: (item: Item, index: number, array: Item[]) => Promise<boolean>,
 ): Promise<Item[]> => {
   const results = await mapAsync(array, async (item, index, array) =>
-    (await callbackFn(item, index, array)) ? item : false,
+    (await predicate(item, index, array)) ? item : false,
   );
 
   return boolFilter(results);
@@ -186,16 +186,16 @@ export const filterAsync = async <Item>(
  * Asynchronously checks if at least one element in the array satisfies the async condition.
  *
  * @param array - The array of items to check.
- * @param callbackFn - An async function that returns a boolean.
+ * @param predicate - An async function that returns a boolean.
  *
  * @returns A promise that resolves to true if any item passes the condition.
  */
 export const someAsync = async <Item>(
   array: Item[],
-  callbackFn: (item: Item, index: number, array: Item[]) => Promise<boolean>,
+  predicate: (item: Item, index: number, array: Item[]) => Promise<boolean>,
 ): Promise<boolean> => {
   for (let i = 0; i < array.length; i++) {
-    if (await callbackFn(array[i], i, array)) {
+    if (await predicate(array[i], i, array)) {
       return true;
     }
   }
@@ -207,16 +207,16 @@ export const someAsync = async <Item>(
  * Asynchronously checks if all elements in the array satisfy the async condition.
  *
  * @param array - The array of items to check.
- * @param callbackFn - An async function that returns a boolean.
+ * @param predicate - An async function that returns a boolean.
  *
  * @returns A promise that resolves to true if all items pass the condition.
  */
 export const everyAsync = async <Item>(
   array: Item[],
-  callbackFn: (item: Item, index: number, array: Item[]) => Promise<boolean>,
+  predicate: (item: Item, index: number, array: Item[]) => Promise<boolean>,
 ): Promise<boolean> => {
   for (let i = 0; i < array.length; i++) {
-    if (!(await callbackFn(array[i], i, array))) {
+    if (!(await predicate(array[i], i, array))) {
       return false;
     }
   }
@@ -231,14 +231,14 @@ export const everyAsync = async <Item>(
  * @template Accumulator - The type of the accumulated result.
  *
  * @param array - The array to reduce.
- * @param callbackFn - The async reducer function that processes each item and returns the updated accumulator.
+ * @param predicate - The async reducer function that processes each item and returns the updated accumulator.
  * @param initialValue - The initial accumulator value.
  *
  * @returns A promise that resolves to the final accumulated result.
  */
 export const reduceAsync = async <Item, Accumulator>(
   array: Item[],
-  callbackFn: (
+  predicate: (
     accumulator: Accumulator,
     item: Item,
     index: number,
@@ -249,7 +249,7 @@ export const reduceAsync = async <Item, Accumulator>(
   let accumulator = initialValue;
 
   for (let i = 0; i < array.length; i++) {
-    accumulator = await callbackFn(accumulator, array[i], i, array);
+    accumulator = await predicate(accumulator, array[i], i, array);
   }
 
   return accumulator;
@@ -259,16 +259,16 @@ export const reduceAsync = async <Item, Accumulator>(
  * Asynchronously finds the first element that satisfies the async condition.
  *
  * @param array - The array of items to search.
- * @param callbackFn - An async function that returns a boolean.
+ * @param predicate - An async function that returns a boolean.
  *
  * @returns A promise that resolves to the found item or null if none match.
  */
 export const findAsync = async <Item>(
   array: Item[],
-  callbackFn: (item: Item, index: number, array: Item[]) => Promise<boolean>,
+  predicate: (item: Item, index: number, array: Item[]) => Promise<boolean>,
 ): Promise<Item | null> => {
   for (let i = 0; i < array.length; i++) {
-    if (await callbackFn(array[i], i, array)) {
+    if (await predicate(array[i], i, array)) {
       return array[i];
     }
   }

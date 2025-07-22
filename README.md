@@ -11,8 +11,6 @@ A lightweight TypeScript utility library providing a collection of helper functi
 
 ## Features
 
----
-
 - 🔍 **Type Guards** - Functions for runtime type checking
 - 🧵 **String Utilities** - String manipulation and transformation
 - 🔢 **Array Utilities** - Array filtering and manipulation
@@ -23,8 +21,6 @@ A lightweight TypeScript utility library providing a collection of helper functi
 - 📝 **TypeScript Support** - Full TypeScript type definitions
 
 ## Installation
-
----
 
 ```bash
 # Using npm
@@ -38,8 +34,6 @@ pnpm add @react-hive/honey-utils
 ```
 
 ## Usage
-
----
 
 ### Importing
 
@@ -356,8 +350,6 @@ function divide(a: number, b: number): number {
 
 ## API Documentation
 
----
-
 ### String Utilities
 
 - `toKebabCase(input: string): string` - Converts a string to kebab-case.
@@ -377,13 +369,13 @@ function divide(a: number, b: number): number {
 
 #### Asynchronous Utilities
 
-- `forAsync<Item, Result>(array: Item[], callbackFn: (item, index, array) => Promise<Result>): Promise<Result[]>` - Runs asynchronous operations on each array item *sequentially* and returns the results in the original order.
-- `mapAsync<Item, Return>(array: Item[], callbackFn: (item, index, array) => Promise<Return>): Promise<Return[]>` - Executes an asynchronous function for each array item *in parallel* and returns a promise of all results.
-- `reduceAsync<Item, Accumulator>(array: Item[], callbackFn, initialValue): Promise<Accumulator>` - Asynchronously reduces an array to a single accumulated value. Each step waits for the previous promise to resolve.
-- `filterAsync<Item>(array: Item[], callbackFn): Promise<Item[]>` - Runs an asynchronous filter operation. Only includes items where `callbackFn(item)` resolves to `true`.
-- `someAsync<Item>(array: Item[], callbackFn): Promise<boolean>` - Returns `true` if **any** item in the array passes the async predicate.
-- `everyAsync<Item>(array: Item[], callbackFn): Promise<boolean>` - Returns `true` if **all** items in the array pass the async predicate.
-- `findAsync<Item>(array: Item[], callbackFn): Promise<Item | null>` - Returns the first array item that passes the async predicate, or `null` if no match is found.
+- `forAsync<Item, Result>(array: Item[], predicate: (item, index, array) => Promise<Result>): Promise<Result[]>` - Runs asynchronous operations on each array item *sequentially* and returns the results in the original order.
+- `mapAsync<Item, Return>(array: Item[], predicate: (item, index, array) => Promise<Return>): Promise<Return[]>` - Executes an asynchronous function for each array item *in parallel* and returns a promise of all results.
+- `reduceAsync<Item, Accumulator>(array: Item[], predicate, initialValue): Promise<Accumulator>` - Asynchronously reduces an array to a single accumulated value. Each step waits for the previous promise to resolve.
+- `filterAsync<Item>(array: Item[], predicate): Promise<Item[]>` - Runs an asynchronous filter operation. Only includes items where `predicate(item)` resolves to `true`.
+- `someAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **any** item in the array passes the async predicate.
+- `everyAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **all** items in the array pass the async predicate.
+- `findAsync<Item>(array: Item[], predicate): Promise<Item | null>` - Returns the first array item that passes the async predicate, or `null` if no match is found.
 
 ### Function Utilities
 
