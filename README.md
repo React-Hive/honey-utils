@@ -11,6 +11,8 @@ A lightweight TypeScript utility library providing a collection of helper functi
 
 ## Features
 
+---
+
 - 🔍 **Type Guards** - Functions for runtime type checking
 - 🧵 **String Utilities** - String manipulation and transformation
 - 🔢 **Array Utilities** - Array filtering and manipulation
@@ -21,6 +23,8 @@ A lightweight TypeScript utility library providing a collection of helper functi
 - 📝 **TypeScript Support** - Full TypeScript type definitions
 
 ## Installation
+
+---
 
 ```bash
 # Using npm
@@ -35,9 +39,11 @@ pnpm add @react-hive/honey-utils
 
 ## Usage
 
+---
+
 ### Importing
 
-```typescript
+```ts
 // Import specific utilities
 import { toKebabCase, isString, boolFilter } from '@react-hive/honey-utils';
 
@@ -47,7 +53,7 @@ import * as HoneyUtils from '@react-hive/honey-utils';
 
 ### String Utilities
 
-```typescript
+```ts
 import { toKebabCase, camelToDashCase, splitStringIntoWords, hashString } from '@react-hive/honey-utils';
 
 // Convert string to kebab-case
@@ -65,34 +71,102 @@ const hash = hashString('background-color: red;'); // 'e4k1z0x'
 
 ### Array Utilities
 
-```typescript
-import { 
-  boolFilter, 
-  unique, 
-  chunk, 
-  intersection, 
-  difference 
+```ts
+import {
+  boolFilter,
+  unique,
+  chunk,
+  intersection,
+  difference,
+  mapAsync,
+  forAsync,
+  reduceAsync,
+  filterAsync,
+  someAsync,
+  everyAsync,
+  findAsync,
 } from '@react-hive/honey-utils';
 
 // Filter out falsy values from an array
-boolFilter([0, 1, false, 2, '', 3, null, undefined, true]); // [1, 2, 3, true]
+boolFilter([0, 1, false, 2, '', 3, null, undefined, true]); 
+// ➜ [1, 2, 3, true]
 
 // Remove duplicate values from an array
-unique([1, 2, 2, 3, 1, 4]); // [1, 2, 3, 4]
+unique([1, 2, 2, 3, 1, 4]); 
+// ➜ [1, 2, 3, 4]
 
 // Split an array into chunks of specified size
-chunk([1, 2, 3, 4, 5], 2); // [[1, 2], [3, 4], [5]]
+chunk([1, 2, 3, 4, 5], 2); 
+// ➜ [[1, 2], [3, 4], [5]]
 
 // Find common elements between arrays
-intersection([1, 2, 3], [2, 3, 4]); // [2, 3]
+intersection([1, 2, 3], [2, 3, 4]); 
+// ➜ [2, 3]
 
 // Find elements in one array not in another
-difference([1, 2, 3, 4], [2, 4]); // [1, 3]
+difference([1, 2, 3, 4], [2, 4]); 
+// ➜ [1, 3]
+
+// Run async operations in parallel and collect results
+await mapAsync([1, 2, 3], async (n) => {
+  await delay(100);
+  
+  return n * 2;
+});
+// ➜ [2, 4, 6]
+
+// Run async operations sequentially and collect results
+await forAsync([1, 2, 3], async (n, i) => {
+  await delay(100);
+  
+  return n * i;
+});
+// ➜ [0, 2, 6]
+
+// Reduce array asynchronously
+await reduceAsync([1, 2, 3], async (acc, n) => {
+  await delay(50);
+  
+  return acc + n;
+}, 0);
+// ➜ 6
+
+// Filter array asynchronously
+await filterAsync([1, 2, 3, 4], async (n) => {
+  await delay(30);
+  
+  return n % 2 === 0;
+});
+// ➜ [2, 4]
+
+// Check if some items match condition asynchronously
+await someAsync([1, 3, 5], async (n) => {
+  await delay(10);
+  
+  return n % 2 === 0;
+});
+// ➜ false
+
+// Check if all items match condition asynchronously
+await everyAsync([2, 4, 6], async (n) => {
+  await delay(10);
+  
+  return n % 2 === 0;
+});
+// ➜ true
+
+// Find first matching item asynchronously
+await findAsync([1, 3, 4, 5], async (n) => {
+  await delay(20);
+  
+  return n % 2 === 0;
+});
+// ➜ 4
 ```
 
 ### Function Utilities
 
-```typescript
+```ts
 import { noop, invokeIfFunction, delay, retry } from '@react-hive/honey-utils';
 
 // No-operation function
@@ -134,7 +208,7 @@ fetchWithRetry()
 
 ### Type Guards
 
-```typescript
+```ts
 import { 
   isString, 
   isNumber, 
@@ -221,7 +295,7 @@ isSet(new Set()); // true
 
 ### Math Utilities
 
-```typescript
+```ts
 import { 
   calculateEuclideanDistance, 
   calculateMovingSpeed, 
@@ -240,21 +314,37 @@ calculatePercentage(200, 25); // 50
 
 ### DOM Utilities
 
-```typescript
-import { getTransformationValues } from '@react-hive/honey-utils';
+```ts
+import { parse2DMatrix, cloneBlob, convertBlobToFile } from '@react-hive/honey-utils';
 
-// Get transformation values from an HTML element
+// Extract transformation values from an HTML element's 2D matrix
 const element = document.getElementById('my-element');
 if (element) {
-  const { translateX, translateY } = getTransformationValues(element);
+  const { translateX, translateY, scaleX, scaleY, skewX, skewY } = parse2DMatrix(element);
   
   console.log(`Element is translated by ${translateX}px horizontally and ${translateY}px vertically`);
+  console.log(`Element is scaled by ${scaleX} horizontally and ${scaleY} vertically`);
+  console.log(`Element is skewed by ${skewX} horizontally and ${skewY} vertically`);
 }
+
+// Clone a Blob object
+const originalBlob = new Blob(['Hello World'], { type: 'text/plain' });
+const clonedBlob = cloneBlob(originalBlob);
+
+console.log(clonedBlob.type); // 'text/plain'
+
+// Convert a Blob to a File
+const blob = new Blob(['Hello world'], { type: 'text/plain' });
+const file = convertBlobToFile(blob, 'hello.txt');
+
+console.log(file instanceof File); // true
+console.log(file.name); // 'hello.txt'
+console.log(file.type); // 'text/plain'
 ```
 
 ### Assert Function
 
-```typescript
+```ts
 import { assert } from '@react-hive/honey-utils';
 
 // Assert a condition
@@ -266,62 +356,78 @@ function divide(a: number, b: number): number {
 
 ## API Documentation
 
+---
+
 ### String Utilities
 
-- **toKebabCase(input: string): string** - Converts a string to kebab-case
-- **camelToDashCase(input: string): string** - Converts camelCase to dash-case
-- **splitStringIntoWords(input: string): string[]** - Splits a string into an array of words
-- **hashString(input: string): string** - Generates a short hash from a string
+- `toKebabCase(input: string): string` - Converts a string to kebab-case.
+- `camelToDashCase(input: string): string` - Converts camelCase to dash-case.
+- `splitStringIntoWords(input: string): string[]` - Splits a string into an array of words.
+- `hashString(input: string): string` - Generates a short hash from a string.
 
 ### Array Utilities
 
-- **boolFilter<T>(array: (T | false | null | undefined)[]): T[]** - Filters out falsy values from an array
-- **unique<T>(array: T[]): T[]** - Returns a new array with duplicate values removed
-- **chunk<T>(array: T[], size: number): T[][]** - Splits an array into chunks of the specified size
-- **intersection<T>(...arrays: T[][]): T[]** - Returns an array containing elements that exist in all provided arrays
-- **difference<T>(array: T[], exclude: T[]): T[]** - Returns elements from the first array that don't exist in the second array
+#### Synchronous Utilities
+
+- `boolFilter<T>(array: (T | false | null | undefined)[]): T[]` - Filters out falsy values (`false`, `null`, `undefined`) from an array while keeping valid items.
+- `unique<T>(array: T[]): T[]` - Returns a new array with all duplicate elements removed. Keeps only the first occurrence of each value.
+- `chunk<T>(array: T[], size: number): T[][]` - Splits an array into smaller arrays ("chunks") of the specified size.
+- `intersection<T>(...arrays: T[][]): T[]` - Returns an array of elements that exist in all provided arrays.
+- `difference<T>(array: T[], exclude: T[]): T[]` - Returns a new array that contains items from `array` that are not present in `exclude`.
+
+#### Asynchronous Utilities
+
+- `forAsync<Item, Result>(array: Item[], callbackFn: (item, index, array) => Promise<Result>): Promise<Result[]>` - Runs asynchronous operations on each array item *sequentially* and returns the results in the original order.
+- `mapAsync<Item, Return>(array: Item[], callbackFn: (item, index, array) => Promise<Return>): Promise<Return[]>` - Executes an asynchronous function for each array item *in parallel* and returns a promise of all results.
+- `reduceAsync<Item, Accumulator>(array: Item[], callbackFn, initialValue): Promise<Accumulator>` - Asynchronously reduces an array to a single accumulated value. Each step waits for the previous promise to resolve.
+- `filterAsync<Item>(array: Item[], callbackFn): Promise<Item[]>` - Runs an asynchronous filter operation. Only includes items where `callbackFn(item)` resolves to `true`.
+- `someAsync<Item>(array: Item[], callbackFn): Promise<boolean>` - Returns `true` if **any** item in the array passes the async predicate.
+- `everyAsync<Item>(array: Item[], callbackFn): Promise<boolean>` - Returns `true` if **all** items in the array pass the async predicate.
+- `findAsync<Item>(array: Item[], callbackFn): Promise<Item | null>` - Returns the first array item that passes the async predicate, or `null` if no match is found.
 
 ### Function Utilities
 
-- **noop(): void** - A no-operation function
-- **invokeIfFunction<Args extends any[], Result>(input: ((...args: Args) => Result) | Result, ...args: Args): Result** - Invokes the input if it's a function, otherwise returns it as-is
-- **delay(delayMs: number): Promise<void>** - Creates a promise that resolves after the specified delay in milliseconds
-- **retry<Task, TaskResult>(task: Task, options?: RetryOptions): Function** - Wraps an asynchronous function with retry logic, with configurable max attempts, delay between retries, exponential backoff, and retry callbacks
+- `noop(): void` - A no-operation function.
+- `invokeIfFunction<Args extends any[], Result>(input: ((...args: Args) => Result) | Result, ...args: Args): Result` - Invokes the input if it's a function, otherwise returns it as-is.
+- `delay(delayMs: number): Promise<void>` - Creates a promise that resolves after the specified delay in milliseconds.
+- `retry<Task, TaskResult>(task: Task, options?: RetryOptions): Function` - Wraps an asynchronous function with retry logic, with configurable max attempts, delay between retries, exponential backoff, and retry callbacks.
 
 ### Type Guards
 
-- **assert(condition: any, message: string): asserts condition** - Asserts that a condition is truthy, throwing an error with the provided message if it's not
-- **isString(value: unknown): value is string** - Checks if a value is a string
-- **isNumber(value: unknown): value is number** - Checks if a value is a number
-- **isBool(value: unknown): value is boolean** - Checks if a value is a boolean
-- **isObject(value: unknown): value is object** - Checks if a value is an object
-- **isFunction(value: unknown): value is Function** - Checks if a value is a function
-- **isPromise<T = unknown>(value: unknown): value is Promise<T>** - Checks if a value is a Promise
-- **isNil(value: unknown): value is null | undefined** - Checks if a value is null or undefined
-- **isNilOrEmptyString(value: unknown): value is null | undefined** - Checks if a value is null, undefined, or an empty string
-- **isArray(value: unknown): value is unknown[]** - Checks if a value is an array
-- **isEmptyArray(value: unknown): value is []** - Checks if a value is an empty array
-- **isEmptyObject(value: unknown): value is Record<string, never>** - Checks if a value is an empty object
-- **isNull(value: unknown): value is null** - Checks if a value is null
-- **isUndefined(value: unknown): value is undefined** - Checks if a value is undefined
-- **isFiniteNumber(value: unknown): value is number** - Checks if a value is a finite number
-- **isInteger(value: unknown): value is number** - Checks if a value is an integer
-- **isDate(value: unknown): value is Date** - Checks if a value is a Date object
-- **isValidDate(value: unknown): value is Date** - Checks if a value is a valid Date object (not Invalid Date)
-- **isRegExp(value: unknown): value is RegExp** - Checks if a value is a RegExp object
-- **isMap(value: unknown): value is Map<unknown, unknown>** - Checks if a value is a Map
-- **isSet(value: unknown): value is Set<unknown>** - Checks if a value is a Set
-- **isSymbol(value: unknown): value is symbol** - Checks if a value is a Symbol
+- `assert(condition: any, message: string): asserts condition` - Asserts that a condition is truthy, throwing an error with the provided message if it's not.
+- `isString(value: unknown): value is string` - Checks if a value is a string.
+- `isNumber(value: unknown): value is number` - Checks if a value is a number.
+- `isBool(value: unknown): value is boolean` - Checks if a value is a boolean.
+- `isObject(value: unknown): value is object` - Checks if a value is an object.
+- `isFunction(value: unknown): value is Function` - Checks if a value is a function.
+- `isPromise<T = unknown>(value: unknown): value is Promise<T>` - Checks if a value is a Promise.
+- `isNil(value: unknown): value is null | undefined` - Checks if a value is null or undefined.
+- `isNilOrEmptyString(value: unknown): value is null | undefined` - Checks if a value is null, undefined, or an empty string.
+- `isArray(value: unknown): value is unknown[]` - Checks if a value is an array.
+- `isEmptyArray(value: unknown): value is []` - Checks if a value is an empty array.
+- `isEmptyObject(value: unknown): value is Record<string, never>` - Checks if a value is an empty object.
+- `isNull(value: unknown): value is null` - Checks if a value is null.
+- `isUndefined(value: unknown): value is undefined` - Checks if a value is undefined.
+- `isFiniteNumber(value: unknown): value is number` - Checks if a value is a finite number.
+- `isInteger(value: unknown): value is number` - Checks if a value is an integer.
+- `isDate(value: unknown): value is Date` - Checks if a value is a Date object.
+- `isValidDate(value: unknown): value is Date` - Checks if a value is a valid Date object (not Invalid Date).
+- `isRegExp(value: unknown): value is RegExp` - Checks if a value is a RegExp object.
+- `isMap(value: unknown): value is Map<unknown, unknown>` - Checks if a value is a Map.
+- `isSet(value: unknown): value is Set<unknown>` - Checks if a value is a Set.
+- `isSymbol(value: unknown): value is symbol` - Checks if a value is a Symbol.
 
 ### Math Utilities
 
-- **calculateEuclideanDistance(startX: number, startY: number, endX: number, endY: number): number** - Calculates the Euclidean distance between two points
-- **calculateMovingSpeed(delta: number, elapsedTime: number): number** - Calculates moving speed
-- **calculatePercentage(value: number, percentage: number): number** - Calculates the specified percentage of a value
+- `calculateEuclideanDistance(startX: number, startY: number, endX: number, endY: number): number` - Calculates the Euclidean distance between two points.
+- `calculateMovingSpeed(delta: number, elapsedTime: number): number` - Calculates moving speed.
+- `calculatePercentage(value: number, percentage: number): number` - Calculates the specified percentage of a value.
 
 ### DOM Utilities
 
-- **getTransformationValues(element: HTMLElement): { translateX: number, translateY: number }** - Gets transformation values from an HTML element
+- `parse2DMatrix(element: HTMLElement): { translateX: number, translateY: number, scaleX: number, scaleY: number, skewX: number, skewY: number }` - Extracts transformation values (translate, scale, skew) from the 2D transformation matrix of a given HTML element.
+- `cloneBlob(blob: Blob): Blob` - Creates a clone of a Blob object with the same content and type as the original.
+- `convertBlobToFile(blob: Blob, fileName: string): File` - Converts a Blob object into a File object with the specified name.
 
 ## Contributing
 
