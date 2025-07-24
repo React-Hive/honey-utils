@@ -1,4 +1,4 @@
-import { boolFilter } from './array';
+import { compact } from './array';
 
 /**
  * Asynchronously iterates over an array and executes an async function on each item sequentially,
@@ -42,6 +42,17 @@ export const runSequential = async <Item, Result>(
  * @param fn - The asynchronous operation to perform on each item.
  *
  * @returns A promise that resolves with an array of results after all operations are completed.
+ *
+ * @example
+ * ```ts
+ * const results = await runParallel([1, 2, 3], async (item) => {
+ *   await delay(100);
+ *
+ *   return item * 2;
+ * });
+ *
+ * console.log(results); // [2, 4, 6]
+ * ```
  */
 export const runParallel = async <Item, Result>(
   array: Item[],
@@ -49,16 +60,33 @@ export const runParallel = async <Item, Result>(
 ): Promise<Result[]> => Promise.all(array.map(fn));
 
 /**
- * A generic function that processes an array asynchronously and filters the results
- * based on the provided async condition.
+ * Asynchronously filters an array based on a provided async predicate function.
  *
- * @template Item - The type of the items in the array.
- * @template Return - The type of the items returned by the condition.
+ * Each item is passed to the `predicate` function in parallel, and only the items
+ * for which the predicate resolves to `true` are included in the final result.
  *
- * @param array - An array of items to be processed.
- * @param predicate - An async function that returns a condition for each item.
+ * Useful for filtering based on asynchronous conditions such as API calls,
+ * file system access, or any other delayed operations.
  *
- * @returns A Promise that resolves to an array of items that match the condition.
+ * @template Item - The type of the items in the input array.
+ *
+ * @param array - The array of items to filter.
+ * @param predicate - An async function that returns a boolean indicating whether to keep each item.
+ * Receives `(item, index, array)` as arguments.
+ *
+ * @returns A promise that resolves to a new array containing only the items for which the predicate returned `true`.
+ *
+ * @example
+ * ```ts
+ * // Filter numbers that are even after a simulated delay
+ * const result = await filterAsync([1, 2, 3, 4], async (num) => {
+ *   await delay(100);
+ *
+ *   return num % 2 === 0;
+ * });
+ *
+ * console.log(result); // [2, 4]
+ * ```
  */
 export const filterAsync = async <Item>(
   array: Item[],
@@ -68,7 +96,7 @@ export const filterAsync = async <Item>(
     (await predicate(item, index, array)) ? item : false,
   );
 
-  return boolFilter(results);
+  return compact(results);
 };
 
 /**

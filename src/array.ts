@@ -1,19 +1,29 @@
 import { assert } from './guards';
 
 /**
- * Filters out `null`, `undefined`, and other falsy values from an array,
- * returning a typed array of only truthy `Item` values.
- *
- * Useful when working with optional or nullable items that need to be sanitized.
- *
- * @template T - The type of the items in the array.
- *
- * @param array - An array of items that may include `null`, `undefined`, or falsy values.
- *
- * @returns A new array containing only truthy `Item` values.
+ * Represents all falsy values.
  */
-export const boolFilter = <T>(array: (T | false | null | undefined)[]): T[] =>
-  array.filter(Boolean) as T[];
+type Falsy = false | null | undefined | 0 | '' | typeof NaN;
+
+/**
+ * Removes all falsy values from an array.
+ *
+ * Falsy values include: `false`, `0`, `''` (empty string), `null`, `undefined`, and `NaN`.
+ *
+ * Useful for cleaning up arrays with optional, nullable, or conditionally included items.
+ *
+ * @template T - The type of the truthy items.
+ *
+ * @param array - An array possibly containing falsy values.
+ *
+ * @returns A new array containing only truthy values of type `T`.
+ *
+ * @example
+ * ```ts
+ * compact([0, 1, false, 2, '', 3, null, undefined, NaN]); // [1, 2, 3]
+ * ```
+ */
+export const compact = <T>(array: (T | Falsy)[]): T[] => array.filter(Boolean) as T[];
 
 /**
  * Returns a new array with duplicate values removed.

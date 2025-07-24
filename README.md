@@ -75,18 +75,11 @@ const hash = hashString('background-color: red;'); // 'e4k1z0x'
 
 ```ts
 import {
-    boolFilter,
+    compact,
     unique,
     chunk,
     intersection,
     difference,
-    runParallel,
-    runSequential,
-    reduceAsync,
-    filterAsync,
-    someAsync,
-    everyAsync,
-    findAsync,
     pipe,
     compose,
 } from '@react-hive/honey-utils';
@@ -94,7 +87,7 @@ import {
 /**
  * Filter out falsy values from an array
  */
-boolFilter([0, 1, false, 2, '', 3, null, undefined, true]);
+compact([0, 1, false, 2, '', 3, null, undefined, true]);
 // ➜ [1, 2, 3, true]
 
 /**
@@ -120,6 +113,35 @@ intersection([1, 2, 3], [2, 3, 4]);
  */
 difference([1, 2, 3, 4], [2, 4]);
 // ➜ [1, 3]
+
+/**
+ * Compose functions from left to right
+ */
+const double = (n: number) => n * 2;
+const increment = (n: number) => n + 1;
+
+pipe(double, increment)(3);
+// ➜ 7  → increment(double(3)) → increment(6)
+
+/**
+ * Compose functions from right to left
+ */
+compose(increment, double)(3);
+// ➜ 7  → increment(double(3)) → increment(6)
+```
+
+### Asynchronous Utilities
+
+```ts
+import {
+    runParallel,
+    runSequential,
+    reduceAsync,
+    filterAsync,
+    someAsync,
+    everyAsync,
+    findAsync,
+} from '@react-hive/honey-utils';
 
 /**
  * Run async operations in parallel and collect results
@@ -183,21 +205,6 @@ await findAsync([1, 3, 4, 5], async (n) => {
     return n % 2 === 0;
 });
 // ➜ 4
-
-/**
- * Compose functions from left to right
- */
-const double = (n: number) => n * 2;
-const increment = (n: number) => n + 1;
-
-pipe(double, increment)(3);
-// ➜ 7  → increment(double(3)) → increment(6)
-
-/**
- * Compose functions from right to left
- */
-compose(increment, double)(3);
-// ➜ 7  → increment(double(3)) → increment(6)
 ```
 
 ### Function Utilities
@@ -445,7 +452,7 @@ function divide(a: number, b: number): number {
 
 ### Array Utilities
 
-- `boolFilter<T>(array: (T | false | null | undefined)[]): T[]` - Filters out falsy values (`false`, `null`, `undefined`) from an array while keeping valid items.
+- `compact<T>(array: (T | Falsy)[]): T[]` – Returns a new array with all falsy values (false, null, undefined, 0, '', NaN) removed, preserving only truthy items of type `T`.
 - `unique<T>(array: T[]): T[]` - Returns a new array with all duplicate elements removed. Keeps only the first occurrence of each value.
 - `chunk<T>(array: T[], size: number): T[][]` - Splits an array into smaller arrays ("chunks") of the specified size.
 - `intersection<T>(...arrays: T[][]): T[]` - Returns an array of elements that exist in all provided arrays.
