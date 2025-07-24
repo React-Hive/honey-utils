@@ -60,6 +60,47 @@ export const runParallel = async <Item, Result>(
 ): Promise<Result[]> => Promise.all(array.map(fn));
 
 /**
+ * Asynchronously filters an array using a predicate function, executing **sequentially**.
+ *
+ * Useful for rate-limited or stateful async operations where execution order matters.
+ *
+ * @template Item - The type of the items in the input array.
+ *
+ * @param array - The array of items to filter.
+ * @param predicate - An async function that returns a `boolean` indicating whether to keep each item.
+ *
+ * @returns A promise that resolves to a new array containing only the items for which the predicate returned `true`.
+ *
+ * @example
+ * ```ts
+ * // Sequentially filter even numbers with delay
+ * const result = await filterSequential([1, 2, 3, 4], async (num) => {
+ *   await delay(100);
+ *
+ *   return num % 2 === 0;
+ * });
+ *
+ * console.log(result); // [2, 4]
+ * ```
+ */
+export const filterSequential = async <Item>(
+  array: Item[],
+  predicate: (item: Item, index: number, array: Item[]) => Promise<boolean>,
+): Promise<Item[]> => {
+  const results: Item[] = [];
+
+  for (let i = 0; i < array.length; i++) {
+    const item = array[i];
+
+    if (await predicate(item, i, array)) {
+      results.push(item);
+    }
+  }
+
+  return results;
+};
+
+/**
  * Asynchronously filters an array based on a provided async predicate function.
  *
  * Each item is passed to the `predicate` function in parallel, and only the items
@@ -72,14 +113,13 @@ export const runParallel = async <Item, Result>(
  *
  * @param array - The array of items to filter.
  * @param predicate - An async function that returns a boolean indicating whether to keep each item.
- * Receives `(item, index, array)` as arguments.
  *
  * @returns A promise that resolves to a new array containing only the items for which the predicate returned `true`.
  *
  * @example
  * ```ts
  * // Filter numbers that are even after a simulated delay
- * const result = await filterAsync([1, 2, 3, 4], async (num) => {
+ * const result = await filterParallel([1, 2, 3, 4], async (num) => {
  *   await delay(100);
  *
  *   return num % 2 === 0;
@@ -88,7 +128,7 @@ export const runParallel = async <Item, Result>(
  * console.log(result); // [2, 4]
  * ```
  */
-export const filterAsync = async <Item>(
+export const filterParallel = async <Item>(
   array: Item[],
   predicate: (item: Item, index: number, array: Item[]) => Promise<boolean>,
 ): Promise<Item[]> => {

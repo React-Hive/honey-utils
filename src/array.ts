@@ -3,7 +3,7 @@ import { assert } from './guards';
 /**
  * Represents all falsy values.
  */
-type Falsy = false | null | undefined | 0 | '' | typeof NaN;
+type Falsy = false | null | undefined | 0 | '';
 
 /**
  * Removes all falsy values from an array.

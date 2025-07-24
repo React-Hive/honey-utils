@@ -137,7 +137,7 @@ import {
     runParallel,
     runSequential,
     reduceAsync,
-    filterAsync,
+    filterParallel,
     someAsync,
     everyAsync,
     findAsync,
@@ -173,7 +173,7 @@ await reduceAsync([1, 2, 3], async (acc, n) => {
 /**
  * Filter array asynchronously
  */
-await filterAsync([1, 2, 3, 4], async (n) => {
+await filterParallel([1, 2, 3, 4], async (n) => {
     await delay(30);
     return n % 2 === 0;
 });
@@ -510,7 +510,8 @@ function divide(a: number, b: number): number {
 - `runSequential<Item, Result>(array: Item[], fn: (item, index, array) => Promise<Result>): Promise<Result[]>` - Runs asynchronous operations on each array item *sequentially* and returns the results in the original order.
 - `runParallel<Item, Result>(array: Item[], fn: (item, index, array) => Promise<Result>): Promise<Result[]>` - Executes an asynchronous function for each array item *in parallel* and returns a promise of all results.
 - `reduceAsync<Item, Accumulator>(array: Item[], fn, initialValue): Promise<Accumulator>` - Asynchronously reduces an array to a single accumulated value. Each step waits for the previous promise to resolve.
-- `filterAsync<Item>(array: Item[], predicate): Promise<Item[]>` - Runs an asynchronous filter operation. Only includes items where `predicate(item)` resolves to `true`.
+- `filterSequential<Item>(array: Item[], predicate): Promise<Item[]>` – Filters an array using an asynchronous predicate sequentially. Each item is processed one after another, and only those for which predicate(item) returns true are included in the result.
+- `filterParallel<Item>(array: Item[], predicate): Promise<Item[]>` – Filters an array using an asynchronous predicate in parallel. Returns a promise that resolves with only the items for which predicate(item) returns `true`.
 - `someAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **any** item in the array passes the async predicate.
 - `everyAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **all** items in the array pass the async predicate.
 - `findAsync<Item>(array: Item[], predicate): Promise<Item | null>` - Returns the first array item that passes the async predicate, or `null` if no match is found.
