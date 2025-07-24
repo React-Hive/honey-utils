@@ -80,8 +80,8 @@ import {
     chunk,
     intersection,
     difference,
-    mapAsync,
-    forAsync,
+    runParallel,
+    runSequential,
     reduceAsync,
     filterAsync,
     someAsync,
@@ -124,7 +124,7 @@ difference([1, 2, 3, 4], [2, 4]);
 /**
  * Run async operations in parallel and collect results
  */
-await mapAsync([1, 2, 3], async (n) => {
+await runParallel([1, 2, 3], async (n) => {
     await delay(100);
     return n * 2;
 });
@@ -133,7 +133,7 @@ await mapAsync([1, 2, 3], async (n) => {
 /**
  * Run async operations sequentially and collect results
  */
-await forAsync([1, 2, 3], async (n, i) => {
+await runSequential([1, 2, 3], async (n, i) => {
     await delay(100);
     return n * i;
 });
@@ -445,8 +445,6 @@ function divide(a: number, b: number): number {
 
 ### Array Utilities
 
-#### Synchronous Utilities
-
 - `boolFilter<T>(array: (T | false | null | undefined)[]): T[]` - Filters out falsy values (`false`, `null`, `undefined`) from an array while keeping valid items.
 - `unique<T>(array: T[]): T[]` - Returns a new array with all duplicate elements removed. Keeps only the first occurrence of each value.
 - `chunk<T>(array: T[], size: number): T[][]` - Splits an array into smaller arrays ("chunks") of the specified size.
@@ -454,16 +452,6 @@ function divide(a: number, b: number): number {
 - `difference<T>(array: T[], exclude: T[]): T[]` - Returns a new array that contains items from `array` that are not present in `exclude`.
 - `pipe(...fns: Function[]): Function` - Composes unary functions left-to-right. Returns a new function that applies all given functions in a sequence.
 - `compose(...fns: Function[]): Function` - Composes unary functions **right-to-left**. Same as `pipe`, but applies functions in reverse order.
-
-#### Asynchronous Utilities
-
-- `forAsync<Item, Result>(array: Item[], predicate: (item, index, array) => Promise<Result>): Promise<Result[]>` - Runs asynchronous operations on each array item *sequentially* and returns the results in the original order.
-- `mapAsync<Item, Return>(array: Item[], predicate: (item, index, array) => Promise<Return>): Promise<Return[]>` - Executes an asynchronous function for each array item *in parallel* and returns a promise of all results.
-- `reduceAsync<Item, Accumulator>(array: Item[], predicate, initialValue): Promise<Accumulator>` - Asynchronously reduces an array to a single accumulated value. Each step waits for the previous promise to resolve.
-- `filterAsync<Item>(array: Item[], predicate): Promise<Item[]>` - Runs an asynchronous filter operation. Only includes items where `predicate(item)` resolves to `true`.
-- `someAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **any** item in the array passes the async predicate.
-- `everyAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **all** items in the array pass the async predicate.
-- `findAsync<Item>(array: Item[], predicate): Promise<Item | null>` - Returns the first array item that passes the async predicate, or `null` if no match is found.
 
 ### Function Utilities
 
@@ -501,7 +489,7 @@ function divide(a: number, b: number): number {
 ### Math Utilities
 
 - `calculateEuclideanDistance(startX: number, startY: number, endX: number, endY: number): number` - Calculates the Euclidean distance between two points.
-- `calculateMovingSpeed(delta: number, elapsedTime: number): number` - Calculates moving speed.
+- `calculateMovingSpeed(distance: number, elapsedTime: number): number` - Calculates moving speed.
 - `calculatePercentage(value: number, percentage: number): number` - Calculates the specified percentage of a value.
 
 ### DOM Utilities
@@ -509,6 +497,16 @@ function divide(a: number, b: number): number {
 - `parse2DMatrix(element: HTMLElement): { translateX: number, translateY: number, scaleX: number, scaleY: number, skewX: number, skewY: number }` - Extracts transformation values (translate, scale, skew) from the 2D transformation matrix of a given HTML element.
 - `cloneBlob(blob: Blob): Blob` - Creates a clone of a Blob object with the same content and type as the original.
 - `convertBlobToFile(blob: Blob, fileName: string): File` - Converts a Blob object into a File object with the specified name.
+
+### Asynchronous Utilities
+
+- `runSequential<Item, Result>(array: Item[], fn: (item, index, array) => Promise<Result>): Promise<Result[]>` - Runs asynchronous operations on each array item *sequentially* and returns the results in the original order.
+- `runParallel<Item, Result>(array: Item[], fn: (item, index, array) => Promise<Result>): Promise<Result[]>` - Executes an asynchronous function for each array item *in parallel* and returns a promise of all results.
+- `reduceAsync<Item, Accumulator>(array: Item[], fn, initialValue): Promise<Accumulator>` - Asynchronously reduces an array to a single accumulated value. Each step waits for the previous promise to resolve.
+- `filterAsync<Item>(array: Item[], predicate): Promise<Item[]>` - Runs an asynchronous filter operation. Only includes items where `predicate(item)` resolves to `true`.
+- `someAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **any** item in the array passes the async predicate.
+- `everyAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **all** items in the array pass the async predicate.
+- `findAsync<Item>(array: Item[], predicate): Promise<Item | null>` - Returns the first array item that passes the async predicate, or `null` if no match is found.
 
 ## Contributing
 

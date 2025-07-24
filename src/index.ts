@@ -1,3 +1,4 @@
+export * from './async';
 export * from './string';
 export * from './array';
 export * from './function';

@@ -17,19 +17,19 @@ export const calculateEuclideanDistance = (
   const deltaX = endX - startX;
   const deltaY = endY - startY;
 
-  return Math.sqrt(deltaX ** 2 + deltaY ** 2);
+  return Math.hypot(deltaX, deltaY);
 };
 
 /**
  * Calculates the moving speed.
  *
- * @param delta - The change in position (distance).
+ * @param distance - The distance.
  * @param elapsedTime - The time taken to move the distance.
  *
  * @returns The calculated speed, which is the absolute value of delta divided by elapsed time.
  */
-export const calculateMovingSpeed = (delta: number, elapsedTime: number): number =>
-  Math.abs(delta / elapsedTime);
+export const calculateMovingSpeed = (distance: number, elapsedTime: number): number =>
+  Math.abs(distance / elapsedTime);
 
 /**
  * Calculates the specified percentage of a given value.
