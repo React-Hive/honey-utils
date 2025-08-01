@@ -84,3 +84,43 @@ export const convertBlobToFile = (blob: Blob, fileName: string): File =>
   new File([blob], fileName, {
     type: blob.type,
   });
+
+/**
+ * Calculates the intersection ratio between two DOM rectangles.
+ *
+ * The ratio represents the proportion of the `targetRect` that is covered by `sourceRect`.
+ * A value of `1` means `sourceRect` completely covers `targetRect`, and `0` means no overlap.
+ *
+ * @param sourceRect - The rectangle used to measure overlap against the target.
+ * @param targetRect - The rectangle whose covered area is measured.
+ *
+ * @returns A number between `0` and `1` representing the intersection ratio.
+ */
+export const getDOMRectIntersectionRatio = (sourceRect: DOMRect, targetRect: DOMRect): number => {
+  const xOverlap = Math.max(
+    0,
+    Math.min(sourceRect.right, targetRect.right) - Math.max(sourceRect.left, targetRect.left),
+  );
+
+  const yOverlap = Math.max(
+    0,
+    Math.min(sourceRect.bottom, targetRect.bottom) - Math.max(sourceRect.top, targetRect.top),
+  );
+
+  const intersectionArea = xOverlap * yOverlap;
+  const targetArea = targetRect.width * targetRect.height;
+
+  return intersectionArea / targetArea;
+};
+
+/**
+ * Returns the bounding DOMRect of an element based on offset and client dimensions.
+ *
+ * This utility is useful when you need a stable, layout-based rect
+ * without triggering a reflow via `getBoundingClientRect()`.
+ *
+ * @param element - The target HTML element.
+ * @returns A `DOMRect` representing the element’s offset position and size.
+ */
+export const getElementOffsetRect = (element: HTMLElement): DOMRect =>
+  new DOMRect(element.offsetLeft, element.offsetTop, element.clientWidth, element.clientHeight);

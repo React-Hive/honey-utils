@@ -504,6 +504,8 @@ function divide(a: number, b: number): number {
 - `parse2DMatrix(element: HTMLElement): { translateX: number, translateY: number, scaleX: number, scaleY: number, skewX: number, skewY: number }` - Extracts transformation values (translate, scale, skew) from the 2D transformation matrix of a given HTML element.
 - `cloneBlob(blob: Blob): Blob` - Creates a clone of a Blob object with the same content and type as the original.
 - `convertBlobToFile(blob: Blob, fileName: string): File` - Converts a Blob object into a File object with the specified name.
+- `getDOMRectIntersectionRatio(sourceRect: DOMRect, targetRect: DOMRect): number` - Calculates the ratio of the `targetRect` that is overlapped by the `sourceRect`. Returns a number between `0` (no overlap) and `1` (fully covered).
+- `getElementOffsetRect(element: HTMLElement): DOMRect` - Returns a `DOMRect` representing the element's layout position using `offsetLeft`, `offsetTop`, and `clientWidth`/`clientHeight`.
 
 ### Asynchronous Utilities
 
