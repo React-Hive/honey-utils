@@ -463,6 +463,7 @@ function divide(a: number, b: number): number {
 ### Function Utilities
 
 - `noop(): void` - A no-operation function.
+- `not<Args extends any[]>(fn: (...args: Args) => any): (...args: Args) => boolean` - Creates a new function that negates the result of the given predicate function. Useful for logical inversions, e.g., turning `isEven` into `isOdd`.
 - `invokeIfFunction<Args extends any[], Result>(input: ((...args: Args) => Result) | Result, ...args: Args): Result` - Invokes the input if it's a function, otherwise returns it as-is.
 - `delay(delayMs: number): Promise<void>` - Creates a promise that resolves after the specified delay in milliseconds.
 - `timeout<T>(promise: Promise<T>, timeoutMs: number, message?: string): Promise<T>` - Wraps a promise with a timeout. If the promise does not settle within the given duration, it rejects with a timeout error.
