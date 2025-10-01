@@ -465,6 +465,7 @@ function divide(a: number, b: number): number {
 - `noop(): void` - A no-operation function.
 - `invokeIfFunction<Args extends any[], Result>(input: ((...args: Args) => Result) | Result, ...args: Args): Result` - Invokes the input if it's a function, otherwise returns it as-is.
 - `delay(delayMs: number): Promise<void>` - Creates a promise that resolves after the specified delay in milliseconds.
+- `timeout<T>(promise: Promise<T>, timeoutMs: number, message?: string): Promise<T>` - Wraps a promise with a timeout. If the promise does not settle within the given duration, it rejects with a timeout error.
 - `retry<Task, TaskResult>(task: Task, options?: RetryOptions): Function` - Wraps an asynchronous function with retry logic, with configurable max attempts, delay between retries, exponential backoff, and retry callbacks.
 
 ### Type Guards
