@@ -1,6 +1,29 @@
 export const noop = () => {};
 
 /**
+ * Creates a function that negates the result of the given predicate function.
+ *
+ * @template Args - Argument types of the predicate function.
+ *
+ * @param fn - A function that returns any value.
+ *
+ * @returns A new function that returns the negated result of the original function.
+ *
+ * @example
+ * ```ts
+ * const isEven = (n: number) => n % 2 === 0;
+ * const isOdd = not(isEven);
+ *
+ * console.log(isOdd(2)); // false
+ * console.log(isOdd(3)); // true
+ * ```
+ */
+export const not =
+  <Args extends unknown[]>(fn: (...args: Args) => any): ((...args: Args) => boolean) =>
+  (...args: Args) =>
+    !fn(...args);
+
+/**
  * Invokes the given input if it is a function, passing the provided arguments.
  * Otherwise, returns the input as-is.
  *
@@ -33,7 +56,7 @@ export const invokeIfFunction = <Args extends unknown[], Result>(
  * console.log('This logs after 1 second');
  *
  * // Use with other async operations
- * async function fetchWithTimeout() {
+ * const fetchWithTimeout = async () => {
  *   const timeoutPromise = delay(5000).then(() => {
  *     throw new Error('Request timed out');
  *   });
@@ -72,14 +95,13 @@ export const timeout = async <T>(
   timeoutMs: number,
   errorMessage = 'Operation timed out',
 ): Promise<T> => {
-  let timeoutId: ReturnType<typeof setTimeout> | null = null;
-
-  const timeoutPromise = new Promise<never>((_, reject) => {
-    timeoutId = setTimeout(() => reject(new Error(errorMessage)), timeoutMs);
-  });
+  const timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   try {
-    return await Promise.race([promise, timeoutPromise]);
+    return await Promise.race([
+      promise,
+      delay(timeoutMs).then(() => Promise.reject(new Error(errorMessage))),
+    ]);
   } finally {
     if (timeoutId) {
       clearTimeout(timeoutId);
