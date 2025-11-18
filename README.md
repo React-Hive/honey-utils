@@ -508,6 +508,10 @@ function divide(a: number, b: number): number {
 - `convertBlobToFile(blob: Blob, fileName: string): File` - Converts a Blob object into a File object with the specified name.
 - `getDOMRectIntersectionRatio(sourceRect: DOMRect, targetRect: DOMRect): number` - Calculates the ratio of the `targetRect` that is overlapped by the `sourceRect`. Returns a number between `0` (no overlap) and `1` (fully covered).
 - `getElementOffsetRect(element: HTMLElement): DOMRect` - Returns a `DOMRect` representing the element's layout position using `offsetLeft`, `offsetTop`, and `clientWidth`/`clientHeight`.
+- `isAnchorHtmlElement(element: HTMLElement): element is HTMLAnchorElement` - Determines whether the provided element is an `<a>` tag. Acts as a type guard that narrows the element to `HTMLAnchorElement`.
+- `isContentEditableHtmlElement(element: HTMLElement): boolean` - Returns `true` if the element has `contenteditable="true"`, making it user-editable and implicitly focusable.
+- `isHtmlElementFocusable(element: Nullable<HTMLElement>): boolean` - Checks whether an element is considered focusable according to browser rules. Factors include: visibility, `display`, `disabled`, `tabindex`, native focusable tags, `contenteditable`, and presence of a non-null `tabindex`.
+- `getFocusableHtmlElements(container: HTMLElement): HTMLElement[]` - Returns all focusable descendant elements within a container, using `isHtmlElementFocusable` to filter them.
 
 ### Asynchronous Utilities
 
@@ -518,7 +522,7 @@ function divide(a: number, b: number): number {
 - `filterParallel<Item>(array: Item[], predicate): Promise<Item[]>` – Filters an array using an asynchronous predicate in parallel. Returns a promise that resolves with only the items for which predicate(item) returns `true`.
 - `someAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **any** item in the array passes the async predicate.
 - `everyAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **all** items in the array pass the async predicate.
-- `findAsync<Item>(array: Item[], predicate): Promise<Item | null>` - Returns the first array item that passes the async predicate, or `null` if no match is found.
+- `findAsync<Item>(array: Item[], predicate): Promise<Nullable<Item>>` - Returns the first array item that passes the async predicate, or `null` if no match is found.
 
 ## Contributing
 

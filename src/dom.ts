@@ -1,3 +1,5 @@
+export const FOCUSABLE_HTML_TAGS = ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON', 'A'];
+
 interface HTMLElementTransformationValues {
   translateX: number;
   translateY: number;
@@ -124,3 +126,99 @@ export const getDOMRectIntersectionRatio = (sourceRect: DOMRect, targetRect: DOM
  */
 export const getElementOffsetRect = (element: HTMLElement): DOMRect =>
   new DOMRect(element.offsetLeft, element.offsetTop, element.clientWidth, element.clientHeight);
+
+/**
+ * Determines whether the given HTMLElement is an HTMLAnchorElement.
+ *
+ * Acts as a type guard so that TypeScript narrows `element` to
+ * `HTMLAnchorElement` when the function returns `true`.
+ *
+ * An element qualifies as an anchor by having a tag name of `"A"`.
+ *
+ * @param element - The element to test.
+ *
+ * @returns Whether the element is an anchor element.
+ */
+export const isAnchorHtmlElement = (element: HTMLElement): element is HTMLAnchorElement =>
+  element.tagName === 'A';
+
+/**
+ * Checks whether an element is explicitly marked as contenteditable.
+ *
+ * Browsers treat elements with `contenteditable="true"` as focusable,
+ * even if they are not normally keyboard-focusable.
+ *
+ * @param element - The element to inspect.
+ *
+ * @returns True if `contenteditable="true"` is set.
+ */
+export const isContentEditableHtmlElement = (element: HTMLElement) =>
+  element.getAttribute('contenteditable') === 'true';
+
+/**
+ * Determines whether an HTMLElement is focusable under standard browser rules.
+ *
+ * The function checks a combination of factors:
+ * - The element must be rendered (not `display: none` or `visibility: hidden`).
+ * - Disabled form controls are never focusable.
+ * - Elements with `tabindex="-1"` are intentionally removed from the focus order.
+ * - Certain native HTML elements are inherently focusable (e.g. inputs, buttons, anchors with `href`).
+ * - Elements with `contenteditable="true"` are treated as focusable.
+ * - Any element with a valid `tabindex` (not null) is considered focusable.
+ *
+ * This logic approximates how browsers and the accessibility tree
+ * determine real-world focusability—not just tabindex presence.
+ *
+ * @param element - The element to test. `null` or `undefined` will return `false`.
+ *
+ * @returns Whether the element is focusable.
+ */
+export const isHtmlElementFocusable = (element: HTMLElement | null): boolean => {
+  if (!element) {
+    return false;
+  }
+
+  // Hidden or not rendered
+  const style = window.getComputedStyle(element);
+  if (style.visibility === 'hidden' || style.display === 'none') {
+    return false;
+  }
+
+  if ('disabled' in element && element.disabled) {
+    return false;
+  }
+
+  // Explicitly removed from tab order
+  const tabIndex = element.getAttribute('tabindex');
+  if (tabIndex === '-1') {
+    return false;
+  }
+
+  if (FOCUSABLE_HTML_TAGS.includes(element.tagName)) {
+    if (isAnchorHtmlElement(element)) {
+      return element.href !== '';
+    }
+
+    return true;
+  }
+
+  if (isContentEditableHtmlElement(element)) {
+    return true;
+  }
+
+  return tabIndex !== null;
+};
+
+/**
+ * Collects all focusable descendant elements within a container.
+ *
+ * The function queries *all* elements under the container and filters them
+ * using `isHtmlElementFocusable`, producing a reliable list of elements
+ * that can receive keyboard focus in real-world browser conditions.
+ *
+ * @param container - The root container whose focusable children will be found.
+ *
+ * @returns An array of focusable HTMLElements in DOM order.
+ */
+export const getFocusableHtmlElements = (container: HTMLElement): HTMLElement[] =>
+  Array.from(container.querySelectorAll<HTMLElement>('*')).filter(isHtmlElementFocusable);

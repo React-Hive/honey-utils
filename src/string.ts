@@ -41,15 +41,35 @@ export const camelToDashCase = (input: string): string => {
   // First handle the first character separately to avoid adding a hyphen at the start
   const firstChar = input.charAt(0);
   const restOfString = input.slice(1);
-  
+
   // Convert the first character to lowercase without adding a hyphen
   const firstCharProcessed = firstChar.toLowerCase();
-  
+
   // Process the rest of the string normally, adding hyphens before uppercase letters
   const restProcessed = restOfString.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
-  
+
   return firstCharProcessed + restProcessed;
 };
+
+/**
+ * Splits a camelCase or PascalCase string into separate words with spaces.
+ *
+ * This function inserts spaces between lowercase and uppercase letters,
+ * making camelCase or PascalCase strings more human-readable without
+ * altering their original capitalization.
+ *
+ * @param input - The camelCase or PascalCase string to split into words.
+ *
+ * @returns The string with spaces inserted between words.
+ *
+ * @example
+ * ```ts
+ * camelToWords('helloWorld'); // → 'hello World'
+ * camelToWords('HelloWorld'); // → 'Hello World'
+ * camelToWords('userIDNumber'); // → 'user ID Number'
+ * ```
+ */
+export const camelToWords = (input: string) => input.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
 
 /**
  * Splits a string into an array of filtered from redundant spaces words.
