@@ -53,22 +53,26 @@ import { toKebabCase, camelToDashCase, splitStringIntoWords, hashString } from '
 /**
  * Convert string to kebab-case
  */
-toKebabCase('helloWorld'); // 'hello-world'
+toKebabCase('helloWorld');
+// ➜ 'hello-world'
 
 /**
  * Convert camelCase to dash-case
  */
-camelToDashCase('helloWorld'); // 'hello-world'
+camelToDashCase('helloWorld');
+// ➜ 'hello-world'
 
 /**
  * Split string into words
  */
-splitStringIntoWords('hello world'); // ['hello', 'world']
+splitStringIntoWords('hello world');
+// ➜ ['hello', 'world']
 
 /**
  * Generate a hash from a string
  */
-const hash = hashString('background-color: red;'); // 'e4k1z0x'
+const hash = hashString('background-color: red;');
+// ➜ 'e4k1z0x'
 ```
 
 ### Array Utilities
@@ -223,7 +227,8 @@ noop();
 const fn = (x: number) => x * 2;
 
 invokeIfFunction(fn, 5); // 10
-invokeIfFunction('not a function', 5); // 'not a function'
+invokeIfFunction('not a function', 5);
+// ➜ 'not a function'
 
 /**
  * Waits for 1 second before continuing
@@ -284,94 +289,126 @@ import {
 /**
  * Check if value is a string
  */
-isString('hello'); // true
-isString(123); // false
+isString('hello');
+// ➜ true
+isString(123);
+// ➜ false
 
 /**
  * Check if value is a number
  */
-isNumber(123); // true
-isNumber('123'); // false
+isNumber(123);
+// ➜ true
+isNumber('123');
+// ➜ false
 
 /**
  * Check if value is a boolean
  */
-isBool(true); // true
-isBool('true'); // false
+isBool(true);
+// ➜ true
+isBool('true');
+// ➜ false
 
 /**
  * Check if value is an object
  */
-isObject({}); // true
-isObject('object'); // false
+isObject({});
+// ➜ true
+isObject('object');
+// ➜ false
 
 /**
  * Check if value is a function
  */
-isFunction(() => {}); // true
-isFunction({}); // false
+isFunction(() => {});
+// ➜ true
+isFunction({});
+// ➜ false
 
 /**
  * Check if value is a Promise
  */
-isPromise(Promise.resolve()); // true
-isPromise({}); // false
+isPromise(Promise.resolve());
+// ➜ true
+isPromise({});
+// ➜ false
 
 /**
  * Check if value is null or undefined
  */
-isNil(null); // true
-isNil(undefined); // true
-isNil(''); // false
+isNil(null);
+// ➜ true
+isNil(undefined);
+// ➜ true
+isNil('');
+// ➜ false
 
 /**
  * Check if value is null, undefined, or empty string
  */
-isNilOrEmptyString(''); // true
-isNilOrEmptyString(null); // true
-isNilOrEmptyString('hello'); // false
+isNilOrEmptyString('');
+// ➜ true
+isNilOrEmptyString(null);
+// ➜ true
+isNilOrEmptyString('hello');
+// ➜ false
 
 /**
  * Check if value is an array
  */
-isArray([1, 2, 3]); // true
-isArray({}); // false
+isArray([1, 2, 3]);
+// ➜ true
+isArray({});
+// ➜ false
 
 /**
  * Check if value is an empty array
  */
-isEmptyArray([]); // true
-isEmptyArray([1, 2, 3]); // false
+isEmptyArray([]);
+// ➜ true
+isEmptyArray([1, 2, 3]);
+// ➜ false
 
 /**
  * Check if value is an empty object
  */
-isEmptyObject({}); // true
-isEmptyObject({ key: 'value' }); // false
+isEmptyObject({});
+// ➜ true
+isEmptyObject({ key: 'value' });
+// ➜ false
 
 /**
  * Check if value is a Date object
  */
-isDate(new Date()); // true
-isDate('2023-01-01'); // false
+isDate(new Date());
+// ➜ true
+isDate('2023-01-01');
+// ➜ false
 
 /**
  * Check if value is a valid Date object
  */
-isValidDate(new Date()); // true
-isValidDate(new Date('invalid')); // false
+isValidDate(new Date());
+// ➜ true
+isValidDate(new Date('invalid'));
+// ➜ false
 
 /**
  * Check if value is a RegExp
  */
-isRegExp(/test/); // true
-isRegExp('test'); // false
+isRegExp(/test/);
+// ➜ true
+isRegExp('test');
+// ➜ false
 
 /**
  * Check if value is a Map or Set
  */
-isMap(new Map()); // true
-isSet(new Set()); // true
+isMap(new Map());
+// ➜ true
+isSet(new Set());
+// ➜ true
 ```
 
 ### Math Utilities
@@ -386,25 +423,30 @@ import {
 /**
  * Calculate Euclidean distance between two points
  */
-calculateEuclideanDistance(0, 0, 3, 4); // 5
+calculateEuclideanDistance(0, 0, 3, 4);
+// ➜ 5
 
 /**
  * Calculate moving speed
  */
-calculateMovingSpeed(100, 5); // 20
+calculateMovingSpeed(100, 5);
+// ➜ 20
 
 /**
  * Calculate percentage of a value
  */
-calculatePercentage(200, 25); // 50
+calculatePercentage(200, 25);
+// ➜ 50
 ```
 
 ### DOM Utilities
 
 ```ts
-import { parse2DMatrix, cloneBlob, convertBlobToFile } from '@react-hive/honey-utils';
+import { parse2DMatrix, cloneBlob } from '@react-hive/honey-utils';
 
-// Extract transformation values from an HTML element's 2D matrix
+/**
+ * Extract transformation values from an HTML element's 2D matrix
+ */
 const element = document.getElementById('my-element');
 if (element) {
   const { translateX, translateY, scaleX, scaleY, skewX, skewY } = parse2DMatrix(element);
@@ -414,19 +456,68 @@ if (element) {
   console.log(`Element is skewed by ${skewX} horizontally and ${skewY} vertically`);
 }
 
-// Clone a Blob object
+/**
+ * Clone a Blob object
+ */
 const originalBlob = new Blob(['Hello World'], { type: 'text/plain' });
 const clonedBlob = cloneBlob(originalBlob);
 
-console.log(clonedBlob.type); // 'text/plain'
+console.log(clonedBlob.type);
+// ➜ 'text/plain'
+```
 
-// Convert a Blob to a File
+### File Utilities
+
+```ts
+import { parseFileName, fileListToFile, blobToFile } from '@react-hive/honey-utils';
+
+/**
+ * Parse a file name into base name + extension
+ */
+const [base, ext] = parseFileName('archive.tar.gz');
+
+console.log(base);
+// ➜ 'archive.tar'
+console.log(ext);
+// ➜ 'gz'
+
+/**
+ * Hidden file (no name)
+ */
+parseFileName('.gitignore');
+// ➜ ['.gitignore', '']
+
+/**
+ * No file extension
+ */
+parseFileName('README');
+// ➜ ['README', '']
+
+/**
+ * Convert a FileList to an array
+ */
+const input = document.querySelector('input[type="file"]')!;
+input.addEventListener('change', () => {
+    const files = fileListToFiles(input.files);
+    
+    console.log(Array.isArray(files));
+    // ➜ true
+    console.log(files[0] instanceof File);
+    // ➜ true
+});
+
+/**
+ * Convert a Blob to a File
+ */
 const blob = new Blob(['Hello world'], { type: 'text/plain' });
-const file = convertBlobToFile(blob, 'hello.txt');
+const file = blobToFile(blob, 'hello.txt');
 
-console.log(file instanceof File); // true
-console.log(file.name); // 'hello.txt'
-console.log(file.type); // 'text/plain'
+console.log(file instanceof File);
+// ➜ true
+console.log(file.name);
+// ➜ 'hello.txt'
+console.log(file.type);
+// ➜ 'text/plain'
 ```
 
 ### Assert Function
@@ -505,13 +596,18 @@ function divide(a: number, b: number): number {
 
 - `parse2DMatrix(element: HTMLElement): { translateX: number, translateY: number, scaleX: number, scaleY: number, skewX: number, skewY: number }` - Extracts transformation values (translate, scale, skew) from the 2D transformation matrix of a given HTML element.
 - `cloneBlob(blob: Blob): Blob` - Creates a clone of a Blob object with the same content and type as the original.
-- `convertBlobToFile(blob: Blob, fileName: string): File` - Converts a Blob object into a File object with the specified name.
 - `getDOMRectIntersectionRatio(sourceRect: DOMRect, targetRect: DOMRect): number` - Calculates the ratio of the `targetRect` that is overlapped by the `sourceRect`. Returns a number between `0` (no overlap) and `1` (fully covered).
 - `getElementOffsetRect(element: HTMLElement): DOMRect` - Returns a `DOMRect` representing the element's layout position using `offsetLeft`, `offsetTop`, and `clientWidth`/`clientHeight`.
 - `isAnchorHtmlElement(element: HTMLElement): element is HTMLAnchorElement` - Determines whether the provided element is an `<a>` tag. Acts as a type guard that narrows the element to `HTMLAnchorElement`.
 - `isContentEditableHtmlElement(element: HTMLElement): boolean` - Returns `true` if the element has `contenteditable="true"`, making it user-editable and implicitly focusable.
 - `isHtmlElementFocusable(element: Nullable<HTMLElement>): boolean` - Checks whether an element is considered focusable according to browser rules. Factors include: visibility, `display`, `disabled`, `tabindex`, native focusable tags, `contenteditable`, and presence of a non-null `tabindex`.
 - `getFocusableHtmlElements(container: HTMLElement): HTMLElement[]` - Returns all focusable descendant elements within a container, using `isHtmlElementFocusable` to filter them.
+
+### File Utilities
+
+- `parseFileName(fileName: string): [baseName: string, extension: string]` - Splits a file name into its base name and extension using the last `.` as the separator. Handles edge cases such as hidden files (`.gitignore`), multi-dot names (`archive.tar.gz`), and names ending with a dot (`"file."`). The extension is returned in lowercase.
+- `fileListToFiles(fileList: FileList | null): File[]` - Converts a `FileList` object (such as the one returned from an `<input type="file">`) into a standard array of `File` objects. Returns an empty array when the input is `null`.
+- `blobToFile(blob: Blob, fileName: string): File` - Converts a Blob object into a File object with the specified name.
 
 ### Asynchronous Utilities
 

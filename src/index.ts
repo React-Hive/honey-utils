@@ -5,3 +5,4 @@ export * from './function';
 export * from './guards';
 export * from './math';
 export * from './dom';
+export * from './file';

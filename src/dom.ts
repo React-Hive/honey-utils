@@ -64,30 +64,6 @@ export const parse2DMatrix = (element: HTMLElement): HTMLElementTransformationVa
 export const cloneBlob = (blob: Blob): Blob => new Blob([blob], { type: blob.type });
 
 /**
- * Converts a `Blob` object into a `File` object with the specified name.
- *
- * This is useful when you receive a `Blob` (e.g., from canvas, fetch, or file manipulation)
- * and need to convert it into a `File` to upload via `FormData` or file inputs.
- *
- * @param blob - The `Blob` to convert.
- * @param fileName - The desired name for the resulting file (including extension).
- *
- * @returns A `File` instance with the same content and MIME type as the input `Blob`.
- *
- * @example
- * ```ts
- * const blob = new Blob(['Hello world'], { type: 'text/plain' });
- * const file = convertBlobToFile(blob, 'hello.txt');
- *
- * console.log(file instanceof File); // true
- * ```
- */
-export const convertBlobToFile = (blob: Blob, fileName: string): File =>
-  new File([blob], fileName, {
-    type: blob.type,
-  });
-
-/**
  * Calculates the intersection ratio between two DOM rectangles.
  *
  * The ratio represents the proportion of the `targetRect` that is covered by `sourceRect`.
