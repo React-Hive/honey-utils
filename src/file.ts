@@ -260,19 +260,23 @@ export const readFilesFromDataTransfer = async (
 
       if (entry?.isDirectory) {
         tasks.push(
-          traverseFileSystemDirectory(entry as FileSystemDirectoryEntry, {
-            ...traverseOptions,
-            onProgress: progress => {
-              if (traverseOptions.onProgress) {
-                processed += progress.processed;
+          traverseFileSystemDirectory(
+            entry as FileSystemDirectoryEntry,
+            {
+              ...traverseOptions,
+              onProgress: progress => {
+                if (traverseOptions.onProgress) {
+                  processed = progress.processed;
 
-                traverseOptions.onProgress({
-                  ...progress,
-                  processed,
-                });
-              }
+                  traverseOptions.onProgress({
+                    ...progress,
+                    processed,
+                  });
+                }
+              },
             },
-          }),
+            processed,
+          ),
         );
 
         continue;
