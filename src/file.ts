@@ -186,6 +186,7 @@ export const traverseFileSystemDirectory = async (
         entry as FileSystemDirectoryEntry,
         {
           skipFiles,
+          onProgress,
         },
         processed,
       );
