@@ -113,20 +113,6 @@ const readFileSystemDirectoryEntries = async (
   return readAll();
 };
 
-/**
- * A callback function invoked whenever a file is discovered during directory traversal.
- *
- * @param progress - An object containing details about the current traversal state.
- * @param progress.processed - The total number of files processed so far.
- * @param progress.currentFile - The `File` object for the file just discovered (if available).
- * @param progress.path - The full path of the file relative to the traversed directory (if available).
- */
-type TraverseDirectoryOnProgressHandler = (progress: {
-  processed: number;
-  currentFile?: File;
-  path?: string;
-}) => void;
-
 interface TraverseDirectoryOptions {
   /**
    * A list of file names that should be ignored during traversal.
@@ -136,11 +122,6 @@ interface TraverseDirectoryOptions {
    * `.DS_Store`, `Thumbs.db`, `desktop.ini`, `.Spotlight-V100`, etc.
    */
   skipFiles?: string[];
-  /**
-   * Optional callback invoked each time a file is discovered.
-   * Useful for progress tracking when traversing large or deeply nested directories.
-   */
-  onProgress?: TraverseDirectoryOnProgressHandler;
 }
 
 /**
@@ -150,13 +131,8 @@ interface TraverseDirectoryOptions {
  * Directories themselves are not returned. To avoid unnecessary noise, certain system or
  * OS-generated files can be excluded via the `skipFiles` option.
  *
- * A progress callback (`onProgress`) may be provided to receive updates each time a file
- * is discovered. This is useful when working with large folders or deeply nested structures.
- *
  * @param directoryEntry - The starting directory entry to traverse.
  * @param options - Optional settings that control traversal behavior.
- * @param processed - Internal counter used to track the number of processed files
- *   during recursive traversal. Not intended to be provided manually.
  *
  * @returns A promise resolving to a flat array of all collected `File` objects.
  */
@@ -173,37 +149,20 @@ export const traverseFileSystemDirectory = async (
       '.fseventsd',
       '__MACOSX',
     ],
-    onProgress,
   }: TraverseDirectoryOptions = {},
-  processed = 0,
 ): Promise<File[]> => {
   const skipFilesSet = new Set(skipFiles);
   const entries = await readFileSystemDirectoryEntries(directoryEntry);
 
   const filePromises = await runParallel(entries, async entry => {
     if (entry.isDirectory) {
-      return traverseFileSystemDirectory(
-        entry as FileSystemDirectoryEntry,
-        {
-          skipFiles,
-          onProgress,
-        },
-        processed,
-      );
+      return traverseFileSystemDirectory(entry as FileSystemDirectoryEntry, {
+        skipFiles,
+      });
     } else if (!skipFilesSet.has(entry.name)) {
       const file = await new Promise<File>((resolve, reject) => {
         (entry as FileSystemFileEntry).file(resolve, reject);
       });
-
-      if (onProgress) {
-        processed++;
-
-        onProgress({
-          processed,
-          path: `${directoryEntry.fullPath}/${entry.name}`,
-          currentFile: file,
-        });
-      }
 
       return [file];
     }
@@ -223,13 +182,9 @@ export const traverseFileSystemDirectory = async (
  * they are traversed recursively using `traverseFileSystemDirectory`, returning a
  * fully flattened list of nested files.
  *
- * The `traverseOptions` parameter can be used to skip system files or receive
- * progress updates during directory traversal.
- *
  * @param dataTransfer - The `DataTransfer` instance from a drop or paste event.
  *   If `null` or missing items, an empty array is returned.
  * @param traverseOptions - Optional settings passed to directory traversal.
- *   Useful for skipping unwanted files or enabling `onProgress` callbacks.
  *
  * @returns A promise that resolves to a flat array of all extracted `File` objects.
  *   This includes:
@@ -246,7 +201,6 @@ export const readFilesFromDataTransfer = async (
     return [];
   }
 
-  let processed = 0;
   const tasks: Promise<File[]>[] = [];
 
   for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
@@ -259,48 +213,16 @@ export const readFilesFromDataTransfer = async (
       const entry = item.webkitGetAsEntry?.();
 
       if (entry?.isDirectory) {
-        tasks.push(
-          traverseFileSystemDirectory(
-            entry as FileSystemDirectoryEntry,
-            {
-              ...traverseOptions,
-              onProgress: progress => {
-                if (traverseOptions.onProgress) {
-                  processed = progress.processed;
-
-                  traverseOptions.onProgress({
-                    ...progress,
-                    processed,
-                  });
-                }
-              },
-            },
-            processed,
-          ),
-        );
+        tasks.push(traverseFileSystemDirectory(entry as FileSystemDirectoryEntry, traverseOptions));
 
         continue;
       }
 
       if (entry?.isFile) {
         tasks.push(
-          new Promise<File[]>((resolve, reject) => {
-            const fileEntry = entry as FileSystemFileEntry;
-
-            fileEntry.file(file => {
-              resolve([file]);
-
-              if (traverseOptions.onProgress) {
-                processed++;
-
-                traverseOptions.onProgress({
-                  processed,
-                  path: `${fileEntry.fullPath}/${fileEntry.name}`,
-                  currentFile: file,
-                });
-              }
-            }, reject);
-          }),
+          new Promise<File[]>((resolve, reject) =>
+            (entry as FileSystemFileEntry).file(file => resolve([file]), reject),
+          ),
         );
 
         continue;
