@@ -177,7 +177,7 @@ export const traverseFileSystemDirectory = async (
   }: TraverseDirectoryOptions = {},
   processed = 0,
 ): Promise<File[]> => {
-  const skipSet = new Set(skipFiles);
+  const skipFilesSet = new Set(skipFiles);
   const entries = await readFileSystemDirectoryEntries(directoryEntry);
 
   const filePromises = await runParallel(entries, async entry => {
@@ -189,7 +189,7 @@ export const traverseFileSystemDirectory = async (
         },
         processed,
       );
-    } else if (!skipSet.has(entry.name)) {
+    } else if (!skipFilesSet.has(entry.name)) {
       const file = await new Promise<File>((resolve, reject) => {
         (entry as FileSystemFileEntry).file(resolve, reject);
       });
@@ -245,6 +245,7 @@ export const readFilesFromDataTransfer = async (
     return [];
   }
 
+  let processed = 0;
   const tasks: Promise<File[]>[] = [];
 
   for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
@@ -257,7 +258,21 @@ export const readFilesFromDataTransfer = async (
       const entry = item.webkitGetAsEntry?.();
 
       if (entry?.isDirectory) {
-        tasks.push(traverseFileSystemDirectory(entry as FileSystemDirectoryEntry, traverseOptions));
+        tasks.push(
+          traverseFileSystemDirectory(entry as FileSystemDirectoryEntry, {
+            ...traverseOptions,
+            onProgress: progress => {
+              if (traverseOptions.onProgress) {
+                processed += progress.processed;
+
+                traverseOptions.onProgress({
+                  ...progress,
+                  processed,
+                });
+              }
+            },
+          }),
+        );
 
         continue;
       }
@@ -265,7 +280,21 @@ export const readFilesFromDataTransfer = async (
       if (entry?.isFile) {
         tasks.push(
           new Promise<File[]>((resolve, reject) => {
-            (entry as FileSystemFileEntry).file(file => resolve([file]), reject);
+            const fileEntry = entry as FileSystemFileEntry;
+
+            fileEntry.file(file => {
+              resolve([file]);
+
+              if (traverseOptions.onProgress) {
+                processed++;
+
+                traverseOptions.onProgress({
+                  processed,
+                  path: `${fileEntry.fullPath}/${fileEntry.name}`,
+                  currentFile: file,
+                });
+              }
+            }, reject);
           }),
         );
 
