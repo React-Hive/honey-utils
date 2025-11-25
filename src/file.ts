@@ -212,3 +212,55 @@ export const traverseFileSystemDirectory = async (
 
   return filePromises.flat();
 };
+
+/**
+ * Reads files from a `DataTransfer` object, handling both dropped files
+ * and directories (via the non-standard `webkitGetAsEntry` API).
+ *
+ * @param dataTransfer - The DataTransfer object from a drop or paste event.
+ *
+ * @returns A promise resolving to a flat array of all extracted File objects.
+ */
+export const readFilesFromDataTransfer = async (dataTransfer: DataTransfer | null) => {
+  const items = dataTransfer?.items;
+  if (!items) {
+    return [];
+  }
+
+  const tasks: Promise<File[]>[] = [];
+
+  for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
+    const item = items[itemIndex];
+
+    // Prefer using webkitGetAsEntry when available (directory support)
+    // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/webkitGetAsEntry#browser_compatibility
+    if ('webkitGetAsEntry' in item) {
+      // ?.() -> avoids throwing on Safari weirdness
+      const entry = item.webkitGetAsEntry?.();
+
+      if (entry?.isDirectory) {
+        tasks.push(traverseFileSystemDirectory(entry as FileSystemDirectoryEntry));
+
+        continue;
+      }
+
+      if (entry?.isFile) {
+        tasks.push(
+          new Promise<File[]>((resolve, reject) => {
+            (entry as FileSystemFileEntry).file(file => resolve([file]), reject);
+          }),
+        );
+
+        continue;
+      }
+    }
+
+    // Fallback to standard API
+    const file = item.getAsFile();
+    if (file) {
+      tasks.push(Promise.resolve([file]));
+    }
+  }
+
+  return (await Promise.all(tasks)).flat();
+};
