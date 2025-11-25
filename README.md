@@ -619,7 +619,7 @@ function divide(a: number, b: number): number {
 - `fileListToFiles(fileList: FileList | null): File[]` - Converts a `FileList` object (such as the one returned from an `<input type="file">`) into a standard array of `File` objects. Returns an empty array when the input is `null`.
 - `blobToFile(blob: Blob, fileName: string): File` - Converts a Blob object into a File object with the specified name.
 - `traverseFileSystemDirectory(directoryEntry: FileSystemDirectoryEntry, options?: TraverseDirectoryOptions): Promise<File[]>` — Recursively scans a directory using the File System API and returns all nested files as `File` objects. Supports skipping system files and reporting progress through an optional `onProgress` callback.
-- `readFilesFromDataTransfer(dataTransfer: DataTransfer | null): Promise<File[]>` — Reads files from a `DataTransfer` object (such as drag-and-drop or paste events). Supports both regular dropped files and entire directories via the non-standard `webkitGetAsEntry` API. Directories are traversed recursively, returning a flat array of all extracted `File` objects.
+- `readFilesFromDataTransfer(dataTransfer: DataTransfer | null, options?: TraverseDirectoryOptions): Promise<File[]>` — Extracts files from a `DataTransfer` object (e.g., drag-and-drop or paste events). Supports both regular files and entire directories via the non-standard `webkitGetAsEntry` API. Directories are traversed recursively using `traverseFileSystemDirectory`, producing a fully flattened list of all discovered `File` objects. Optional `options` allow skipping system files and receiving progress updates during traversal.
 
 ### Asynchronous Utilities
 

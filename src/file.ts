@@ -214,14 +214,32 @@ export const traverseFileSystemDirectory = async (
 };
 
 /**
- * Reads files from a `DataTransfer` object, handling both dropped files
- * and directories (via the non-standard `webkitGetAsEntry` API).
+ * Reads files from a `DataTransfer` object, supporting both individual files
+ * and entire directories (when available through the non-standard `webkitGetAsEntry` API).
  *
- * @param dataTransfer - The DataTransfer object from a drop or paste event.
+ * This function is typically used in drag-and-drop or paste handlers to obtain
+ * all `File` objects contained in the user's action. When directories are dropped,
+ * they are traversed recursively using `traverseFileSystemDirectory`, returning a
+ * fully flattened list of nested files.
  *
- * @returns A promise resolving to a flat array of all extracted File objects.
+ * The `traverseOptions` parameter can be used to skip system files or receive
+ * progress updates during directory traversal.
+ *
+ * @param dataTransfer - The `DataTransfer` instance from a drop or paste event.
+ *   If `null` or missing items, an empty array is returned.
+ * @param traverseOptions - Optional settings passed to directory traversal.
+ *   Useful for skipping unwanted files or enabling `onProgress` callbacks.
+ *
+ * @returns A promise that resolves to a flat array of all extracted `File` objects.
+ *   This includes:
+ *   - direct files from the drag event,
+ *   - files extracted from directory entries via `webkitGetAsEntry`,
+ *   - and files found recursively within nested subdirectories.
  */
-export const readFilesFromDataTransfer = async (dataTransfer: DataTransfer | null) => {
+export const readFilesFromDataTransfer = async (
+  dataTransfer: DataTransfer | null,
+  traverseOptions: TraverseDirectoryOptions = {},
+) => {
   const items = dataTransfer?.items;
   if (!items) {
     return [];
@@ -239,7 +257,7 @@ export const readFilesFromDataTransfer = async (dataTransfer: DataTransfer | nul
       const entry = item.webkitGetAsEntry?.();
 
       if (entry?.isDirectory) {
-        tasks.push(traverseFileSystemDirectory(entry as FileSystemDirectoryEntry));
+        tasks.push(traverseFileSystemDirectory(entry as FileSystemDirectoryEntry, traverseOptions));
 
         continue;
       }
