@@ -48,7 +48,32 @@ import * as HoneyUtils from '@react-hive/honey-utils';
 ### String Utilities
 
 ```ts
-import { toKebabCase, camelToDashCase, splitStringIntoWords, hashString } from '@react-hive/honey-utils';
+import {
+    isString,
+    isNilOrEmptyString,
+    toKebabCase,
+    camelToDashCase,
+    splitStringIntoWords,
+    hashString
+} from '@react-hive/honey-utils';
+
+/**
+ * Check if value is a string
+ */
+isString('hello');
+// ➜ true
+isString(123);
+// ➜ false
+
+/**
+ * Check if value is null, undefined, or empty string
+ */
+isNilOrEmptyString('');
+// ➜ true
+isNilOrEmptyString(null);
+// ➜ true
+isNilOrEmptyString('hello');
+// ➜ false
 
 /**
  * Convert string to kebab-case
@@ -79,6 +104,8 @@ const hash = hashString('background-color: red;');
 
 ```ts
 import {
+    isArray,
+    isEmptyArray,
     compact,
     unique,
     chunk,
@@ -87,6 +114,22 @@ import {
     pipe,
     compose,
 } from '@react-hive/honey-utils';
+
+/**
+ * Check if value is an array
+ */
+isArray([1, 2, 3]);
+// ➜ true
+isArray({});
+// ➜ false
+
+/**
+ * Check if value is an empty array
+ */
+isEmptyArray([]);
+// ➜ true
+isEmptyArray([1, 2, 3]);
+// ➜ false
 
 /**
  * Filter out falsy values from an array
@@ -138,6 +181,7 @@ compose(increment, double)(3);
 
 ```ts
 import {
+    isPromise,
     runParallel,
     runSequential,
     reduceAsync,
@@ -146,6 +190,14 @@ import {
     everyAsync,
     findAsync,
 } from '@react-hive/honey-utils';
+
+/**
+ * Check if value is a Promise
+ */
+isPromise(Promise.resolve());
+// ➜ true
+isPromise({});
+// ➜ false
 
 /**
  * Run async operations in parallel and collect results
@@ -214,12 +266,26 @@ await findAsync([1, 3, 4, 5], async (n) => {
 ### Function Utilities
 
 ```ts
-import { noop, invokeIfFunction, delay, retry } from '@react-hive/honey-utils';
+import {
+    noop,
+    isFunction,
+    invokeIfFunction,
+    delay,
+    retry
+} from '@react-hive/honey-utils';
 
 /**
  * No-operation function. Does nothing
  */
 noop();
+
+/**
+ * Check if value is a function
+ */
+isFunction(() => {});
+// ➜ true
+isFunction({});
+// ➜ false
 
 /**
  * Invoke if function, otherwise return value
@@ -265,34 +331,20 @@ fetchWithRetry()
 ### Type Guards
 
 ```ts
-import { 
-  isString, 
-  isNumber, 
-  isBool, 
-  isObject, 
-  isFunction, 
-  isPromise, 
-  isNil, 
-  isNilOrEmptyString,
-  isArray,
-  isEmptyArray,
-  isEmptyObject,
-  isNull,
-  isUndefined,
-  isDate,
-  isValidDate,
-  isRegExp,
-  isMap,
-  isSet
+import {
+    isNumber,
+    isBool,
+    isObject,
+    isNil,
+    isEmptyObject,
+    isNull,
+    isUndefined,
+    isDate,
+    isValidDate,
+    isRegExp,
+    isMap,
+    isSet
 } from '@react-hive/honey-utils';
-
-/**
- * Check if value is a string
- */
-isString('hello');
-// ➜ true
-isString(123);
-// ➜ false
 
 /**
  * Check if value is a number
@@ -319,22 +371,6 @@ isObject('object');
 // ➜ false
 
 /**
- * Check if value is a function
- */
-isFunction(() => {});
-// ➜ true
-isFunction({});
-// ➜ false
-
-/**
- * Check if value is a Promise
- */
-isPromise(Promise.resolve());
-// ➜ true
-isPromise({});
-// ➜ false
-
-/**
  * Check if value is null or undefined
  */
 isNil(null);
@@ -342,32 +378,6 @@ isNil(null);
 isNil(undefined);
 // ➜ true
 isNil('');
-// ➜ false
-
-/**
- * Check if value is null, undefined, or empty string
- */
-isNilOrEmptyString('');
-// ➜ true
-isNilOrEmptyString(null);
-// ➜ true
-isNilOrEmptyString('hello');
-// ➜ false
-
-/**
- * Check if value is an array
- */
-isArray([1, 2, 3]);
-// ➜ true
-isArray({});
-// ➜ false
-
-/**
- * Check if value is an empty array
- */
-isEmptyArray([]);
-// ➜ true
-isEmptyArray([1, 2, 3]);
 // ➜ false
 
 /**
@@ -414,10 +424,10 @@ isSet(new Set());
 ### Math Utilities
 
 ```ts
-import { 
-  calculateEuclideanDistance, 
-  calculateMovingSpeed, 
-  calculatePercentage 
+import {
+    calculateEuclideanDistance,
+    calculateMovingSpeed,
+    calculatePercentage 
 } from '@react-hive/honey-utils';
 
 /**
@@ -536,6 +546,8 @@ function divide(a: number, b: number): number {
 
 ### String Utilities
 
+- `isString(value: unknown): value is string` - Checks if a value is a `string`.
+- `isNilOrEmptyString(value: unknown): value is null | undefined` - Checks if a value is `null`, `undefined`, or an empty string.
 - `toKebabCase(input: string): string` - Converts a string to kebab-case.
 - `camelToDashCase(input: string): string` - Converts camelCase to dash-case.
 - `splitStringIntoWords(input: string): string[]` - Splits a string into an array of words.
@@ -543,6 +555,8 @@ function divide(a: number, b: number): number {
 
 ### Array Utilities
 
+- `isArray(value: unknown): value is unknown[]` - Checks if a value is an array.
+- `isEmptyArray(value: unknown): value is []` - Checks if a value is an empty array.
 - `compact<T>(array: (T | Falsy)[]): T[]` – Returns a new array with all falsy values (false, null, undefined, 0, '', NaN) removed, preserving only truthy items of type `T`.
 - `unique<T>(array: T[]): T[]` - Returns a new array with all duplicate elements removed. Keeps only the first occurrence of each value.
 - `chunk<T>(array: T[], size: number): T[][]` - Splits an array into smaller arrays ("chunks") of the specified size.
@@ -553,6 +567,7 @@ function divide(a: number, b: number): number {
 
 ### Function Utilities
 
+- `isFunction(value: unknown): value is Function` - Checks if a value is a `function`.
 - `noop(): void` - A no-operation function.
 - `not<Args extends any[]>(fn: (...args: Args) => any): (...args: Args) => boolean` - Creates a new function that negates the result of the given predicate function. Useful for logical inversions, e.g., turning `isEven` into `isOdd`.
 - `invokeIfFunction<Args extends any[], Result>(input: ((...args: Args) => Result) | Result, ...args: Args): Result` - Invokes the input if it's a function, otherwise returns it as-is.
@@ -563,16 +578,10 @@ function divide(a: number, b: number): number {
 ### Type Guards
 
 - `assert(condition: any, message: string): asserts condition` - Asserts that a condition is truthy, throwing an error with the provided message if it's not.
-- `isString(value: unknown): value is string` - Checks if a value is a `string`.
 - `isNumber(value: unknown): value is number` - Checks if a value is a `number`.
 - `isBool(value: unknown): value is boolean` - Checks if a value is a `boolean`.
 - `isObject(value: unknown): value is object` - Checks if a value is an `object`.
-- `isFunction(value: unknown): value is Function` - Checks if a value is a `function`.
-- `isPromise<T = unknown>(value: unknown): value is Promise<T>` - Checks if a value is a `Promise`.
 - `isNil(value: unknown): value is null | undefined` - Checks if a value is `null` or `undefined`.
-- `isNilOrEmptyString(value: unknown): value is null | undefined` - Checks if a value is `null`, `undefined`, or an empty string.
-- `isArray(value: unknown): value is unknown[]` - Checks if a value is an array.
-- `isEmptyArray(value: unknown): value is []` - Checks if a value is an empty array.
 - `isEmptyObject(value: unknown): value is Record<string, never>` - Checks if a value is an empty object.
 - `isNull(value: unknown): value is null` - Checks if a value is `null`.
 - `isUndefined(value: unknown): value is undefined` - Checks if a value is `undefined`.
@@ -605,12 +614,15 @@ function divide(a: number, b: number): number {
 
 ### File Utilities
 
+- `isFile(value: unknown): value is File` - Checks if a value is a `File`.
 - `parseFileName(fileName: string): [baseName: string, extension: string]` - Splits a file name into its base name and extension using the last `.` as the separator. Handles edge cases such as hidden files (`.gitignore`), multi-dot names (`archive.tar.gz`), and names ending with a dot (`"file."`). The extension is returned in lowercase.
 - `fileListToFiles(fileList: FileList | null): File[]` - Converts a `FileList` object (such as the one returned from an `<input type="file">`) into a standard array of `File` objects. Returns an empty array when the input is `null`.
 - `blobToFile(blob: Blob, fileName: string): File` - Converts a Blob object into a File object with the specified name.
+- `traverseFileSystemDirectory(directoryEntry: FileSystemDirectoryEntry, options?: TraverseDirectoryOptions): Promise<File[]>` — Recursively scans a directory using the File System API and returns all nested files as `File` objects. Supports skipping system files and reporting progress through an optional `onProgress` callback.
 
 ### Asynchronous Utilities
 
+- `isPromise<T = unknown>(value: unknown): value is Promise<T>` - Checks if a value is a `Promise`.
 - `runSequential<Item, Result>(array: Item[], fn: (item, index, array) => Promise<Result>): Promise<Result[]>` - Runs asynchronous operations on each array item *sequentially* and returns the results in the original order.
 - `runParallel<Item, Result>(array: Item[], fn: (item, index, array) => Promise<Result>): Promise<Result[]>` - Executes an asynchronous function for each array item *in parallel* and returns a promise of all results.
 - `reduceAsync<Item, Accumulator>(array: Item[], fn, initialValue): Promise<Accumulator>` - Asynchronously reduces an array to a single accumulated value. Each step waits for the previous promise to resolve.

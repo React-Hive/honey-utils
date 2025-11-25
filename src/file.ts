@@ -1,3 +1,14 @@
+import { runParallel } from './async';
+
+/**
+ * Checks if a value is a `File` object.
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is a `File` object; otherwise, `false`.
+ */
+export const isFile = (value: unknown): value is File => value instanceof File;
+
 /**
  * Splits a file name into its base name and extension.
  *
@@ -68,3 +79,136 @@ export const blobToFile = (blob: Blob, fileName: string): File =>
   new File([blob], fileName, {
     type: blob.type,
   });
+
+/**
+ * Reads all entries from a file system directory asynchronously.
+ *
+ * @param directoryEntry - The directory entry to read.
+ *
+ * @returns A promise that resolves to all `FileSystemEntry` items in the directory.
+ */
+const readFileSystemDirectoryEntries = async (
+  directoryEntry: FileSystemDirectoryEntry,
+): Promise<FileSystemEntry[]> => {
+  const directoryReader = directoryEntry.createReader();
+
+  const readAll = async (): Promise<FileSystemEntry[]> =>
+    new Promise((resolve, reject) => {
+      directoryReader.readEntries(async entries => {
+        if (!entries.length) {
+          resolve([]);
+          return;
+        }
+
+        try {
+          const restEntries = await readAll();
+
+          resolve([...entries, ...restEntries]);
+        } catch (e) {
+          reject(e);
+        }
+      }, reject);
+    });
+
+  return readAll();
+};
+
+/**
+ * A callback function invoked whenever a file is discovered during directory traversal.
+ *
+ * @param progress - An object containing details about the current traversal state.
+ * @param progress.processed - The total number of files processed so far.
+ * @param progress.currentFile - The `File` object for the file just discovered (if available).
+ * @param progress.path - The full path of the file relative to the traversed directory (if available).
+ */
+type TraverseDirectoryOnProgressHandler = (progress: {
+  processed: number;
+  currentFile?: File;
+  path?: string;
+}) => void;
+
+interface TraverseDirectoryOptions {
+  /**
+   * A list of file names that should be ignored during traversal.
+   * Any file whose name matches an entry will be skipped entirely.
+   *
+   * Common values include OS-generated metadata files such as:
+   * `.DS_Store`, `Thumbs.db`, `desktop.ini`, `.Spotlight-V100`, etc.
+   */
+  skipFiles?: string[];
+  /**
+   * Optional callback invoked each time a file is discovered.
+   * Useful for progress tracking when traversing large or deeply nested directories.
+   */
+  onProgress?: TraverseDirectoryOnProgressHandler;
+}
+
+/**
+ * Recursively scans a directory using the File System API and collects all nested files.
+ *
+ * This function walks through all subdirectories, resolving each file into a `File` object.
+ * Directories themselves are not returned. To avoid unnecessary noise, certain system or
+ * OS-generated files can be excluded via the `skipFiles` option.
+ *
+ * A progress callback (`onProgress`) may be provided to receive updates each time a file
+ * is discovered. This is useful when working with large folders or deeply nested structures.
+ *
+ * @param directoryEntry - The starting directory entry to traverse.
+ * @param options - Optional settings that control traversal behavior.
+ * @param processed - Internal counter used to track the number of processed files
+ *   during recursive traversal. Not intended to be provided manually.
+ *
+ * @returns A promise resolving to a flat array of all collected `File` objects.
+ */
+export const traverseFileSystemDirectory = async (
+  directoryEntry: FileSystemDirectoryEntry,
+  {
+    skipFiles = [
+      '.DS_Store',
+      'Thumbs.db',
+      'desktop.ini',
+      'ehthumbs.db',
+      '.Spotlight-V100',
+      '.Trashes',
+      '.fseventsd',
+      '__MACOSX',
+    ],
+    onProgress,
+  }: TraverseDirectoryOptions = {},
+  processed = 0,
+): Promise<File[]> => {
+  const skipSet = new Set(skipFiles);
+  const entries = await readFileSystemDirectoryEntries(directoryEntry);
+
+  const filePromises = await runParallel(entries, async entry => {
+    if (entry.isDirectory) {
+      return traverseFileSystemDirectory(
+        entry as FileSystemDirectoryEntry,
+        {
+          skipFiles,
+        },
+        processed,
+      );
+    } else if (!skipSet.has(entry.name)) {
+      const file = await new Promise<File>((resolve, reject) => {
+        (entry as FileSystemFileEntry).file(resolve, reject);
+      });
+
+      if (onProgress) {
+        processed++;
+
+        onProgress({
+          processed,
+          path: `${directoryEntry.fullPath}/${entry.name}`,
+          currentFile: file,
+        });
+      }
+
+      return [file];
+    }
+
+    return [];
+  });
+
+  return filePromises.flat();
+};

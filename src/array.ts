@@ -1,6 +1,24 @@
 import { assert } from './guards';
 
 /**
+ * Checks if a value is an array.
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is an array; otherwise, `false`.
+ */
+export const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
+
+/**
+ * Checks if a value is an empty array.
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is an empty array; otherwise, `false`.
+ */
+export const isEmptyArray = (value: unknown): value is [] => isArray(value) && value.length === 0;
+
+/**
  * Represents all falsy values.
  */
 type Falsy = false | null | undefined | 0 | '';

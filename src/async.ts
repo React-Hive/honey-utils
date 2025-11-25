@@ -1,4 +1,17 @@
 import { compact } from './array';
+import { isFunction } from './function';
+
+/**
+ * Checks if a value is a Promise.
+ *
+ * @template T - The type of the value that the Promise resolves to.
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is a Promise; otherwise, `false`.
+ */
+export const isPromise = <T = unknown>(value: unknown): value is Promise<T> =>
+  isFunction((value as Promise<T>)?.then);
 
 /**
  * Asynchronously iterates over an array and executes an async function on each item sequentially,

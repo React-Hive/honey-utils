@@ -24,21 +24,6 @@ export const isNil = (value: unknown): value is null | undefined =>
   value === undefined || value === null;
 
 /**
- * Checks whether the provided value is considered "empty".
- *
- * A value is considered empty if it is:
- * - `null`
- * - `undefined`
- * - `''`
- *
- * @param value - The value to check.
- *
- * @returns `true` if the value is empty; otherwise, `false`.
- */
-export const isNilOrEmptyString = (value: unknown): value is null | undefined =>
-  value === '' || isNil(value);
-
-/**
  * Checks if a value is neither `null` nor `undefined`.
  *
  * @param value - The value to check.
@@ -47,15 +32,6 @@ export const isNilOrEmptyString = (value: unknown): value is null | undefined =>
  */
 export const isDefined = <T>(value: T): value is NonNullable<T> =>
   value !== null && value !== undefined;
-
-/**
- * Checks if a value is a string.
- *
- * @param value - The value to check.
- *
- * @returns `true` if the value is a string; otherwise, `false`.
- */
-export const isString = (value: unknown): value is string => typeof value === 'string';
 
 /**
  * Checks if a value is a number.
@@ -93,45 +69,6 @@ export const isObject = (value: unknown): value is object => typeof value === 'o
  */
 export const isEmptyObject = (value: unknown): value is Record<string, never> =>
   isObject(value) && !isNull(value) && Object.keys(value).length === 0;
-
-/**
- * Checks if a value is an array.
- *
- * @param value - The value to check.
- *
- * @returns `true` if the value is an array; otherwise, `false`.
- */
-export const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
-
-/**
- * Checks if a value is an empty array.
- *
- * @param value - The value to check.
- *
- * @returns `true` if the value is an empty array; otherwise, `false`.
- */
-export const isEmptyArray = (value: unknown): value is [] => isArray(value) && value.length === 0;
-
-/**
- * Checks if a value is a function.
- *
- * @param value - The value to check.
- *
- * @returns `true` if the value is a function; otherwise, `false`.
- */
-export const isFunction = (value: unknown) => typeof value === 'function';
-
-/**
- * Checks if a value is a Promise.
- *
- * @template T - The type of the value that the Promise resolves to.
- *
- * @param value - The value to check.
- *
- * @returns `true` if the value is a Promise; otherwise, `false`.
- */
-export const isPromise = <T = unknown>(value: unknown): value is Promise<T> =>
-  isFunction((value as Promise<T>)?.then);
 
 /**
  * Checks if a value is a Date object.

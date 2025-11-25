@@ -1,6 +1,15 @@
 export const noop = () => {};
 
 /**
+ * Checks if a value is a function.
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is a function; otherwise, `false`.
+ */
+export const isFunction = (value: unknown) => typeof value === 'function';
+
+/**
  * Creates a function that negates the result of the given predicate function.
  *
  * @template Args - Argument types of the predicate function.
