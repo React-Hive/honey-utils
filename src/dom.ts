@@ -230,39 +230,36 @@ interface LocalStorageCapabilities {
   writable: boolean;
 }
 
-const localStorageCapabilities: LocalStorageCapabilities = {
-  readable: false,
-  writable: false,
-};
+interface LocalStorageCapabilities {
+  readable: boolean;
+  writable: boolean;
+}
 
 /**
- * Detects and returns the browser's `localStorage` read and write capabilities.
- * The function is wrapped in `once()`, so capability detection is performed
- * only on the first invocation and cached for all future calls.
+ * Determines whether the browser's `localStorage` supports safe read and write operations.
+ * This function performs two independent checks:
  *
- * Detection logic:
- * - **Readable**: Successfully calling `getItem()` without exceptions.
- * - **Writable**: Successfully calling `setItem()` and `removeItem()` without
- *   triggering `QuotaExceededError` or other security restrictions.
+ * **1. Readability**
+ * - Verified by calling `localStorage.getItem()` inside a `try` block.
+ * - Fails in environments where storage access throws immediately (e.g., disabled storage,
+ *   sandboxed iframes, strict privacy modes, SSR).
  *
- * Edge-case behavior:
- * - In some environments, storage may be readable but not writable (e.g.,
- *   Safari Private Mode or quota-full situations).
- * - In SSR contexts or restricted frames, both capabilities will be `false`.
+ * **2. Writeability**
+ * - Verified by attempting to `setItem()` and then `removeItem()` using a temporary key.
+ * - Can fail due to:
+ *   - `QuotaExceededError` when storage is full.
+ *   - Disabled write access (e.g., Safari Private Mode).
+ *   - Security-restricted contexts (third-party frames, hardened privacy settings)
  *
- * @returns An object describing the available capabilities.
+ * @returns An object describing the detected `localStorage` capabilities.
  */
-export const getLocalStorageCapabilities = once((): LocalStorageCapabilities => {
-  if (typeof window === 'undefined' || !window.localStorage) {
-    return localStorageCapabilities;
-  }
-
-  try {
-    window.localStorage.getItem('__test_read__');
-
-    localStorageCapabilities.readable = true;
-  } catch {
-    return localStorageCapabilities;
+export const getLocalStorageCapabilities = (): LocalStorageCapabilities => {
+  const readable = isLocalStorageReadable();
+  if (!readable) {
+    return {
+      readable: false,
+      writable: false,
+    };
   }
 
   try {
@@ -271,10 +268,16 @@ export const getLocalStorageCapabilities = once((): LocalStorageCapabilities => 
     window.localStorage.setItem(key, '1');
     window.localStorage.removeItem(key);
 
-    localStorageCapabilities.writable = true;
+    return {
+      readable: true,
+      writable: true,
+    };
   } catch {
-    // Readable but not writable (QuotaExceededError or some restrictions)
+    // Readable but not writable (QuotaExceededError, private mode, security restrictions)
   }
 
-  return localStorageCapabilities;
-});
+  return {
+    readable: true,
+    writable: false,
+  };
+};
