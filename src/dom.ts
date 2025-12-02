@@ -1,3 +1,5 @@
+import { once } from './function';
+
 export const FOCUSABLE_HTML_TAGS = ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON', 'A'];
 
 interface HTMLElementTransformationValues {
@@ -198,3 +200,81 @@ export const isHtmlElementFocusable = (element: HTMLElement | null): boolean => 
  */
 export const getFocusableHtmlElements = (container: HTMLElement): HTMLElement[] =>
   Array.from(container.querySelectorAll<HTMLElement>('*')).filter(isHtmlElementFocusable);
+
+/**
+ * Determines whether the browser environment allows safe read access to
+ * `localStorage`. Some platforms (e.g., Safari Private Mode, sandboxed iframes)
+ * expose `localStorage` but still throw when accessed.
+ *
+ * This function **only tests read access**, making it safe even when write
+ * operations would fail due to `QuotaExceededError` or storage restrictions.
+ *
+ * @returns `true` if `localStorage` exists and calling `getItem()` does not
+ *          throw; otherwise `false`.
+ */
+export const isLocalStorageReadable = (): boolean => {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return false;
+  }
+
+  try {
+    window.localStorage.getItem('__non_existing_key__');
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+interface LocalStorageCapabilities {
+  readable: boolean;
+  writable: boolean;
+}
+
+const localStorageCapabilities: LocalStorageCapabilities = {
+  readable: false,
+  writable: false,
+};
+
+/**
+ * Detects and returns the browser's `localStorage` read and write capabilities.
+ * The function is wrapped in `once()`, so capability detection is performed
+ * only on the first invocation and cached for all future calls.
+ *
+ * Detection logic:
+ * - **Readable**: Successfully calling `getItem()` without exceptions.
+ * - **Writable**: Successfully calling `setItem()` and `removeItem()` without
+ *   triggering `QuotaExceededError` or other security restrictions.
+ *
+ * Edge-case behavior:
+ * - In some environments, storage may be readable but not writable (e.g.,
+ *   Safari Private Mode or quota-full situations).
+ * - In SSR contexts or restricted frames, both capabilities will be `false`.
+ *
+ * @returns An object describing the available capabilities.
+ */
+export const getLocalStorageCapabilities = once((): LocalStorageCapabilities => {
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return localStorageCapabilities;
+  }
+
+  try {
+    window.localStorage.getItem('__test_read__');
+
+    localStorageCapabilities.readable = true;
+  } catch {
+    return localStorageCapabilities;
+  }
+
+  try {
+    const key = '__test_write__';
+
+    window.localStorage.setItem(key, '1');
+    window.localStorage.removeItem(key);
+
+    localStorageCapabilities.writable = true;
+  } catch {
+    // Readable but not writable (QuotaExceededError or some restrictions)
+  }
+
+  return localStorageCapabilities;
+});

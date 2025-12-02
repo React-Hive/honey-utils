@@ -574,6 +574,7 @@ function divide(a: number, b: number): number {
 - `delay(delayMs: number): Promise<void>` - Creates a promise that resolves after the specified delay in milliseconds.
 - `timeout<T>(promise: Promise<T>, timeoutMs: number, message?: string): Promise<T>` - Wraps a promise with a timeout. If the promise does not settle within the given duration, it rejects with a timeout error.
 - `retry<Task, TaskResult>(task: Task, options?: RetryOptions): Function` - Wraps an asynchronous function with retry logic, with configurable max attempts, delay between retries, exponential backoff, and retry callbacks.
+- `once<T extends (...args: any[]) => any>(fn: T): T` - Wraps a function so it can only be executed once. The result of the first invocation is cached and returned for all subsequent calls. Preserves both the original function’s parameter types and `this` binding.
 
 ### Type Guards
 
@@ -594,6 +595,8 @@ function divide(a: number, b: number): number {
 - `isMap(value: unknown): value is Map<unknown, unknown>` - Checks if a value is a `Map`.
 - `isSet(value: unknown): value is Set<unknown>` - Checks if a value is a `Set`.
 - `isSymbol(value: unknown): value is symbol` - Checks if a value is a `Symbol`.
+- `isBlob(value: unknown): value is Blob` — Checks if a value is a `Blob`.
+- `isError(value: unknown): value is Error` — Checks if a value is an `Error` object.
 
 ### Math Utilities
 
@@ -611,6 +614,8 @@ function divide(a: number, b: number): number {
 - `isContentEditableHtmlElement(element: HTMLElement): boolean` - Returns `true` if the element has `contenteditable="true"`, making it user-editable and implicitly focusable.
 - `isHtmlElementFocusable(element: Nullable<HTMLElement>): boolean` - Checks whether an element is considered focusable according to browser rules. Factors include: visibility, `display`, `disabled`, `tabindex`, native focusable tags, `contenteditable`, and presence of a non-null `tabindex`.
 - `getFocusableHtmlElements(container: HTMLElement): HTMLElement[]` - Returns all focusable descendant elements within a container, using `isHtmlElementFocusable` to filter them.
+- `isLocalStorageReadable(): boolean` - Determines whether `localStorage` can be safely read from. This check works even when writes fail (e.g., due to `QuotaExceededError`) and ensures that calling `getItem()` does not throw in restricted environments.
+- `getLocalStorageCapabilities(): LocalStorageCapabilities` - Detects the browser's read and write capabilities for `localStorage`. Readability is determined by safe execution of `getItem()`, while writability requires successful `setItem()` and `removeItem()`. Returns cached results after the first evaluation.
 
 ### File Utilities
 

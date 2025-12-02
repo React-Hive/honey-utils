@@ -34,6 +34,15 @@ export const isDefined = <T>(value: T): value is NonNullable<T> =>
   value !== null && value !== undefined;
 
 /**
+ * Checks if a value is undefined.
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is undefined; otherwise, `false`.
+ */
+export const isUndefined = (value: unknown): value is undefined => value === undefined;
+
+/**
  * Checks if a value is a number.
  *
  * @param value - The value to check.
@@ -80,6 +89,24 @@ export const isEmptyObject = (value: unknown): value is Record<string, never> =>
 export const isDate = (value: unknown): value is Date => value instanceof Date;
 
 /**
+ * Checks if a value is a `Blob`.
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is a Blob object; otherwise, `false`.
+ */
+export const isBlob = (value: unknown): value is Blob => value instanceof Blob;
+
+/**
+ * Checks if a value is an `Error` object.
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is an Error instance; otherwise, `false`.
+ */
+export const isError = (value: unknown): value is Error => value instanceof Error;
+
+/**
  * Checks if a value is a valid Date object (not Invalid Date).
  *
  * @param value - The value to check.
@@ -124,15 +151,6 @@ export const isSet = (value: unknown): value is Set<unknown> => value instanceof
  * @returns `true` if the value is a Symbol; otherwise, `false`.
  */
 export const isSymbol = (value: unknown): value is symbol => typeof value === 'symbol';
-
-/**
- * Checks if a value is undefined.
- *
- * @param value - The value to check.
- *
- * @returns `true` if the value is undefined; otherwise, `false`.
- */
-export const isUndefined = (value: unknown): value is undefined => value === undefined;
 
 /**
  * Checks if a value is a finite number.

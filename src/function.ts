@@ -214,3 +214,35 @@ export const retry = <Task extends (...args: unknown[]) => Promise<TaskResult>, 
     throw lastError;
   };
 };
+
+/**
+ * Wraps a function so that it can only be executed once.
+ * The wrapped function remembers (caches) the result of the first invocation
+ * and returns that same result for all subsequent calls, regardless of the arguments provided.
+ *
+ * Common use cases include:
+ * - initializing singletons
+ * - running setup logic only once
+ * - avoiding repeated expensive computations
+ *
+ * @template T - A function type whose return value should be cached.
+ *
+ * @param fn - The function to execute at most once.
+ *
+ * @returns A new function with the same signature as `fn`, but guaranteed to
+ *          execute `fn` only on the first call and return the cached result
+ *          thereafter.
+ */
+export const once = <T extends (...args: any[]) => any>(fn: T): T => {
+  let called = false;
+  let result: ReturnType<T>;
+
+  return function (this: any, ...args: Parameters<T>) {
+    if (!called) {
+      called = true;
+      result = fn.apply(this, args);
+    }
+
+    return result;
+  } as T;
+};
