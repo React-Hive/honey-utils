@@ -553,6 +553,10 @@ function divide(a: number, b: number): number {
 - `splitStringIntoWords(input: string): string[]` - Splits a string into an array of words.
 - `hashString(input: string): string` - Generates a short hash from a string.
 
+### Object Utilities
+
+- `definedProps<T extends object>(obj: T): DefinedProps<T>` - Creates a new object by removing all properties whose values are `undefined`.
+
 ### Array Utilities
 
 - `isArray(value: unknown): value is unknown[]` - Checks if a value is an array.
