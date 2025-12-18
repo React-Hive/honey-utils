@@ -593,6 +593,7 @@ function divide(a: number, b: number): number {
 - `isDefined<T>(value: T): value is NonNullable<T>` - Checks if a value is neither `null` nor `undefined`.
 - `isFiniteNumber(value: unknown): value is number` - Checks if a value is a finite number.
 - `isInteger(value: unknown): value is number` - Checks if a value is an integer.
+- `isDecimal(value: unknown): value is number` - Checks if a value is a decimal number (finite and non-integer).
 - `isDate(value: unknown): value is Date` - Checks if a value is a `Date` object.
 - `isValidDate(value: unknown): value is Date` - Checks if a value is a valid `Date` object.
 - `isRegExp(value: unknown): value is RegExp` - Checks if a value is a `RegExp` object.

@@ -155,9 +155,32 @@ export const isSymbol = (value: unknown): value is symbol => typeof value === 's
 /**
  * Checks if a value is a finite number.
  *
+ * A finite number is a number that is not `NaN`, `Infinity`, or `-Infinity`.
+ *
  * @param value - The value to check.
  *
  * @returns `true` if the value is a finite number; otherwise, `false`.
+ *
+ * @example
+ * ```ts
+ * isFiniteNumber(10);        // true
+ * isFiniteNumber(3.14);      // true
+ * isFiniteNumber(-5);        // true
+ * ```
+ *
+ * @example
+ * ```ts
+ * isFiniteNumber(NaN);       // false
+ * isFiniteNumber(Infinity);  // false
+ * isFiniteNumber(-Infinity); // false
+ * ```
+ *
+ * @example
+ * ```ts
+ * isFiniteNumber('10');      // false
+ * isFiniteNumber(null);      // false
+ * isFiniteNumber(undefined); // false
+ * ```
  */
 export const isFiniteNumber = (value: unknown): value is number =>
   isNumber(value) && isFinite(value);
@@ -171,3 +194,42 @@ export const isFiniteNumber = (value: unknown): value is number =>
  */
 export const isInteger = (value: unknown): value is number =>
   isNumber(value) && Number.isInteger(value);
+
+/**
+ * Checks if a value is a decimal number (finite and non-integer).
+ *
+ * A decimal number is a finite number that has a fractional part (i.e. not an integer).
+ *
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is a decimal number; otherwise, `false`.
+ *
+ * @example
+ * ```ts
+ * isDecimal(1.5);    // true
+ * isDecimal(-0.25);  // true
+ * isDecimal(0.1);    // true
+ * ```
+ *
+ * @example
+ * ```ts
+ * isDecimal(1);    // false
+ * isDecimal(0);    // false
+ * isDecimal(-10);  // false
+ * ```
+ *
+ * @example
+ * ```ts
+ * isDecimal(NaN);      // false
+ * isDecimal(Infinity); // false
+ * ```
+ *
+ * @example
+ * ```ts
+ * isDecimal('1.5');      // false
+ * isDecimal(null);       // false
+ * isDecimal(undefined);  // false
+ * ```
+ */
+export const isDecimal = (value: unknown): value is number =>
+  isFiniteNumber(value) && !Number.isInteger(value);
