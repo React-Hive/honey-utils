@@ -619,6 +619,10 @@ function divide(a: number, b: number): number {
 - `isContentEditableHtmlElement(element: HTMLElement): boolean` - Returns `true` if the element has `contenteditable="true"`, making it user-editable and implicitly focusable.
 - `isHtmlElementFocusable(element: Nullable<HTMLElement>): boolean` - Checks whether an element is considered focusable according to browser rules. Factors include: visibility, `display`, `disabled`, `tabindex`, native focusable tags, `contenteditable`, and presence of a non-null `tabindex`.
 - `getFocusableHtmlElements(container: HTMLElement): HTMLElement[]` - Returns all focusable descendant elements within a container, using `isHtmlElementFocusable` to filter them.
+- `hasXOverflow(element: HTMLElement): boolean` - Checks whether an element has horizontal overflow. Returns `true` if the content overflows beyond the visible width.
+- `getXOverflowWidth(element: HTMLElement): number` - Calculates the horizontal overflow width of an element. Returns the number of pixels by which the content exceeds the visible width, or `0` when no horizontal overflow exists.
+- `hasYOverflow(element: HTMLElement): boolean` - Checks whether an element has vertical overflow. Returns `true` if the content overflows beyond the visible height.
+- `getYOverflowHeight(element: HTMLElement): number` - Calculates the vertical overflow height of an element. Returns the number of pixels by which the content exceeds the visible height, or `0` when no vertical overflow exists.
 - `isLocalStorageReadable(): boolean` - Determines whether `localStorage` can be safely read from. This check works even when writes fail (e.g., due to `QuotaExceededError`) and ensures that calling `getItem()` does not throw in restricted environments.
 - `getLocalStorageCapabilities(): LocalStorageCapabilities` - Detects the browser's read and write capabilities for `localStorage`. Readability is determined by safe execution of `getItem()`, while writability requires successful `setItem()` and `removeItem()`.
 
