@@ -1,3 +1,4 @@
+import type { Nullable } from './types';
 import { runParallel } from './async';
 
 /**
@@ -42,7 +43,7 @@ export const parseFileName = (fileName: string) => {
  *
  * @returns An array of `File` objects.
  */
-export const fileListToFiles = (fileList: FileList | null): File[] => {
+export const fileListToFiles = (fileList: Nullable<FileList>): File[] => {
   if (!fileList) {
     return [];
   }
@@ -193,7 +194,7 @@ export const traverseFileSystemDirectory = async (
  *   - and files found recursively within nested subdirectories.
  */
 export const readFilesFromDataTransfer = async (
-  dataTransfer: DataTransfer | null,
+  dataTransfer: Nullable<DataTransfer>,
   traverseOptions: TraverseDirectoryOptions = {},
 ) => {
   const items = dataTransfer?.items;

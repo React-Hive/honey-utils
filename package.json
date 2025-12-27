@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-utils",
-  "version": "3.10.0",
+  "version": "3.11.0",
   "description": "A lightweight TypeScript utility library providing a collection of helper functions for common programming tasks",
   "keywords": [
     "utils",

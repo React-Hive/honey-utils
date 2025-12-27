@@ -1,3 +1,4 @@
+import type { Nullable } from './types';
 import { compact } from './array';
 import { isFunction } from './function';
 
@@ -231,7 +232,7 @@ export const reduceAsync = async <Item, Accumulator>(
 export const findAsync = async <Item>(
   array: Item[],
   predicate: (item: Item, index: number, array: Item[]) => Promise<boolean>,
-): Promise<Item | null> => {
+): Promise<Nullable<Item>> => {
   for (let i = 0; i < array.length; i++) {
     if (await predicate(array[i], i, array)) {
       return array[i];

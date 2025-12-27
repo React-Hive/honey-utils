@@ -1,3 +1,5 @@
+import type { Nullable, TimeoutId } from './types';
+
 export const noop = () => {};
 
 /**
@@ -104,7 +106,7 @@ export const timeout = async <T>(
   timeoutMs: number,
   errorMessage = 'Operation timed out',
 ): Promise<T> => {
-  const timeoutId: ReturnType<typeof setTimeout> | null = null;
+  const timeoutId: Nullable<TimeoutId> = null;
 
   try {
     return await Promise.race([
