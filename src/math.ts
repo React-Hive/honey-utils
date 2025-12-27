@@ -39,6 +39,5 @@ export const calculateMovingSpeed = (distance: number, elapsedTime: number): num
  *
  * @returns The calculated percentage of the value.
  */
-export const calculatePercentage = (value: number, percentage: number): number => {
-  return (value * percentage) / 100;
-};
+export const calculatePercentage = (value: number, percentage: number): number =>
+  (value * percentage) / 100;

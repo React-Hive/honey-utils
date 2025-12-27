@@ -245,6 +245,122 @@ export const hasYOverflow = (element: HTMLElement): boolean =>
 export const getYOverflowHeight = (element: HTMLElement): number =>
   Math.max(0, element.scrollHeight - element.clientHeight);
 
+export interface CalculateCenterOffsetOptions {
+  /**
+   * Total overflow size for the axis.
+   *
+   * Represents how much larger the content is compared to the visible
+   * container size (e.g. scroll width minus client width).
+   */
+  overflowSize: number;
+  /**
+   * Visible size of the container along the axis.
+   *
+   * Typically, `clientWidth` for the X axis or `clientHeight` for the Y axis.
+   */
+  containerSize: number;
+  /**
+   * Offset of the target element from the start of the container along the axis.
+   *
+   * Typically, `offsetLeft` (X axis) or `offsetTop` (Y axis).
+   */
+  elementOffset: number;
+  /**
+   * Size of the target element along the axis.
+   *
+   * Typically, `clientWidth` (X axis) or `clientHeight` (Y axis).
+   */
+  elementSize: number;
+}
+
+/**
+ * Calculates the offset required to center an element within a container along a single axis.
+ *
+ * The returned value is clamped so that the resulting translation does not
+ * exceed the container's scrollable bounds.
+ *
+ * This function performs pure math only and does not access the DOM.
+ *
+ * @returns A negative offset value suitable for use in a CSS `translate`
+ * transform, or `0` when no overflow exists on the axis.
+ */
+export const calculateCenterOffset = ({
+  overflowSize,
+  containerSize,
+  elementOffset,
+  elementSize,
+}: CalculateCenterOffsetOptions): number => {
+  if (overflowSize <= 0) {
+    return 0;
+  }
+
+  const containerCenter = containerSize / 2;
+  const elementCenter = elementOffset + elementSize / 2;
+
+  const targetOffset = elementCenter - containerCenter;
+
+  return -Math.max(0, Math.min(targetOffset, overflowSize));
+};
+
+type Axis = 'x' | 'y' | 'both';
+
+export interface CenterElementInContainerOptions {
+  /**
+   * Axis (or axes) along which centering is applied.
+   *
+   * @default 'both'
+   */
+  axis?: Axis;
+}
+
+/**
+ * Translates a container so that a target element is visually centered within its visible bounds.
+ *
+ * Centering is achieved by applying a CSS `transform: translate(...)` to the
+ * container element rather than using native scrolling.
+ *
+ * ### Behavior
+ * - Centering is calculated independently for each enabled axis.
+ * - Translation is applied only when the container content overflows on that axis.
+ * - When no overflow exists, the container remains untransformed for that axis.
+ *
+ * ### Notes
+ * - This function performs immediate DOM reads and writes.
+ * - The resulting transform is clamped to valid scrollable bounds.
+ *
+ * @param containerElement - The container whose content is translated.
+ * @param elementToCenter - The descendant element to align to the container’s center.
+ * @param options - Optional configuration controlling which axis or axes are centered.
+ */
+export const centerElementInContainer = (
+  containerElement: HTMLElement,
+  elementToCenter: HTMLElement,
+  { axis = 'both' }: CenterElementInContainerOptions = {},
+): void => {
+  let translateX = 0;
+  let translateY = 0;
+
+  if (axis === 'x' || axis === 'both') {
+    translateX = calculateCenterOffset({
+      overflowSize: getXOverflowWidth(containerElement),
+      containerSize: containerElement.clientWidth,
+      elementOffset: elementToCenter.offsetLeft,
+      elementSize: elementToCenter.clientWidth,
+    });
+  }
+
+  if (axis === 'y' || axis === 'both') {
+    translateY = calculateCenterOffset({
+      overflowSize: getYOverflowHeight(containerElement),
+      containerSize: containerElement.clientHeight,
+      elementOffset: elementToCenter.offsetTop,
+      elementSize: elementToCenter.clientHeight,
+    });
+  }
+
+  containerElement.style.transform = `translate(${translateX}px, ${translateY}px)`;
+};
+
 /**
  * Determines whether the browser environment allows safe read access to
  * `localStorage`. Some platforms (e.g., Safari Private Mode, sandboxed iframes)
