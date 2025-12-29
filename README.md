@@ -628,6 +628,7 @@ function divide(a: number, b: number): number {
 - `centerElementInContainer(containerElement: HTMLElement, elementToCenter: HTMLElement, options?: CenterElementInContainerOptions): void` - Translates a container so that a target element is visually centered within its visible bounds using CSS transforms. Centering is applied independently per axis and only when an overflow exists.
 - `isLocalStorageReadable(): boolean` - Determines whether `localStorage` can be safely read from. This check works even when writes fail (e.g., due to `QuotaExceededError`) and ensures that calling `getItem()` does not throw in restricted environments.
 - `getLocalStorageCapabilities(): LocalStorageCapabilities` - Detects the browser's read and write capabilities for `localStorage`. Readability is determined by safe execution of `getItem()`, while writability requires successful `setItem()` and `removeItem()`.
+- `downloadFile(file: Downloadable, options?: DownloadFileOptions): void` - Initiates a file download in a browser environment from a URL string or binary source (`Blob` / `MediaSource`). Automatically creates and revokes object URLs when required and safely no-ops in non-DOM environments (e.g. SSR).
 
 ### File Utilities
 
