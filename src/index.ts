@@ -4,7 +4,7 @@ export * from './array';
 export * from './function';
 export * from './guards';
 export * from './math';
-export * from './dom/dom';
+export * from './dom';
 export * from './file';
 export * from './object';
 export * from './geometry';
