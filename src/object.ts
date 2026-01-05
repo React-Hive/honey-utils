@@ -22,5 +22,6 @@ export const definedProps = <T extends object>(obj: T): DefinedProps<T> =>
     if (value !== undefined) {
       result[key] = value;
     }
+
     return result;
   }, {} as any);

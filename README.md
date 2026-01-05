@@ -546,6 +546,8 @@ function divide(a: number, b: number): number {
 
 ### String Utilities
 
+---
+
 - `isString(value: unknown): value is string` - Checks if a value is a `string`.
 - `isNilOrEmptyString(value: unknown): value is null | undefined` - Checks if a value is `null`, `undefined`, or an empty string.
 - `toKebabCase(input: string): string` - Converts a string to kebab-case.
@@ -555,9 +557,13 @@ function divide(a: number, b: number): number {
 
 ### Object Utilities
 
+---
+
 - `definedProps<T extends object>(obj: T): DefinedProps<T>` - Creates a new object by removing all properties whose values are `undefined`.
 
 ### Array Utilities
+
+---
 
 - `isArray(value: unknown): value is unknown[]` - Checks if a value is an array.
 - `isEmptyArray(value: unknown): value is []` - Checks if a value is an empty array.
@@ -571,6 +577,8 @@ function divide(a: number, b: number): number {
 
 ### Function Utilities
 
+---
+
 - `isFunction(value: unknown): value is Function` - Checks if a value is a `function`.
 - `noop(): void` - A no-operation function.
 - `not<Args extends any[]>(fn: (...args: Args) => any): (...args: Args) => boolean` - Creates a new function that negates the result of the given predicate function. Useful for logical inversions, e.g., turning `isEven` into `isOdd`.
@@ -581,6 +589,8 @@ function divide(a: number, b: number): number {
 - `once<T extends (...args: any[]) => any>(fn: T): T` - Wraps a function so it can only be executed once. The result of the first invocation is cached and returned for all subsequent calls. Preserves both the original function’s parameter types and `this` binding.
 
 ### Type Guards
+
+---
 
 - `assert(condition: any, message: string): asserts condition` - Asserts that a condition is truthy, throwing an error with the provided message if it's not.
 - `isNumber(value: unknown): value is number` - Checks if a value is a `number`.
@@ -605,32 +615,57 @@ function divide(a: number, b: number): number {
 
 ### Math Utilities
 
+---
+
 - `calculateEuclideanDistance(startX: number, startY: number, endX: number, endY: number): number` - Calculates the Euclidean distance between two points.
 - `calculateMovingSpeed(distance: number, elapsedTime: number): number` - Calculates moving speed.
 - `calculatePercentage(value: number, percentage: number): number` - Calculates the specified percentage of a value.
 
+### ENV
+
+---
+
+#### Storage
+
+- `isLocalStorageReadable(): boolean` - Determines whether `localStorage` can be safely read from. This check works even when writes fail (e.g., due to `QuotaExceededError`) and ensures that calling `getItem()` does not throw in restricted environments.
+- `getLocalStorageCapabilities(): LocalStorageCapabilities` - Detects the browser's read and write capabilities for `localStorage`. Readability is determined by safe execution of `getItem()`, while writability requires successful `setItem()` and `removeItem()`.
+
+### Geometry
+
+---
+
+#### Layout
+
+- `calculateCenterOffset(options: CalculateCenterOffsetOptions): number` - Calculates a clamped offset value that centers an element within a container along a single axis. Returns a negative value suitable for use in a CSS `translate` transform, or `0` when no overflow exists.
+
 ### DOM Utilities
 
-- `parse2DMatrix(element: HTMLElement): { translateX: number, translateY: number, scaleX: number, scaleY: number, skewX: number, skewY: number }` - Extracts transformation values (translate, scale, skew) from the 2D transformation matrix of a given HTML element.
+---
+
 - `cloneBlob(blob: Blob): Blob` - Creates a clone of a Blob object with the same content and type as the original.
-- `getDOMRectIntersectionRatio(sourceRect: DOMRect, targetRect: DOMRect): number` - Calculates the ratio of the `targetRect` that is overlapped by the `sourceRect`. Returns a number between `0` (no overlap) and `1` (fully covered).
 - `getElementOffsetRect(element: HTMLElement): DOMRect` - Returns a `DOMRect` representing the element's layout position using `offsetLeft`, `offsetTop`, and `clientWidth`/`clientHeight`.
 - `isAnchorHtmlElement(element: HTMLElement): element is HTMLAnchorElement` - Determines whether the provided element is an `<a>` tag. Acts as a type guard that narrows the element to `HTMLAnchorElement`.
 - `isContentEditableHtmlElement(element: HTMLElement): boolean` - Returns `true` if the element has `contenteditable="true"`, making it user-editable and implicitly focusable.
-- `isHtmlElementFocusable(element: Nullable<HTMLElement>): boolean` - Checks whether an element is considered focusable according to browser rules. Factors include: visibility, `display`, `disabled`, `tabindex`, native focusable tags, `contenteditable`, and presence of a non-null `tabindex`.
-- `getFocusableHtmlElements(container: HTMLElement): HTMLElement[]` - Returns all focusable descendant elements within a container, using `isHtmlElementFocusable` to filter them.
-- `moveFocusWithinContainer(direction: FocusMoveDirection, container?: Nullable<HTMLElement>, options?: MoveFocusWithinContainerOptions): void` - Moves focus to the next or previous focusable element within a container. Supports cyclic navigation, optional wrapping control, and custom focus index resolution for advanced keyboard navigation patterns (e.g. roving tabindex).
+
+#### File
+
+- `downloadFile(file: Downloadable, options?: DownloadFileOptions): void` - Initiates a file download in a browser environment from a URL string or binary source (`Blob` / `MediaSource`). Automatically creates and revokes object URLs when required and safely no-ops in non-DOM environments (e.g. SSR).
+
+#### Layout
+
 - `hasXOverflow(element: HTMLElement): boolean` - Checks whether an element has horizontal overflow. Returns `true` if the content overflows beyond the visible width.
 - `getXOverflowWidth(element: HTMLElement): number` - Calculates the horizontal overflow width of an element. Returns the number of pixels by which the content exceeds the visible width, or `0` when no horizontal overflow exists.
 - `hasYOverflow(element: HTMLElement): boolean` - Checks whether an element has vertical overflow. Returns `true` if the content overflows beyond the visible height.
 - `getYOverflowHeight(element: HTMLElement): number` - Calculates the vertical overflow height of an element. Returns the number of pixels by which the content exceeds the visible height, or `0` when no vertical overflow exists.
-- `calculateCenterOffset(options: CalculateCenterOffsetOptions): number` - Calculates a clamped offset value that centers an element within a container along a single axis. Returns a negative value suitable for use in a CSS `translate` transform, or `0` when no overflow exists.
 - `centerElementInContainer(containerElement: HTMLElement, elementToCenter: HTMLElement, options?: CenterElementInContainerOptions): void` - Translates a container so that a target element is visually centered within its visible bounds using CSS transforms. Centering is applied independently per axis and only when an overflow exists.
-- `isLocalStorageReadable(): boolean` - Determines whether `localStorage` can be safely read from. This check works even when writes fail (e.g., due to `QuotaExceededError`) and ensures that calling `getItem()` does not throw in restricted environments.
-- `getLocalStorageCapabilities(): LocalStorageCapabilities` - Detects the browser's read and write capabilities for `localStorage`. Readability is determined by safe execution of `getItem()`, while writability requires successful `setItem()` and `removeItem()`.
-- `downloadFile(file: Downloadable, options?: DownloadFileOptions): void` - Initiates a file download in a browser environment from a URL string or binary source (`Blob` / `MediaSource`). Automatically creates and revokes object URLs when required and safely no-ops in non-DOM environments (e.g. SSR).
+
+#### Transform
+
+- `parse2DMatrix(element: HTMLElement): { translateX: number, translateY: number, scaleX: number, scaleY: number, skewX: number, skewY: number }` - Extracts transformation values (translate, scale, skew) from the 2D transformation matrix of a given HTML element.
 
 ### File Utilities
+
+---
 
 - `isFile(value: unknown): value is File` - Checks if a value is a `File`.
 - `parseFileName(fileName: string): [baseName: string, extension: string]` - Splits a file name into its base name and extension using the last `.` as the separator. Handles edge cases such as hidden files (`.gitignore`), multi-dot names (`archive.tar.gz`), and names ending with a dot (`"file."`). The extension is returned in lowercase.
@@ -641,6 +676,8 @@ function divide(a: number, b: number): number {
 
 ### Asynchronous Utilities
 
+---
+
 - `isPromise<T = unknown>(value: unknown): value is Promise<T>` - Checks if a value is a `Promise`.
 - `runSequential<Item, Result>(array: Item[], fn: (item, index, array) => Promise<Result>): Promise<Result[]>` - Runs asynchronous operations on each array item *sequentially* and returns the results in the original order.
 - `runParallel<Item, Result>(array: Item[], fn: (item, index, array) => Promise<Result>): Promise<Result[]>` - Executes an asynchronous function for each array item *in parallel* and returns a promise of all results.
@@ -650,6 +687,25 @@ function divide(a: number, b: number): number {
 - `someAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **any** item in the array passes the async predicate.
 - `everyAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **all** items in the array pass the async predicate.
 - `findAsync<Item>(array: Item[], predicate): Promise<Nullable<Item>>` - Returns the first array item that passes the async predicate, or `null` if no match is found.
+
+### Intersection Utilities
+
+---
+
+- `getDOMRectIntersectionRatio(sourceRect: DOMRect, targetRect: DOMRect): number` - Calculates the ratio of the `targetRect` that is overlapped by the `sourceRect`. Returns a number between `0` (no overlap) and `1` (fully covered).
+- `resolveAxisDelta(delta: AxisDelta, axis: Axis, options: ResolveAxisDeltaOptions): AxisDelta` – Resolves a raw two-dimensional input delta into an axis-aligned delta based on the specified axis. Supports optional vertical-to-horizontal fallback (useful for mouse wheels) and optional direction inversion for synthetic scrolling.
+
+### A11y
+
+---
+
+#### Focus
+
+- `isHtmlElementFocusable(element: Nullable<HTMLElement>): boolean` - Checks whether an element is considered focusable according to browser rules. Factors include: visibility, `display`, `disabled`, `tabindex`, native focusable tags, `contenteditable`, and presence of a non-null `tabindex`.
+- `getFocusableHtmlElements(container: HTMLElement): HTMLElement[]` - Returns all focusable descendant elements within a container, using `isHtmlElementFocusable` to filter them.
+- `moveFocusWithinContainer(direction: FocusMoveDirection, container?: Nullable<HTMLElement>, options?: MoveFocusWithinContainerOptions): void` - Moves focus to the next or previous focusable element within a container. Supports cyclic navigation, optional wrapping control, and custom focus index resolution for advanced keyboard navigation patterns (e.g. roving tabindex).
+
+---
 
 ## Contributing
 
