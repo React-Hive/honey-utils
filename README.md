@@ -553,6 +553,7 @@ function divide(a: number, b: number): number {
 - `toKebabCase(input: string): string` - Converts a string to kebab-case.
 - `camelToDashCase(input: string): string` - Converts camelCase to dash-case.
 - `splitStringIntoWords(input: string): string[]` - Splits a string into an array of words.
+- `parseFileName(fileName: string): [baseName: string, extension: string]` - Splits a file name into its base name and extension using the last `.` as the separator. Handles edge cases such as hidden files (`.gitignore`), multi-dot names (`archive.tar.gz`), and names ending with a dot (`"file."`). The extension is returned in lowercase.
 
 ### Object Utilities
 
@@ -631,6 +632,9 @@ function divide(a: number, b: number): number {
 
 ---
 
+- `resolveBoundedDelta(options: ResolveBoundedDeltaOptions): Nullable<number>` – Resolves the next numeric value by consuming a delta within fixed bounds. Prevents overshoot, partially consumes deltas at boundaries, and returns `null` when movement in the given direction is no longer possible. Useful for drag constraints, sliders, synthetic scrolling, and inertia systems.
+- `applyInertiaStep(options: ApplyInertiaStepOptions): Nullable<{ value: number; velocity: number }>` – Applies a single inertia step on top of bounded delta resolution using velocity integration and exponential friction. Intended to be called from an animation loop (e.g. `requestAnimationFrame`) to implement momentum-based scrolling, sliders, or carousels. Returns updated value and velocity, or `null` when inertia has completed.
+
 #### Layout
 
 - `calculateCenterOffset(options: CalculateCenterOffsetOptions): number` - Calculates a clamped offset value that centers an element within a container along a single axis. Returns a negative value suitable for use in a CSS `translate` transform, or `0` when no overflow exists.
@@ -665,7 +669,6 @@ function divide(a: number, b: number): number {
 ---
 
 - `isFile(value: unknown): value is File` - Checks if a value is a `File`.
-- `parseFileName(fileName: string): [baseName: string, extension: string]` - Splits a file name into its base name and extension using the last `.` as the separator. Handles edge cases such as hidden files (`.gitignore`), multi-dot names (`archive.tar.gz`), and names ending with a dot (`"file."`). The extension is returned in lowercase.
 - `fileListToFiles(fileList: FileList | null): File[]` - Converts a `FileList` object (such as the one returned from an `<input type="file">`) into a standard array of `File` objects. Returns an empty array when the input is `null`.
 - `blobToFile(blob: Blob, fileName: string): File` - Converts a Blob object into a File object with the specified name.
 - `traverseFileSystemDirectory(directoryEntry: FileSystemDirectoryEntry, options?: TraverseDirectoryOptions): Promise<File[]>` — Recursively scans a directory using the File System API and returns all nested files as `File` objects. Supports skipping system files.

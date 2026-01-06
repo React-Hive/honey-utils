@@ -1,4 +1,4 @@
-import { assert } from './guards';
+import { assert } from '~/guards';
 
 /**
  * Checks if a value is an array.
