@@ -1,5 +1,5 @@
 import type { Nullable } from './types';
-import { runParallel } from './async';
+import { runParallel } from './async/async';
 
 /**
  * Checks if a value is a `File` object.

@@ -553,7 +553,6 @@ function divide(a: number, b: number): number {
 - `toKebabCase(input: string): string` - Converts a string to kebab-case.
 - `camelToDashCase(input: string): string` - Converts camelCase to dash-case.
 - `splitStringIntoWords(input: string): string[]` - Splits a string into an array of words.
-- `hashString(input: string): string` - Generates a short hash from a string.
 
 ### Object Utilities
 
@@ -583,9 +582,6 @@ function divide(a: number, b: number): number {
 - `noop(): void` - A no-operation function.
 - `not<Args extends any[]>(fn: (...args: Args) => any): (...args: Args) => boolean` - Creates a new function that negates the result of the given predicate function. Useful for logical inversions, e.g., turning `isEven` into `isOdd`.
 - `invokeIfFunction<Args extends any[], Result>(input: ((...args: Args) => Result) | Result, ...args: Args): Result` - Invokes the input if it's a function, otherwise returns it as-is.
-- `delay(delayMs: number): Promise<void>` - Creates a promise that resolves after the specified delay in milliseconds.
-- `timeout<T>(promise: Promise<T>, timeoutMs: number, message?: string): Promise<T>` - Wraps a promise with a timeout. If the promise does not settle within the given duration, it rejects with a timeout error.
-- `retry<Task, TaskResult>(task: Task, options?: RetryOptions): Function` - Wraps an asynchronous function with retry logic, with configurable max attempts, delay between retries, exponential backoff, and retry callbacks.
 - `once<T extends (...args: any[]) => any>(fn: T): T` - Wraps a function so it can only be executed once. The result of the first invocation is cached and returned for all subsequent calls. Preserves both the original function’s parameter types and `this` binding.
 
 ### Type Guards
@@ -620,6 +616,7 @@ function divide(a: number, b: number): number {
 - `calculateEuclideanDistance(startX: number, startY: number, endX: number, endY: number): number` - Calculates the Euclidean distance between two points.
 - `calculateMovingSpeed(distance: number, elapsedTime: number): number` - Calculates moving speed.
 - `calculatePercentage(value: number, percentage: number): number` - Calculates the specified percentage of a value.
+- `hashString(input: string): string` - Generates a short hash from a string.
 
 ### ENV
 
@@ -687,6 +684,9 @@ function divide(a: number, b: number): number {
 - `someAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **any** item in the array passes the async predicate.
 - `everyAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **all** items in the array pass the async predicate.
 - `findAsync<Item>(array: Item[], predicate): Promise<Nullable<Item>>` - Returns the first array item that passes the async predicate, or `null` if no match is found.
+- `delay(delayMs: number): Promise<void>` - Creates a promise that resolves after the specified delay in milliseconds.
+- `timeout<T>(promise: Promise<T>, timeoutMs: number, message?: string): Promise<T>` - Wraps a promise with a timeout. If the promise does not settle within the given duration, it rejects with a timeout error.
+- `retry<Task, TaskResult>(task: Task, options?: RetryOptions): Function` - Wraps an asynchronous function with retry logic, with configurable max attempts, delay between retries, exponential backoff, and retry callbacks.
 
 ### Intersection Utilities
 

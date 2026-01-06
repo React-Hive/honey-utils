@@ -1,5 +1,5 @@
-import { getXOverflowWidth, getYOverflowHeight } from './overflow';
-import { calculateCenterOffset } from '../../geometry';
+import { getXOverflowWidth, getYOverflowHeight } from '~/dom';
+import { calculateCenterOffset } from '~/geometry';
 
 type Axis = 'x' | 'y' | 'both';
 

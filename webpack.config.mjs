@@ -26,7 +26,10 @@ const baseConfig = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
-  }
+    alias: {
+      '~': path.resolve('./src'),
+    },
+  },
 };
 
 const copyFiles = new CopyPlugin({

@@ -1,5 +1,5 @@
-import type { Nullable } from '../../types';
-import { isAnchorHtmlElement, isContentEditableHtmlElement } from '../../dom';
+import type { Nullable } from '~/types';
+import { isAnchorHtmlElement, isContentEditableHtmlElement } from '~/dom';
 
 export const FOCUSABLE_HTML_TAGS = ['INPUT', 'SELECT', 'TEXTAREA', 'BUTTON', 'A'];
 

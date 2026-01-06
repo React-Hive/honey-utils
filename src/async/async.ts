@@ -1,6 +1,6 @@
-import type { Nullable } from './types';
-import { compact } from './array';
-import { isFunction } from './function';
+import type { Nullable } from '~/types';
+import { compact } from '~/array';
+import { isFunction } from '~/function';
 
 /**
  * Checks if a value is a Promise.

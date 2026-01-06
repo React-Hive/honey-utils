@@ -1,4 +1,4 @@
-import { isHtmlElementFocusable } from './is-html-element-focusable';
+import { isHtmlElementFocusable } from '~/a11y';
 
 /**
  * Collects all focusable descendant elements within a container.

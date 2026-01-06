@@ -1,5 +1,5 @@
-import { isString } from '../../string';
-import { assert, isUndefined } from '../../guards';
+import { isString } from '~/string';
+import { assert, isUndefined } from '~/guards';
 
 export type Downloadable = Blob | MediaSource | string;
 

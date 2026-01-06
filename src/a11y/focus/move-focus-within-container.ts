@@ -1,5 +1,5 @@
-import type { Nullable } from '../../types';
-import { getFocusableHtmlElements } from './get-focusable-html-elements';
+import type { Nullable } from '~/types';
+import { getFocusableHtmlElements } from '~/a11y';
 
 export type FocusMoveDirection = 'next' | 'previous';
 
