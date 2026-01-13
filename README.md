@@ -554,6 +554,8 @@ function divide(a: number, b: number): number {
 - `camelToDashCase(input: string): string` - Converts camelCase to dash-case.
 - `splitStringIntoWords(input: string): string[]` - Splits a string into an array of words.
 - `parseFileName(fileName: string): [baseName: string, extension: string]` - Splits a file name into its base name and extension using the last `.` as the separator. Handles edge cases such as hidden files (`.gitignore`), multi-dot names (`archive.tar.gz`), and names ending with a dot (`"file."`). The extension is returned in lowercase.
+- `forEachChar(inputString: string, onChar: CharHandler, shouldSkipChar?: CharPredicate): void` - Iterates over each character of a string (UTF-16 code units) and invokes a callback for each character. Provides contextual information such as the character index and adjacent characters, and supports optional conditional skipping via a predicate.
+- `findCharIndices(inputString: string, targetChar: string): number[]` - Returns all zero-based indices where a given single character occurs in the input string. Operates on UTF-16 code units and returns an empty array if the character is not found.
 
 ### Object Utilities
 
