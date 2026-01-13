@@ -5,4 +5,10 @@
  *
  * @returns An array of words from the input string.
  */
-export const splitStringIntoWords = (input: string): string[] => input.split(' ').filter(Boolean);
+export const splitStringIntoWords = (input: string): string[] => {
+  if (input.length === 0) {
+    return [];
+  }
+
+  return input.split(' ').filter(Boolean);
+};

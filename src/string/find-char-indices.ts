@@ -6,22 +6,22 @@
  * ⚠️ Character comparison is performed at the UTF-16 code unit level
  * (`String.charCodeAt`), not by Unicode grapheme clusters.
  *
- * @param inputString - The string to scan.
+ * @param input - The string to scan.
  * @param targetChar - A single character to search for.
  *
  * @returns An array of zero-based indices for each occurrence of `targetChar`.
  *  Returns an empty array if no matches are found.
  */
-export const findCharIndices = (inputString: string, targetChar: string): number[] => {
-  if (inputString.length === 0) {
+export const findCharIndices = (input: string, targetChar: string): number[] => {
+  if (input.length === 0) {
     return [];
   }
 
   const targetCode = targetChar.charCodeAt(0);
   const indices: number[] = [];
 
-  for (let i = 0; i < inputString.length; i++) {
-    if (inputString.charCodeAt(i) === targetCode) {
+  for (let i = 0; i < input.length; i++) {
+    if (input.charCodeAt(i) === targetCode) {
       indices.push(i);
     }
   }

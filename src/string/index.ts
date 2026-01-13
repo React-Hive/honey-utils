@@ -7,3 +7,4 @@ export * from './is-nil-or-empty-string';
 export * from './parse-file-name';
 export * from './find-char-indices';
 export * from './for-each-char';
+export * from './get-words-initials';
