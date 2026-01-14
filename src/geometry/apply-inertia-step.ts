@@ -3,35 +3,35 @@ import { resolveBoundedDelta } from '~/geometry';
 
 export interface InertiaOptions {
   /**
-   * Current velocity of the motion, expressed in units per millisecond.
+   * Current velocity of the inertial motion.
    *
-   * The unit depends on the context in which inertia is applied:
-   * - `px/ms` for scrolling or dragging
-   * - arbitrary units for sliders or timelines
+   * Expressed in **pixels per millisecond (`px/ms`)**.
    *
-   * The sign indicates direction (positive or negative).
+   * The sign determines direction:
+   * - Positive → movement toward the upper bound
+   * - Negative → movement toward the lower bound
    */
-  velocity: number;
+  velocityPxMs: number;
   /**
    * Time elapsed since the previous inertia step, in milliseconds.
    *
-   * This value is typically derived from a high-resolution clock such as `performance.now()`
-   * and allows inertia behavior to remain frame-rate independent.
+   * This value is typically derived from a high-resolution timestamp
+   * (e.g. `performance.now()`), ensuring frame-rate-independent behavior.
    */
-  deltaTime: number;
+  deltaTimeMs: number;
   /**
-   * Exponential friction coefficient controlling how quickly velocity decays over time.
+   * Exponential friction coefficient controlling how quickly velocity decays.
    *
-   * This value is applied per millisecond and produces smooth, natural-feeling
-   * deceleration when used with an exponential decay model.
+   * The decay is applied per millisecond using an exponential model:
    *
-   * Smaller values result in a longer glide; larger values cause inertia
-   * to stop more quickly.
+   * `velocityPxMs *= exp(-friction * deltaTimeMs)`
+   *
+   * Smaller values produce longer, floatier motion; larger values result in a quicker stop.
    *
    * Typical values:
-   * - `0.001` – very long, floaty motion
-   * - `0.002` – balanced, natural decay (default)
-   * - `0.005` – quick stop
+   * - `0.001` — very long, floaty inertia
+   * - `0.002` — balanced, natural decay (default)
+   * - `0.005` — short, snappy stop
    *
    * @default 0.002
    */
@@ -39,22 +39,22 @@ export interface InertiaOptions {
   /**
    * Minimum absolute velocity below which inertia is considered complete.
    *
-   * When the absolute value of the current velocity drops below this threshold,
-   * no further movement is applied and inertia terminates.
+   * When `|velocityPxMs| < minVelocityPxMs`, inertia terminates and no further movement is applied.
    *
-   * This prevents unnecessary micro-updates and jitter near rest.
+   * This prevents unnecessary micro-updates and visual jitter near rest.
    *
    * @default 0.01
    */
-  minVelocity?: number;
+  minVelocityPxMs?: number;
 }
 
 interface ApplyInertiaStepOptions extends InertiaOptions {
   /**
-   * Current value before applying the inertia step.
+   * Current numeric value before applying the inertia step.
    *
-   * This typically represents a translated position (e.g. scroll offset),
-   * but may be any bounded numeric value.
+   * This commonly represents a translated position
+   * (e.g. scroll offset or `translateX` value),
+   * but may be any numeric value constrained by bounds.
    */
   value: number;
   /**
@@ -68,87 +68,75 @@ interface ApplyInertiaStepOptions extends InertiaOptions {
 }
 
 /**
- * Advances a value by one inertia step using velocity, friction, and hard bounds.
+ * Result of a single inertia simulation step.
  *
- * This utility models **inertial motion** (momentum + decay) on top of
- * {@link resolveBoundedDelta}, which acts as the authoritative constraint layer.
+ * Returned when inertia is still active and further movement
+ * in the current direction is possible.
+ */
+export interface InertiaStepResult {
+  /**
+   * Updated value after applying the inertial step.
+   */
+  value: number;
+  /**
+   * Updated velocity after applying exponential decay.
+   *
+   * Expressed in pixels per millisecond (`px/ms`).
+   */
+  velocityPxMs: number;
+}
+
+/**
+ * Advances a value by a single inertial step using velocity,
+ * elapsed time, exponential friction, and hard bounds.
  *
- * The function:
- * - Integrates velocity over the elapsed time to produce a movement delta
- * - Resolves that delta against fixed bounds
- * - Applies exponential friction to gradually reduce velocity
- * - Stops immediately when a bound is hit or velocity falls below a threshold
+ * This function models **momentum-driven motion** and delegates
+ * boundary enforcement to {@link resolveBoundedDelta}, which guarantees:
+ * - no overshoot
+ * - no jitter at bounds
+ * - deterministic stopping behavior
  *
- * ⚠️ This function performs **one step only** and is intended to be called
- * repeatedly from an animation loop (e.g. `requestAnimationFrame`).
+ * ---
+ *
+ * ### Termination conditions
+ * Inertia stops immediately when:
+ * - the absolute velocity falls below `minVelocityPxMs`, or
+ * - movement in the current direction is blocked by a bound
+ *
+ * ---
+ *
+ * ⚠️ **Single-step function**
+ * This function performs **one inertia step only**.
+ * It must be called repeatedly from an animation loop
+ * (e.g. `requestAnimationFrame`) to produce continuous motion.
+ *
+ * ---
  *
  * ### Common use cases
  * - Synthetic scrolling with momentum
+ * - Drag-to-scroll interactions
  * - Carousels and sliders
  * - Timelines and scrubbers
- * - Drag-to-scroll interactions with inertia
  *
- * @param value - Current value before applying inertia (e.g. translate position).
- * @param min - Minimum allowed value (inclusive).
- * @param max - Maximum allowed value (inclusive).
- * @param velocity - Current velocity in units per millisecond (e.g. px/ms).
- * @param deltaTime - Time elapsed since the previous step, in milliseconds.
- * @param friction - Exponential friction coefficient controlling decay rate.
- * @param minVelocity - Minimum velocity below which inertia stops.
- *
- * @returns An object containing the updated value and velocity,
- *          or `null` when inertia has completed or movement is no longer possible.
- *
- * @example
- * ```ts
- * let value = translateX;
- * let velocity = releaseVelocity; // px/ms from drag end
- * let lastTime = performance.now();
- *
- * const step = (time: number) => {
- *   const deltaTime = time - lastTime;
- *   lastTime = time;
- *
- *   const result = applyInertiaStep({
- *     value,
- *     velocity,
- *     min: -maxOverflow,
- *     max: 0,
- *     deltaTime,
- *   });
- *
- *   if (!result) {
- *     return; // inertia finished
- *   }
- *
- *   value = result.value;
- *   velocity = result.velocity;
- *
- *   container.style.transform = `translateX(${value}px)`;
- *   requestAnimationFrame(step);
- * };
- *
- * requestAnimationFrame(step);
- * ```
+ * @returns An {@link InertiaStepResult} when inertia is still active,
+ *          or `null` when inertia has completed or further movement
+ *          is not possible.
  */
 export const applyInertiaStep = ({
   value,
   min,
   max,
-  velocity,
-  deltaTime,
+  velocityPxMs,
+  deltaTimeMs,
   friction = 0.002,
-  minVelocity = 0.01,
-}: ApplyInertiaStepOptions): Nullable<{
-  value: number;
-  velocity: number;
-}> => {
-  if (Math.abs(velocity) < minVelocity) {
+  minVelocityPxMs = 0.01,
+}: ApplyInertiaStepOptions): Nullable<InertiaStepResult> => {
+  if (Math.abs(velocityPxMs) < minVelocityPxMs) {
     return null;
   }
 
   // Distance we want to move this frame
-  const delta = velocity * deltaTime;
+  const delta = velocityPxMs * deltaTimeMs;
 
   const nextValue = resolveBoundedDelta({
     delta,
@@ -163,11 +151,11 @@ export const applyInertiaStep = ({
   }
 
   // Apply exponential friction
-  const decay = Math.exp(-friction * deltaTime);
-  const nextVelocity = velocity * decay;
+  const decay = Math.exp(-friction * deltaTimeMs);
+  const nextVelocityPxMs = velocityPxMs * decay;
 
   return {
     value: nextValue,
-    velocity: nextVelocity,
+    velocityPxMs: nextVelocityPxMs,
   };
 };

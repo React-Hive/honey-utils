@@ -636,7 +636,7 @@ function divide(a: number, b: number): number {
 ---
 
 - `resolveBoundedDelta(options: ResolveBoundedDeltaOptions): Nullable<number>` – Resolves the next numeric value by consuming a delta within fixed bounds. Prevents overshoot, partially consumes deltas at boundaries, and returns `null` when movement in the given direction is no longer possible. Useful for drag constraints, sliders, synthetic scrolling, and inertia systems.
-- `applyInertiaStep(options: ApplyInertiaStepOptions): Nullable<{ value: number; velocity: number }>` – Applies a single inertia step on top of bounded delta resolution using velocity integration and exponential friction. Intended to be called from an animation loop (e.g. `requestAnimationFrame`) to implement momentum-based scrolling, sliders, or carousels. Returns updated value and velocity, or `null` when inertia has completed.
+- `applyInertiaStep(options: ApplyInertiaStepOptions): Nullable<InertiaStepResult>` - Advances a value by **one momentum (inertia) step** using velocity integration, exponential friction, and hard bounds. Designed to be called repeatedly from an animation loop (e.g. `requestAnimationFrame`) to implement native-feeling inertial motion such as momentum scrolling, carousels, sliders, and timelines. Returns the updated value and velocity while inertia is active, or `null` when inertia has completed or further movement is no longer possible.
 
 #### Layout
 
