@@ -156,11 +156,8 @@ export const applyInertiaStep = ({
     return null;
   }
 
-  // Distance we want to move this frame
-  const delta = velocityPxMs * deltaTimeMs;
-
   const nextValue = resolveBoundedDelta({
-    delta,
+    delta: velocityPxMs * deltaTimeMs,
     value,
     min,
     max,
@@ -171,7 +168,10 @@ export const applyInertiaStep = ({
     return null;
   }
 
-  // Apply exponential friction
+  /**
+   * Apply exponential friction.
+   * The exponent is **negative** because friction must continuously *reduce* velocity over time.
+   */
   const decay = Math.exp(-friction * deltaTimeMs);
   const pureVelocityPxMs = velocityPxMs * decay;
 
