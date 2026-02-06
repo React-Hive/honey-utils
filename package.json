@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-utils",
-  "version": "3.21.0",
+  "version": "3.22.0",
   "description": "A lightweight TypeScript utility library providing a collection of helper functions for common programming tasks",
   "keywords": [
     "utils",
@@ -22,7 +22,7 @@
     "type": "git",
     "url": "git+ssh://git@github.com/React-Hive/honey-utils.git"
   },
-  "author": "Mykhailo Aliinyk <m.aliynik@gmail.com>",
+  "author": "Mike Aliinyk <m.aliynik@gmail.com>",
   "license": "MIT",
   "scripts": {
     "build": "webpack --config webpack.config.mjs",

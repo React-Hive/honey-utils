@@ -13,7 +13,7 @@
  * - Temporary UI keys (e.g. React lists, animations)
  * - In-memory references scoped to a single runtime
  *
- * @returns An ephemeral identifier string.
+ * @returns An ephemeral string identifier.
  */
 export const generateEphemeralId = (): string => {
   const timestampPart = Math.floor(performance.now() * 1000).toString(36);
