@@ -557,6 +557,7 @@ function divide(a: number, b: number): number {
 - `forEachChar(input: string, onChar: CharHandler, shouldSkipChar?: CharPredicate): void` - Iterates over each character of a string (UTF-16 code units) and invokes a callback for each character. Provides contextual information such as the character index and adjacent characters, and supports optional conditional skipping via a predicate.
 - `findCharIndices(input: string, targetChar: string): number[]` - Returns all zero-based indices where a given single character occurs in the input string. Operates on UTF-16 code units and returns an empty array if the character is not found.
 - `getWordsInitials(input: string, maxWords?: number): string` - Returns the uppercase initials of the words in a string. The number of processed words can be limited via `maxWords`.
+- `splitMapJoin(input: string, separator: string, mapFn: (part: string, index: number) => string, joinWith?: string): string` - Splits a string by a separator, applies a transformation function to each trimmed part, and joins the results back together. Useful for processing comma-separated selectors or any delimited string.
 
 ### Object Utilities
 

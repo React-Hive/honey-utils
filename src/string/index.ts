@@ -8,3 +8,4 @@ export * from './parse-file-name';
 export * from './find-char-indices';
 export * from './for-each-char';
 export * from './get-words-initials';
+export * from './split-map-join';
