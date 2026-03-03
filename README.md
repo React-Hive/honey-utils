@@ -559,6 +559,12 @@ function divide(a: number, b: number): number {
 - `getWordsInitials(input: string, maxWords?: number): string` - Returns the uppercase initials of the words in a string. The number of processed words can be limited via `maxWords`.
 - `splitMapJoin(input: string, separator: string, mapFn: (part: string, index: number) => string, joinWith?: string): string` - Splits a string by a separator, applies a transformation function to each trimmed part, and joins the results back together. Useful for processing comma-separated selectors or any delimited string.
 
+### Color Utilities
+
+---
+
+- `hexWithAlpha(hex: string, alpha: number): HexColor` - Adds an alpha channel to a 3- or 6-digit HEX color and returns a normalized 8-digit HEX color in #RRGGBBAA format.
+
 ### Object Utilities
 
 ---
