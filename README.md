@@ -674,6 +674,12 @@ function divide(a: number, b: number): number {
 
 - `parse2DMatrix(element: HTMLElement): { translateX: number, translateY: number, scaleX: number, scaleY: number, skewX: number, skewY: number }` - Extracts transformation values (translate, scale, skew) from the 2D transformation matrix of a given HTML element.
 
+#### Data Transfer
+
+- `DATA_TRANSFER_JSON_MIME: string` - MIME type constant (`application/json`) used for storing serialized JSON data inside the browser `DataTransfer` API.
+- `setDataTransferJson<T>(dataTransfer: DataTransfer, data: T): void` - Serializes a JavaScript value to JSON and stores it in a `DataTransfer` object using the `application/json` MIME type. Commonly used in drag-and-drop interactions to transfer structured data between elements.
+- `getDataTransferJson<T>(dataTransfer: DataTransfer): T | undefined` - Retrieves and parses JSON data previously stored in a `DataTransfer` object using `setDataTransferJson`. Returns `undefined` when no data is present or when the JSON parsing fails.
+
 ### File Utilities
 
 ---
