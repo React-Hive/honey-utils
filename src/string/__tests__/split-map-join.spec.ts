@@ -1,3 +1,5 @@
+import { expect, it, describe } from 'vitest';
+
 import { splitMapJoin } from '~/string';
 
 describe('[splitMapJoin]: split + map + join string utility', () => {

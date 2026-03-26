@@ -1,3 +1,5 @@
+import { expect, it, describe } from 'vitest';
+
 import { flattenTree } from '~/tree';
 
 describe('[flattenTree]: flatten hierarchical trees', () => {

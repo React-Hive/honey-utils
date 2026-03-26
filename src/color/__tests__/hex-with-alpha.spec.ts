@@ -1,3 +1,5 @@
+import { expect, it, describe } from 'vitest';
+
 import { hexWithAlpha } from '~/color';
 
 describe('[hexWithAlpha]: basic behavior', () => {
