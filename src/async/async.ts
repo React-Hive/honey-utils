@@ -1,5 +1,5 @@
 import type { Nullable } from '~/types';
-import { compact } from '~/array/array';
+import { compact } from '~/array';
 import { isFunction } from '~/function';
 
 /**
