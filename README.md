@@ -584,6 +584,7 @@ function divide(a: number, b: number): number {
 - `difference<T>(array: T[], exclude: T[]): T[]` - Returns a new array that contains items from `array` that are not present in `exclude`.
 - `pipe(...fns: Function[]): Function` - Composes unary functions left-to-right. Returns a new function that applies all given functions in a sequence.
 - `compose(...fns: Function[]): Function` - Composes unary functions **right-to-left**. Same as `pipe`, but applies functions in reverse order.
+- `getAdjacentItems<T>(items: Nullable<T[]> | undefined, targetItem: Nullable<T> | undefined, isSameItem: (item: T, targetItem: T) => boolean): AdjacentItems` - Returns the previous, current, and next items for the matched item in the array. If the target is not found, all returned values are `null`.
 
 ### Function Utilities
 

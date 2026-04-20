@@ -1,5 +1,3 @@
-import { expect, it, afterEach, describe } from 'vitest';
-
 import { generateEphemeralId } from './generate-ephemeral-id';
 
 describe('generateEphemeralId', () => {

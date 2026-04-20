@@ -1,5 +1,3 @@
-import { expect, it, describe } from 'vitest';
-
 import { resolveBoundedDelta } from './resolve-bounded-delta';
 
 describe('resolveBoundedDelta', () => {
