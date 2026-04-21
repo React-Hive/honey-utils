@@ -648,7 +648,8 @@ function divide(a: number, b: number): number {
 
 #### Layout
 
-- `calculateCenterOffset(options: CalculateCenterOffsetOptions): number` - Calculates a clamped offset value that centers an element within a container along a single axis. Returns a negative value suitable for use in a CSS `translate` transform, or `0` when no overflow exists.
+- `calculateCenterOffset(options: CalculateCenterOffsetOptions): number` - Calculates the raw offset required to center an element within a container along a single axis. Returns a negative value suitable for use in a CSS `translate` transform.
+- `clampOffsetToOverflow(offset: number, overflowSize: number): number` - Clamps a negative translate offset to the available overflow bounds. Returns `0` when no overflow exists.
 
 ### DOM Utilities
 
