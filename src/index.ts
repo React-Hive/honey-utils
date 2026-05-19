@@ -15,3 +15,5 @@ export * from './string';
 export * from './tree';
 export * from './types';
 export * from './color';
+export * from './json';
+export * from './encoding';

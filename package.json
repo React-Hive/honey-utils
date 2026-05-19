@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-utils",
-  "version": "3.31.0",
+  "version": "3.32.0",
   "description": "A lightweight TypeScript utility library providing a collection of helper functions for common programming tasks",
   "keywords": [
     "utils",
@@ -48,15 +48,14 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@mdx-js/loader": "3.1.1",
-    "@types/node": "22.19.17",
+    "@types/node": "24.12.4",
     "copy-webpack-plugin": "14.0.0",
-    "eslint": "10.2.1",
-    "eslint-plugin-react": "7.37.5",
+    "eslint": "10.4.0",
     "prettier": "3.8.3",
     "ts-loader": "9.5.7",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.58.2",
-    "vitest": "4.1.4",
+    "typescript-eslint": "8.59.4",
+    "vitest": "4.1.6",
     "webpack": "5.106.2",
     "webpack-cli": "7.0.2"
   }
