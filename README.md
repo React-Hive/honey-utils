@@ -758,7 +758,7 @@ function divide(a: number, b: number): number {
 
 - `DATA_TRANSFER_JSON_MIME: string` - MIME type constant (`application/json`) used for storing serialized JSON data inside the browser `DataTransfer` API.
 - `setDataTransferJson<T>(dataTransfer: DataTransfer, data: T): void` - Serializes a JavaScript value to JSON and stores it in a `DataTransfer` object using the `application/json` MIME type. Commonly used in drag-and-drop interactions to transfer structured data between elements.
-- `getDataTransferJson<T>(dataTransfer: DataTransfer): T | undefined` - Retrieves and parses JSON data previously stored in a `DataTransfer` object using `setDataTransferJson`. Returns `undefined` when no data is present or when the JSON parsing fails.
+- `getDataTransferJson<Value>(dataTransfer: DataTransfer): Nullable<Value>` - Retrieves and parses JSON data previously stored in a `DataTransfer` object using `setDataTransferJson`. Returns `null` when no data is present or when JSON parsing fails.
 
 ### File Utilities
 

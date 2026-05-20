@@ -14,27 +14,27 @@ describe('[decodeBase64]: decode base64 string utility', () => {
   });
 
   it('should decode text with spaces and special characters', () => {
-    const result = decodeBase64('SGVsbG8sIE1pa2UhIDElICQjQA==');
+    const result = decodeBase64('QXBwbGUsIGJhbmFuYSEgMSUgJCM=');
 
-    expect(result).toBe('Hello, Mike! 1% $#@');
+    expect(result).toBe('Apple, banana! 1% $#');
   });
 
   it('should decode JSON string from base64', () => {
-    const result = decodeBase64('eyJuYW1lIjoiTWlrZSIsImFnZSI6MzN9');
+    const result = decodeBase64('eyJmcnVpdCI6ImFwcGxlIiwicXVhbnRpdHkiOjN9');
 
-    expect(result).toBe('{"name":"Mike","age":33}');
+    expect(result).toBe('{"fruit":"apple","quantity":3}');
   });
 
   it('should decode unicode text from base64', () => {
-    const result = decodeBase64('0J/RgNC40LLQtdGCINC80LjRgA==');
+    const result = decodeBase64('0Y/QsdC70L7QutC+');
 
-    expect(result).toBe('Привет мир');
+    expect(result).toBe('яблоко');
   });
 
   it('should decode emoji text from base64', () => {
-    const result = decodeBase64('SGVsbG8g8J+Riw==');
+    const result = decodeBase64('QXBwbGUg8J+Njg==');
 
-    expect(result).toBe('Hello 👋');
+    expect(result).toBe('Apple 🍎');
   });
 
   it('should return null for invalid base64 input', () => {

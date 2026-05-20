@@ -3,32 +3,32 @@ import { parseJson } from '~/json';
 describe('[parseJson]: parse JSON string utility', () => {
   it('should parse object JSON', () => {
     const result = parseJson<{
-      name: string;
-      age: number;
-    }>('{"name":"Mike","age":33}');
+      fruit: string;
+      quantity: number;
+    }>('{"fruit":"apple","quantity":3}');
 
     expect(result).toStrictEqual({
-      name: 'Mike',
-      age: 33,
+      fruit: 'apple',
+      quantity: 3,
     });
   });
 
   it('should parse array JSON', () => {
-    const result = parseJson<number[]>('[1,2,3]');
+    const result = parseJson<string[]>('["apple","banana","orange"]');
 
-    expect(result).toStrictEqual([1, 2, 3]);
+    expect(result).toStrictEqual(['apple', 'banana', 'orange']);
   });
 
   it('should parse string JSON', () => {
-    const result = parseJson<string>('"Hello world"');
+    const result = parseJson<string>('"apple"');
 
-    expect(result).toBe('Hello world');
+    expect(result).toBe('apple');
   });
 
   it('should parse number JSON', () => {
-    const result = parseJson<number>('123');
+    const result = parseJson<number>('3');
 
-    expect(result).toBe(123);
+    expect(result).toBe(3);
   });
 
   it('should parse boolean JSON', () => {
@@ -50,13 +50,13 @@ describe('[parseJson]: parse JSON string utility', () => {
   });
 
   it('should return null for invalid JSON', () => {
-    const result = parseJson('{name:"Mike"}');
+    const result = parseJson('{fruit:"apple"}');
 
     expect(result).toBeNull();
   });
 
   it('should return null for malformed JSON', () => {
-    const result = parseJson('{"name":"Mike"');
+    const result = parseJson('{"fruit":"apple"');
 
     expect(result).toBeNull();
   });

@@ -1,3 +1,6 @@
+import type { Nullable } from '~/types';
+import { parseJson } from '~/json';
+
 export const DATA_TRANSFER_JSON_MIME = 'application/json';
 
 /**
@@ -17,17 +20,13 @@ export const setDataTransferJson = <T>(dataTransfer: DataTransfer, data: T): voi
  *
  * @param dataTransfer DataTransfer instance from a drop event.
  *
- * @returns Parsed JSON value or undefined if not present or invalid.
+ * @returns Parsed JSON value or null if not present or invalid.
  */
-export const getDataTransferJson = <T>(dataTransfer: DataTransfer): T | undefined => {
+export const getDataTransferJson = <Value>(dataTransfer: DataTransfer): Nullable<Value> => {
   const rawData = dataTransfer.getData(DATA_TRANSFER_JSON_MIME);
   if (!rawData) {
-    return undefined;
+    return null;
   }
 
-  try {
-    return JSON.parse(rawData) as T;
-  } catch {
-    return undefined;
-  }
+  return parseJson<Value>(rawData);
 };

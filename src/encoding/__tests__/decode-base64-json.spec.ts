@@ -3,32 +3,32 @@ import { decodeBase64Json } from '~/encoding';
 describe('[decodeBase64Json]: decode base64 JSON string utility', () => {
   it('should decode and parse object JSON from base64', () => {
     const result = decodeBase64Json<{
-      name: string;
-      age: number;
-    }>('eyJuYW1lIjoiTWlrZSIsImFnZSI6MzN9');
+      fruit: string;
+      quantity: number;
+    }>('eyJmcnVpdCI6ImFwcGxlIiwicXVhbnRpdHkiOjN9');
 
     expect(result).toStrictEqual({
-      name: 'Mike',
-      age: 33,
+      fruit: 'apple',
+      quantity: 3,
     });
   });
 
   it('should decode and parse array JSON from base64', () => {
-    const result = decodeBase64Json<number[]>('WzEsMiwzXQ==');
+    const result = decodeBase64Json<string[]>('WyJhcHBsZSIsImJhbmFuYSIsIm9yYW5nZSJd');
 
-    expect(result).toStrictEqual([1, 2, 3]);
+    expect(result).toStrictEqual(['apple', 'banana', 'orange']);
   });
 
   it('should decode and parse string JSON from base64', () => {
-    const result = decodeBase64Json<string>('IkhlbGxvIHdvcmxkIg==');
+    const result = decodeBase64Json<string>('ImFwcGxlIg==');
 
-    expect(result).toBe('Hello world');
+    expect(result).toBe('apple');
   });
 
   it('should decode and parse number JSON from base64', () => {
-    const result = decodeBase64Json<number>('MTIz');
+    const result = decodeBase64Json<number>('Mw==');
 
-    expect(result).toBe(123);
+    expect(result).toBe(3);
   });
 
   it('should decode and parse boolean JSON from base64', () => {
@@ -45,11 +45,11 @@ describe('[decodeBase64Json]: decode base64 JSON string utility', () => {
 
   it('should decode and parse unicode JSON from base64', () => {
     const result = decodeBase64Json<{
-      message: string;
-    }>('eyJtZXNzYWdlIjoi0J/RgNC40LLQtdGCINC80LjRgCJ9');
+      fruit: string;
+    }>('eyJmcnVpdCI6ItGP0LHQu9C+0LrQviJ9');
 
     expect(result).toStrictEqual({
-      message: 'Привет мир',
+      fruit: 'яблоко',
     });
   });
 
@@ -72,7 +72,7 @@ describe('[decodeBase64Json]: decode base64 JSON string utility', () => {
   });
 
   it('should return null for malformed decoded JSON', () => {
-    const result = decodeBase64Json('eyJuYW1lIjoiTWlrZSI=');
+    const result = decodeBase64Json('eyJmcnVpdCI6ImFwcGxlIg==');
 
     expect(result).toBeNull();
   });
