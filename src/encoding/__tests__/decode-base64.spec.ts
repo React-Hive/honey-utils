@@ -42,4 +42,62 @@ describe('[decodeBase64]: decode base64 string utility', () => {
 
     expect(result).toBeNull();
   });
+
+  it('should return null for unpadded base64 input', () => {
+    const result = decodeBase64('SGVsbG8gd29ybGQ');
+
+    expect(result).toBeNull();
+  });
+
+  it('should return null when decoded bytes are not valid UTF-8', () => {
+    const result = decodeBase64('wyg=');
+
+    expect(result).toBeNull();
+  });
+
+  it('should keep a leading byte order mark', () => {
+    const result = decodeBase64('77u/QQ==');
+
+    expect(result).toBe('﻿A');
+  });
+
+  describe('without Buffer', () => {
+    beforeEach(() => {
+      vi.stubGlobal('Buffer', undefined);
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it('should decode plain text from base64', () => {
+      const result = decodeBase64('SGVsbG8gd29ybGQ=');
+
+      expect(result).toBe('Hello world');
+    });
+
+    it('should decode unicode text from base64', () => {
+      const result = decodeBase64('0Y/QsdC70L7QutC+');
+
+      expect(result).toBe('яблоко');
+    });
+
+    it('should decode emoji text from base64', () => {
+      const result = decodeBase64('QXBwbGUg8J+Njg==');
+
+      expect(result).toBe('Apple 🍎');
+    });
+
+    it('should return null when decoded bytes are not valid UTF-8', () => {
+      const result = decodeBase64('wyg=');
+
+      expect(result).toBeNull();
+    });
+
+    it('should keep a leading byte order mark', () => {
+      const result = decodeBase64('77u/QQ==');
+
+      expect(result).toBe('﻿A');
+    });
+  });
 });

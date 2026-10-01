@@ -17,7 +17,7 @@ A lightweight TypeScript utility library providing a collection of helper functi
 - 🧮 **Math Utilities** - Common mathematical calculations
 - 🎯 **Function Utilities** - Function handling helpers
 - 🖥️ **DOM Utilities** - Browser DOM manipulation helpers
-- 🧬 **Encoding Utilities** - Base64 decoding and encoded JSON helpers
+- 🧬 **Encoding Utilities** - Base64 encoding and decoding, and encoded JSON helpers
 - 🧾 **JSON Utilities** - Safe JSON parsing
 - 📦 **Zero Dependencies** - Lightweight and dependency-free
 - 📝 **TypeScript Support** - Full TypeScript type definitions
@@ -105,7 +105,12 @@ const hash = hashString('background-color: red;');
 ### Encoding Utilities
 
 ```ts
-import { decodeBase64, decodeBase64Json } from '@react-hive/honey-utils';
+import {
+  decodeBase64,
+  decodeBase64Json,
+  encodeBase64,
+  encodeBase64Json,
+} from '@react-hive/honey-utils';
 
 /**
  * Decode a base64 string
@@ -130,6 +135,24 @@ decodeBase64Json<{ name: string; age: number }>('eyJuYW1lIjoiTWlrZSIsImFnZSI6MzN
  */
 decodeBase64Json('invalid');
 // ➜ null
+
+/**
+ * Encode a string as base64
+ */
+encodeBase64('Hello world');
+// ➜ 'SGVsbG8gd29ybGQ='
+
+/**
+ * Unicode text is encoded from its UTF-8 bytes
+ */
+encodeBase64('Привет мир');
+// ➜ '0J/RgNC40LLQtdGCINC80LjRgA=='
+
+/**
+ * Serialize a value as JSON and encode it as base64
+ */
+encodeBase64Json({ name: 'Mike', age: 33 });
+// ➜ 'eyJuYW1lIjoiTWlrZSIsImFnZSI6MzN9'
 ```
 
 ### JSON Utilities
@@ -176,6 +199,7 @@ import {
     chunk,
     intersection,
     difference,
+    toggleArrayItem,
     pipe,
     compose,
 } from '@react-hive/honey-utils';
@@ -225,6 +249,16 @@ intersection([1, 2, 3], [2, 3, 4]);
  */
 difference([1, 2, 3, 4], [2, 4]);
 // ➜ [1, 3]
+
+/**
+ * Add an item to an array or remove it
+ */
+toggleArrayItem(['a', 'b'], 'c', true);
+// ➜ ['a', 'b', 'c']
+toggleArrayItem(['a', 'b'], 'b', false);
+// ➜ ['a']
+toggleArrayItem(['a', 'b'], 'a');
+// ➜ ['b']
 
 /**
  * Compose functions from left to right
@@ -492,7 +526,8 @@ isSet(new Set());
 import {
     calculateEuclideanDistance,
     calculateMovingSpeed,
-    calculatePercentage 
+    calculatePercentage,
+    clamp,
 } from '@react-hive/honey-utils';
 
 /**
@@ -512,12 +547,18 @@ calculateMovingSpeed(100, 5);
  */
 calculatePercentage(200, 25);
 // ➜ 50
+
+/**
+ * Restrict a number to a range
+ */
+clamp(42, 0, 10);
+// ➜ 10
 ```
 
 ### DOM Utilities
 
 ```ts
-import { parse2DMatrix, cloneBlob } from '@react-hive/honey-utils';
+import { parse2DMatrix, cloneBlob, replaceHistorySearchParams } from '@react-hive/honey-utils';
 
 /**
  * Extract transformation values from an HTML element's 2D matrix
@@ -539,6 +580,16 @@ const clonedBlob = cloneBlob(originalBlob);
 
 console.log(clonedBlob.type);
 // ➜ 'text/plain'
+
+/**
+ * Replace the query string of the current URL without adding a history entry
+ */
+const searchParams = new URLSearchParams(window.location.search);
+
+searchParams.set('page', '2');
+
+replaceHistorySearchParams(searchParams);
+// ➜ /products?page=2#reviews
 ```
 
 ### File Utilities
@@ -628,8 +679,10 @@ function divide(a: number, b: number): number {
 
 ---
 
-- `decodeBase64(value: string): Nullable<string>` - Decodes a base64-encoded string into UTF-8 text. Returns `null` when decoding fails.
+- `decodeBase64(value: string): Nullable<string>` - Decodes a base64-encoded string into UTF-8 text. Returns `null` when the value is not padded standard base64 or its bytes are not valid UTF-8.
 - `decodeBase64Json<Value>(value: string): Nullable<Value>` - Decodes a base64-encoded string and safely parses the decoded result as JSON. Returns `null` when base64 decoding fails or when the decoded value is not valid JSON.
+- `encodeBase64(value: string): string` - Encodes a string as base64 from its UTF-8 bytes - the counterpart of `decodeBase64`.
+- `encodeBase64Json<Value>(value: Value): string` - Serializes a value as JSON and encodes the result as base64 - the counterpart of `decodeBase64Json`. Throws as `JSON.stringify` does, for a circular structure or a `BigInt`.
 
 ### JSON Utilities
 
@@ -663,6 +716,7 @@ function divide(a: number, b: number): number {
 - `pipe(...fns: Function[]): Function` - Composes unary functions left-to-right. Returns a new function that applies all given functions in a sequence.
 - `compose(...fns: Function[]): Function` - Composes unary functions **right-to-left**. Same as `pipe`, but applies functions in reverse order.
 - `getAdjacentItems<T>(items: Nullable<T[]> | undefined, targetItem: Nullable<T> | undefined, isSameItem: (item: T, targetItem: T) => boolean): AdjacentItems` - Returns the previous, current, and next items for the matched item in the array. If the target is not found, all returned values are `null`.
+- `toggleArrayItem<T>(array: T[], item: T, isIncluded?: boolean): T[]` - Adds an item to an array or removes it, without changing the source array. `isIncluded` says whether the item should be in the array; when omitted, the item's presence is flipped. Returns the source array itself when it already is as asked, and never adds an item already present a second time.
 
 ### Function Utilities
 
@@ -707,6 +761,7 @@ function divide(a: number, b: number): number {
 - `calculateMovingSpeed(distance: number, elapsedTime: number): number` - Calculates moving speed.
 - `calculatePercentage(value: number, percentage: number): number` - Calculates the specified percentage of a value.
 - `hashString(input: string): string` - Generates a short hash from a string.
+- `clamp(value: number, min: number, max: number): number` - Restricts a number to the inclusive range between `min` and `max`. `max` wins when the bounds cross.
 
 ### ENV
 
@@ -741,6 +796,10 @@ function divide(a: number, b: number): number {
 #### File
 
 - `downloadFile(file: Downloadable, options?: DownloadFileOptions): void` - Initiates a file download in a browser environment from a URL string or binary source (`Blob` / `MediaSource`). Automatically creates and revokes object URLs when required and safely no-ops in non-DOM environments (e.g. SSR).
+
+#### History
+
+- `replaceHistorySearchParams(searchParams: URLSearchParams): void` - Replaces the query string of the current URL with `history.replaceState()`, without navigating or adding a history entry. Keeps the path, the hash and the history entry's state, which routers such as React Router keep their own bookkeeping in. Empty search params remove the query string altogether.
 
 #### Layout
 
