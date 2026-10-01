@@ -233,3 +233,30 @@ export const isInteger = (value: unknown): value is number =>
  */
 export const isDecimal = (value: unknown): value is number =>
   isFiniteNumber(value) && !Number.isInteger(value);
+
+/**
+ * Checks if a value is one of a string enum's values.
+ *
+ * @template Value - The type of the enum's values.
+ *
+ * @param enumObject - The enum, or any object whose values are the allowed strings.
+ * @param value - The value to check.
+ *
+ * @returns `true` if the value is one of the enum's values; otherwise, `false`.
+ *
+ * @example
+ * ```ts
+ * enum Fruit {
+ *   APPLE = 'apple',
+ *   PEAR = 'pear',
+ * }
+ *
+ * isEnumValue(Fruit, 'apple'); // true
+ * isEnumValue(Fruit, 'APPLE'); // false
+ * isEnumValue(Fruit, null); // false
+ * ```
+ */
+export const isEnumValue = <Value extends string>(
+  enumObject: Record<string, Value>,
+  value: unknown,
+): value is Value => Object.values<unknown>(enumObject).includes(value);

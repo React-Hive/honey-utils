@@ -442,7 +442,8 @@ import {
     isValidDate,
     isRegExp,
     isMap,
-    isSet
+    isSet,
+    isEnumValue,
 } from '@react-hive/honey-utils';
 
 /**
@@ -518,6 +519,19 @@ isMap(new Map());
 // ➜ true
 isSet(new Set());
 // ➜ true
+
+/**
+ * Check if value is one of a string enum's values
+ */
+enum Fruit {
+  APPLE = 'apple',
+  PEAR = 'pear',
+}
+
+isEnumValue(Fruit, 'apple');
+// ➜ true
+isEnumValue(Fruit, 'APPLE');
+// ➜ false
 ```
 
 ### Math Utilities
@@ -752,6 +766,7 @@ function divide(a: number, b: number): number {
 - `isSymbol(value: unknown): value is symbol` - Checks if a value is a `Symbol`.
 - `isBlob(value: unknown): value is Blob` — Checks if a value is a `Blob`.
 - `isError(value: unknown): value is Error` — Checks if a value is an `Error` object.
+- `isEnumValue<Value extends string>(enumObject: Record<string, Value>, value: unknown): value is Value` - Checks if a value is one of a string enum's values, narrowing it to the enum's type.
 
 ### Math Utilities
 

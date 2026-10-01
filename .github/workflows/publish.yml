@@ -4,6 +4,11 @@ on:
     branches:
       - release
 
+permissions:
+  contents: read
+  # Lets pnpm publish through npm trusted publishing (OIDC), with provenance
+  id-token: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
