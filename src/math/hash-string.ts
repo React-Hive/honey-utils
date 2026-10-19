@@ -19,7 +19,7 @@
  * @example
  * ```ts
  * const className = hashString('background-color: red;');
- * // → 'e4k1z0x'
+ * // → '1s0s409'
  * ```
  */
 export const hashString = (input: string): string => {

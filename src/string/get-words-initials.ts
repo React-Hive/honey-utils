@@ -18,7 +18,7 @@ export const getWordsInitials = (input: string, maxWords = Infinity): string => 
 
   return splitStringIntoWords(input)
     .slice(0, maxWords)
-    .map(word => word[0])
+    .map(word => String.fromCodePoint(word.codePointAt(0) as number))
     .join('')
     .toUpperCase();
 };

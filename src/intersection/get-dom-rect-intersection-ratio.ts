@@ -7,7 +7,14 @@
  * @param sourceRect - The rectangle used to measure overlap against the target.
  * @param targetRect - The rectangle whose covered area is measured.
  *
- * @returns A number between `0` and `1` representing the intersection ratio.
+ * @returns A number between `0` and `1` representing the intersection ratio - `0` for a target
+ *          with no area, which nothing can cover.
+ *
+ * @example
+ * ```ts
+ * getDOMRectIntersectionRatio(new DOMRect(0, 0, 100, 100), new DOMRect(50, 0, 100, 100));
+ * // 0.5
+ * ```
  */
 export const getDOMRectIntersectionRatio = (sourceRect: DOMRect, targetRect: DOMRect): number => {
   const xOverlap = Math.max(
@@ -22,6 +29,10 @@ export const getDOMRectIntersectionRatio = (sourceRect: DOMRect, targetRect: DOM
 
   const intersectionArea = xOverlap * yOverlap;
   const targetArea = targetRect.width * targetRect.height;
+
+  if (targetArea <= 0) {
+    return 0;
+  }
 
   return intersectionArea / targetArea;
 };

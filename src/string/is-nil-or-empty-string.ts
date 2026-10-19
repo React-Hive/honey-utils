@@ -12,5 +12,5 @@ import { isNil } from '~/guards';
  *
  * @returns `true` if the value is empty; otherwise, `false`.
  */
-export const isNilOrEmptyString = (value: unknown): value is null | undefined =>
+export const isNilOrEmptyString = (value: unknown): value is null | undefined | '' =>
   value === '' || isNil(value);

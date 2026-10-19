@@ -1,4 +1,4 @@
-import { generateEphemeralId } from './generate-ephemeral-id';
+import { generateEphemeralId } from '~/id';
 
 describe('generateEphemeralId', () => {
   const originalNow = performance.now;

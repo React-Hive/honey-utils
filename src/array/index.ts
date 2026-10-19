@@ -9,3 +9,4 @@ export * from './is-array';
 export * from './is-empty-array';
 export * from './get-adjacent-items';
 export * from './toggle-array-item';
+export * from './to-map-by';

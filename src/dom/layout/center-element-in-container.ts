@@ -1,4 +1,4 @@
-import { getXOverflowWidth, getYOverflowHeight } from '~/dom';
+import { getXOverflowWidth, getYOverflowHeight } from './overflow';
 import { calculateCenterOffset, clampOffsetToOverflow } from '~/geometry';
 
 type Axis = 'x' | 'y' | 'both';

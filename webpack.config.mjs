@@ -5,6 +5,48 @@ import CopyPlugin from 'copy-webpack-plugin';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * `tsc` writes the `~/` alias into the declarations as it found it in the source
+ * (`import type { Nullable } from '~/types'`), and a consumer would resolve that against its own
+ * `~`, or not at all - and under `skipLibCheck` the type then falls to `any`. Rewrites every alias
+ * in an emitted `.d.ts` to the relative path it stands for, before the file is written.
+ */
+class RewriteDeclarationAliasesPlugin {
+  apply(compiler) {
+    const { Compilation, sources } = compiler.webpack;
+
+    compiler.hooks.thisCompilation.tap(RewriteDeclarationAliasesPlugin.name, compilation => {
+      compilation.hooks.processAssets.tap(
+        {
+          name: RewriteDeclarationAliasesPlugin.name,
+          stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE,
+        },
+        assets => {
+          Object.keys(assets)
+            .filter(assetName => assetName.endsWith('.d.ts'))
+            .forEach(assetName => {
+              const declaration = assets[assetName].source().toString();
+
+              const rewritten = declaration.replace(
+                /(from\s+|import\(\s*)(['"])~\/([^'"]+)\2/g,
+                (_, prefix, quote, target) => {
+                  const relativePath =
+                    path.posix.relative(path.posix.dirname(assetName), target) || '.';
+
+                  return `${prefix}${quote}${relativePath.startsWith('.') ? relativePath : `./${relativePath}`}${quote}`;
+                },
+              );
+
+              if (rewritten !== declaration) {
+                compilation.updateAsset(assetName, new sources.RawSource(rewritten));
+              }
+            });
+        },
+      );
+    });
+  }
+}
+
 const baseConfig = {
   target: ['web'],
   entry: {
@@ -30,6 +72,7 @@ const baseConfig = {
       '~': path.resolve(__dirname, 'src'),
     },
   },
+  plugins: [new RewriteDeclarationAliasesPlugin()],
 };
 
 const copyFiles = new CopyPlugin({
@@ -60,7 +103,7 @@ const esmConfig = {
   experiments: {
     outputModule: true,
   },
-  plugins: [copyFiles],
+  plugins: [...baseConfig.plugins, copyFiles],
 };
 
 const cjsConfig = {

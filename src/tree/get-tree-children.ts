@@ -1,5 +1,5 @@
 import type { KeysWithNonArrayValues } from '~/types';
-import type { HoneyTreeFlatNode } from '~/tree';
+import type { HoneyTreeFlatNode } from './tree.types';
 
 /**
  * Returns the direct children of a given parent node from a flattened tree.

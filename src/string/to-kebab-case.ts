@@ -16,4 +16,4 @@
  * ```
  */
 export const toKebabCase = (input: string): string =>
-  input.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+  input.replace(/([\p{Ll}\p{N}])(\p{Lu})/gu, '$1-$2').toLowerCase();

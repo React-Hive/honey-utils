@@ -1,5 +1,4 @@
 import type { Nullable, TimeoutId } from '~/types';
-import { delay } from '~/async';
 
 /**
  * Wraps a promise with a timeout. If the promise does not settle within the specified time,
@@ -28,15 +27,18 @@ export const timeout = async <T>(
   timeoutMs: number,
   errorMessage = 'Operation timed out',
 ): Promise<T> => {
-  const timeoutId: Nullable<TimeoutId> = null;
+  let timeoutId: Nullable<TimeoutId> = null;
 
   try {
     return await Promise.race([
       promise,
-      delay(timeoutMs).then(() => Promise.reject(new Error(errorMessage))),
+      new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error(errorMessage)), timeoutMs);
+      }),
     ]);
   } finally {
-    if (timeoutId) {
+    // Cleared however the race ends, so a settled promise leaves no timer behind
+    if (timeoutId !== null) {
       clearTimeout(timeoutId);
     }
   }

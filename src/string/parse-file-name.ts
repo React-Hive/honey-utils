@@ -13,7 +13,7 @@
  *  - index 0 is the base name
  *  - index 1 is the file extension (lowercased), or an empty string if none exists
  */
-export const parseFileName = (fileName: string) => {
+export const parseFileName = (fileName: string): [string, string] => {
   const lastDotIndex = fileName.lastIndexOf('.');
 
   // No dot or leading dot with no extension (e.g., ".gitignore")

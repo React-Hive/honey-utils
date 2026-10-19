@@ -26,7 +26,7 @@ export const camelToDashCase = (input: string): string => {
   const firstCharProcessed = firstChar.toLowerCase();
 
   // Process the rest of the string normally, adding hyphens before uppercase letters
-  const restProcessed = restOfString.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+  const restProcessed = restOfString.replace(/\p{Lu}/gu, letter => `-${letter.toLowerCase()}`);
 
   return firstCharProcessed + restProcessed;
 };

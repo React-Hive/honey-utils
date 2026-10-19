@@ -22,7 +22,17 @@ export interface CalculateCenterOffsetOptions {
 /**
  * Calculates the raw offset required to center an element within a container along a single axis.
  *
- * @returns A negative offset value suitable for use in a CSS `translate` transform.
+ * @param options - The container's visible size, and the element's offset and size, along the axis.
+ *
+ * @returns The offset to translate the container by: negative for an element past the container's
+ *          centre, positive for one before it, and `0` for one already centred. Clamp it with
+ *          `clampOffsetToOverflow` to keep the container within its overflow.
+ *
+ * @example
+ * ```ts
+ * calculateCenterOffset({ containerSize: 100, elementOffset: 200, elementSize: 20 });
+ * // -160
+ * ```
  */
 export const calculateCenterOffset = ({
   containerSize,
@@ -33,5 +43,6 @@ export const calculateCenterOffset = ({
   const elementCenter = elementOffset + elementSize / 2;
   const targetOffset = elementCenter - containerCenter;
 
-  return -targetOffset;
+  // `|| 0` turns the `-0` of an element already centred into `0`
+  return -targetOffset || 0;
 };

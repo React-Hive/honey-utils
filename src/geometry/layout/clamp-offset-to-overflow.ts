@@ -5,6 +5,12 @@
  * @param overflowSize - Maximum overflow size along the axis.
  *
  * @returns Clamped negative offset, or `0` when no overflow exists.
+ *
+ * @example
+ * ```ts
+ * clampOffsetToOverflow(-160, 100); // -100
+ * clampOffsetToOverflow(40, 100); // 0
+ * ```
  */
 export const clampOffsetToOverflow = (offset: number, overflowSize: number): number => {
   if (overflowSize <= 0) {

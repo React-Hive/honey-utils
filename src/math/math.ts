@@ -7,6 +7,11 @@
  * @param endY - The Y coordinate of the ending point.
  *
  * @returns The Euclidean distance between the two points.
+ *
+ * @example
+ * ```ts
+ * calculateEuclideanDistance(0, 0, 3, 4); // 5
+ * ```
  */
 export const calculateEuclideanDistance = (
   startX: number,
@@ -26,7 +31,13 @@ export const calculateEuclideanDistance = (
  * @param distance - The distance.
  * @param elapsedTime - The time taken to move the distance.
  *
- * @returns The calculated speed, which is the absolute value of delta divided by elapsed time.
+ * @returns The calculated speed, which is the absolute value of delta divided by elapsed time -
+ *          `Infinity` for a distance covered in no time, and `NaN` for none covered in none.
+ *
+ * @example
+ * ```ts
+ * calculateMovingSpeed(-120, 60); // 2
+ * ```
  */
 export const calculateMovingSpeed = (distance: number, elapsedTime: number): number =>
   Math.abs(distance / elapsedTime);
@@ -38,6 +49,11 @@ export const calculateMovingSpeed = (distance: number, elapsedTime: number): num
  * @param percentage - The percentage to calculate.
  *
  * @returns The calculated percentage of the value.
+ *
+ * @example
+ * ```ts
+ * calculatePercentage(200, 15); // 30
+ * ```
  */
 export const calculatePercentage = (value: number, percentage: number): number =>
   (value * percentage) / 100;

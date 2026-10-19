@@ -1,4 +1,4 @@
-import { unique } from '~/array';
+import { unique } from './unique';
 
 /**
  * Returns an array containing elements that exist in all provided arrays.
@@ -7,7 +7,8 @@ import { unique } from '~/array';
  *
  * @param arrays - Two or more arrays to find common elements from.
  *
- * @returns A new array containing only the elements that exist in all input arrays.
+ * @returns A new array containing only the elements that exist in all input arrays, each once, in
+ *          the order of the first array.
  *
  * @example
  * ```ts
@@ -18,10 +19,6 @@ import { unique } from '~/array';
 export const intersection = <T>(...arrays: T[][]): T[] => {
   if (arrays.length === 0) {
     return [];
-  }
-
-  if (arrays.length === 1) {
-    return [...arrays[0]];
   }
 
   const [first, ...rest] = arrays;

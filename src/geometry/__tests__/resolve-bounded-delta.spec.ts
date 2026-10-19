@@ -1,4 +1,4 @@
-import { resolveBoundedDelta } from './resolve-bounded-delta';
+import { resolveBoundedDelta } from '~/geometry';
 
 describe('resolveBoundedDelta', () => {
   it('should return null when delta is zero', () => {

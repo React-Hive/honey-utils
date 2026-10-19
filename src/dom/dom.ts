@@ -10,8 +10,9 @@ export const cloneBlob = (blob: Blob): Blob => new Blob([blob], { type: blob.typ
 /**
  * Returns the bounding DOMRect of an element based on offset and client dimensions.
  *
- * This utility is useful when you need a stable, layout-based rect
- * without triggering a reflow via `getBoundingClientRect()`.
+ * Unlike `getBoundingClientRect()`, the rect is the element's layout box, before any CSS
+ * transform - so it stays put while the element or its container is being translated or scaled.
+ * Reading it still needs layout, as `getBoundingClientRect()` does.
  *
  * @param element - The target HTML element.
  * @returns A `DOMRect` representing the element’s offset position and size.
@@ -37,12 +38,16 @@ export const isAnchorHtmlElement = (element: HTMLElement): element is HTMLAnchor
 /**
  * Checks whether an element is explicitly marked as contenteditable.
  *
- * Browsers treat elements with `contenteditable="true"` as focusable,
- * even if they are not normally keyboard-focusable.
+ * Browsers treat editable elements as focusable, even if they are not normally
+ * keyboard-focusable. An element is editable with `contenteditable` set to `""` (the bare
+ * attribute), `"true"` or `"plaintext-only"`, in any case.
  *
  * @param element - The element to inspect.
  *
- * @returns True if `contenteditable="true"` is set.
+ * @returns True if the element's own `contenteditable` makes it editable.
  */
-export const isContentEditableHtmlElement = (element: HTMLElement) =>
-  element.getAttribute('contenteditable') === 'true';
+export const isContentEditableHtmlElement = (element: HTMLElement): boolean => {
+  const value = element.getAttribute('contenteditable');
+
+  return value !== null && ['', 'true', 'plaintext-only'].includes(value.toLowerCase());
+};

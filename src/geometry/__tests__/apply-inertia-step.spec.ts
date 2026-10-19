@@ -1,5 +1,5 @@
 import { assert } from '~/guards';
-import { applyInertiaStep } from './apply-inertia-step';
+import { applyInertiaStep } from '~/geometry';
 
 describe('applyInertiaStep', () => {
   it('should advance value based on velocity and delta time', () => {

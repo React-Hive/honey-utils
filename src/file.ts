@@ -104,7 +104,8 @@ interface TraverseDirectoryOptions {
  *
  * This function walks through all subdirectories, resolving each file into a `File` object.
  * Directories themselves are not returned. To avoid unnecessary noise, certain system or
- * OS-generated files can be excluded via the `skipFiles` option.
+ * OS-generated files and folders can be excluded via the `skipFiles` option - a folder named there
+ * is not entered.
  *
  * @param directoryEntry - The starting directory entry to traverse.
  * @param options - Optional settings that control traversal behavior.
@@ -130,19 +131,21 @@ export const traverseFileSystemDirectory = async (
   const entries = await readFileSystemDirectoryEntries(directoryEntry);
 
   const filePromises = await runParallel(entries, async entry => {
+    if (skipFilesSet.has(entry.name)) {
+      return [];
+    }
+
     if (entry.isDirectory) {
       return traverseFileSystemDirectory(entry as FileSystemDirectoryEntry, {
         skipFiles,
       });
-    } else if (!skipFilesSet.has(entry.name)) {
-      const file = await new Promise<File>((resolve, reject) => {
-        (entry as FileSystemFileEntry).file(resolve, reject);
-      });
-
-      return [file];
     }
 
-    return [];
+    const file = await new Promise<File>((resolve, reject) => {
+      (entry as FileSystemFileEntry).file(resolve, reject);
+    });
+
+    return [file];
   });
 
   return filePromises.flat();

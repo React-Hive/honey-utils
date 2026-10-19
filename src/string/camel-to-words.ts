@@ -16,4 +16,5 @@
  * camelToWords('userIDNumber'); // → 'user ID Number'
  * ```
  */
-export const camelToWords = (input: string) => input.replace(/([a-z0-9])([A-Z])/g, '$1 $2');
+export const camelToWords = (input: string): string =>
+  input.replace(/([\p{Ll}\p{N}])(\p{Lu})/gu, '$1 $2').replace(/(\p{Lu})(\p{Lu}\p{Ll})/gu, '$1 $2');

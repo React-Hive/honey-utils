@@ -1,8 +1,9 @@
-import { delay } from '~/async';
+import { delay } from './delay';
 
 interface RetryOptions {
   /**
-   * Maximum number of retry attempts before failing.
+   * The total number of attempts, the first one included, before the last error is thrown. Taken
+   * as at least 1.
    *
    * @default 3
    */
@@ -38,7 +39,7 @@ interface RetryOptions {
  *
  * Useful for operations that may fail intermittently, such as network requests.
  *
- * @template Task - The type of the async function to wrap.
+ * @template Args - The arguments the async function takes.
  * @template TaskResult - The result type of the async function.
  *
  * @param task - The async function to wrap with retry logic.
@@ -71,20 +72,22 @@ interface RetryOptions {
  *   .catch(error => console.error('Failed after retries:', error));
  * ```
  */
-export const retry = <Task extends (...args: unknown[]) => Promise<TaskResult>, TaskResult>(
-  task: Task,
+export const retry = <Args extends unknown[], TaskResult>(
+  task: (...args: Args) => Promise<TaskResult>,
   { maxAttempts = 3, delayMs = 300, backoff = true, onRetry }: RetryOptions = {},
-): ((...args: Parameters<Task>) => Promise<TaskResult>) => {
-  return async (...args: Parameters<Task>): Promise<TaskResult> => {
+): ((...args: Args) => Promise<TaskResult>) => {
+  const attempts = Math.max(1, maxAttempts);
+
+  return async (...args: Args): Promise<TaskResult> => {
     let lastError: unknown;
 
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    for (let attempt = 1; attempt <= attempts; attempt++) {
       try {
         return await task(...args);
       } catch (e) {
         lastError = e;
 
-        if (attempt < maxAttempts) {
+        if (attempt < attempts) {
           onRetry?.(attempt, e);
 
           const delayTime = backoff ? delayMs * 2 ** (attempt - 1) : delayMs;

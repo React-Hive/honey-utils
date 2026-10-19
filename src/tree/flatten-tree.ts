@@ -1,5 +1,5 @@
 import type { KeysWithArrayValues, KeysWithNonArrayValues } from '~/types';
-import type { HoneyTreeFlatNode } from '~/tree';
+import type { HoneyTreeFlatNode } from './tree.types';
 
 /**
  * Flattens a hierarchical tree into a single preorder array.

@@ -8,10 +8,13 @@ import { assert } from '~/guards';
  * @template T - The type of the items in the array.
  *
  * @param array - The input array to be chunked.
- * @param size - The size of each chunk. Must be greater than 0.
+ * @param size - The size of each chunk. Must be a positive whole number.
  *
  * @returns An array of chunks, where each chunk is an array of the specified size
  *          (except possibly the last chunk, which may be smaller).
+ *
+ * @throws {Error} When `size` is not a positive whole number - a fractional size would give
+ *         chunks of other sizes, and `Infinity` none at all.
  *
  * @example
  * ```ts
@@ -20,7 +23,7 @@ import { assert } from '~/guards';
  * ```
  */
 export const chunk = <T>(array: T[], size: number): T[][] => {
-  assert(size > 0, 'Chunk size must be greater than 0');
+  assert(Number.isInteger(size) && size > 0, 'Chunk size must be a positive whole number');
 
   return Array.from({ length: Math.ceil(array.length / size) }, (_, index) =>
     array.slice(index * size, (index + 1) * size),

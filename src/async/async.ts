@@ -1,5 +1,4 @@
 import type { Nullable } from '~/types';
-import { compact } from '~/array';
 import { isFunction } from '~/function';
 
 /**
@@ -146,15 +145,16 @@ export const filterParallel = async <Item>(
   array: Item[],
   predicate: (item: Item, index: number, array: Item[]) => Promise<boolean>,
 ): Promise<Item[]> => {
-  const results = await runParallel(array, async (item, index, array) =>
-    (await predicate(item, index, array)) ? item : false,
-  );
+  const keep = await runParallel(array, predicate);
 
-  return compact(results);
+  return array.filter((_, index) => keep[index]);
 };
 
 /**
  * Asynchronously checks if at least one element in the array satisfies the async condition.
+ *
+ * Runs one item at a time, in order, and stops at the first item that satisfies it - as
+ * `Array.prototype.some` does.
  *
  * @param array - The array of items to check.
  * @param predicate - An async function that returns a boolean.
@@ -176,6 +176,9 @@ export const someAsync = async <Item>(
 
 /**
  * Asynchronously checks if all elements in the array satisfy the async condition.
+ *
+ * Runs one item at a time, in order, and stops at the first item that fails it - as
+ * `Array.prototype.every` does.
  *
  * @param array - The array of items to check.
  * @param predicate - An async function that returns a boolean.
@@ -223,6 +226,9 @@ export const reduceAsync = async <Item, Accumulator>(
 
 /**
  * Asynchronously finds the first element that satisfies the async condition.
+ *
+ * Runs one item at a time, in order, and stops at the first match - as `Array.prototype.find`
+ * does.
  *
  * @param array - The array of items to search.
  * @param predicate - An async function that returns a boolean.

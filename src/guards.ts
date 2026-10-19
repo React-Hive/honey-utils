@@ -1,3 +1,23 @@
+/**
+ * Asserts that a condition holds, narrowing it for the code after the call.
+ *
+ * A `function` declaration rather than an arrow, which TypeScript needs for an `asserts` signature
+ * to narrow at the call site.
+ *
+ * @param condition - The condition expected to be truthy.
+ * @param message - The message of the error thrown when it is not.
+ *
+ * @throws {Error} When `condition` is falsy.
+ *
+ * @example
+ * ```ts
+ * const user = users.find(user => user.id === id);
+ *
+ * assert(user, `User ${id} not found`);
+ *
+ * user.name; // `user` is no longer `undefined` here
+ * ```
+ */
 export function assert(condition: any, message: string): asserts condition {
   if (!condition) {
     throw new Error(message);
@@ -61,23 +81,26 @@ export const isNumber = (value: unknown): value is number => typeof value === 'n
 export const isBool = (value: unknown): value is boolean => typeof value === 'boolean';
 
 /**
- * Checks if a value is an object.
+ * Checks if a value is an object - anything `typeof` calls `'object'` (plain objects, arrays,
+ * dates, maps, class instances), except `null`.
  *
  * @param value - The value to check.
  *
- * @returns `true` if the value is an object; otherwise, `false`.
+ * @returns `true` if the value is a non-null object; otherwise, `false`.
  */
-export const isObject = (value: unknown): value is object => typeof value === 'object';
+export const isObject = (value: unknown): value is object =>
+  typeof value === 'object' && value !== null;
 
 /**
- * Checks if a value is an empty object (no own enumerable properties).
+ * Checks if a value is an empty object (no own enumerable properties, symbol-keyed ones included).
  *
  * @param value - The value to check.
  *
  * @returns `true` if the value is an empty object; otherwise, `false`.
  */
 export const isEmptyObject = (value: unknown): value is Record<string, never> =>
-  isObject(value) && !isNull(value) && Object.keys(value).length === 0;
+  isObject(value) &&
+  Reflect.ownKeys(value).every(key => !Object.prototype.propertyIsEnumerable.call(value, key));
 
 /**
  * Checks if a value is a Date object.

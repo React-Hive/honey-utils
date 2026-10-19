@@ -1,5 +1,11 @@
 type ComposeFn = (arg: unknown) => unknown;
 
+/**
+ * Any unary function: one taking a typed argument is assignable here, where it is not to
+ * `ComposeFn`.
+ */
+type AnyUnaryFn = (arg: never) => unknown;
+
 type Compose = {
   <A, R>(fn1: (a: A) => R): (a: A) => R;
   <A, B, R>(fn1: (b: B) => R, fn2: (a: A) => B): (a: A) => R;
@@ -17,14 +23,14 @@ type Compose = {
     fn4: (b: B) => C,
     fn5: (a: A) => B,
   ): (a: A) => R;
-  (...fns: ComposeFn[]): (arg: unknown) => unknown;
+  (...fns: AnyUnaryFn[]): (arg: unknown) => unknown;
 };
 
 /**
  * Composes multiple unary functions into a single function, applying them from **right to left**.
  *
  * Often used for building functional pipelines where the innermost function runs first.
- * Types are inferred up to 5 chained functions for full type safety.
+ * Types are inferred up to 5 chained functions for full type safety. Beyond that, it falls back to the unknown.
  *
  * @param fns - A list of unary functions to compose.
  *
@@ -41,6 +47,6 @@ type Compose = {
  * ```
  */
 export const compose: Compose =
-  (...fns: ComposeFn[]) =>
+  (...fns: AnyUnaryFn[]) =>
   (arg: unknown) =>
-    fns.reduceRight((prev, fn) => fn(prev), arg);
+    (fns as ComposeFn[]).reduceRight((prev, fn) => fn(prev), arg);

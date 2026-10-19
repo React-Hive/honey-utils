@@ -99,7 +99,7 @@ splitStringIntoWords('hello world');
  * Generate a hash from a string
  */
 const hash = hashString('background-color: red;');
-// ➜ 'e4k1z0x'
+// ➜ '1s0s409'
 ```
 
 ### Encoding Utilities
@@ -230,6 +230,7 @@ import {
     intersection,
     difference,
     toggleArrayItem,
+    toMapBy,
     pipe,
     compose,
 } from '@react-hive/honey-utils';
@@ -289,6 +290,16 @@ toggleArrayItem(['a', 'b'], 'b', false);
 // ➜ ['a']
 toggleArrayItem(['a', 'b'], 'a');
 // ➜ ['b']
+
+/**
+ * Index an array by a key
+ */
+const users = [{ id: 'u1', name: 'Ann' }, { id: 'u2', name: 'Bob' }];
+
+toMapBy(users, user => user.id);
+// ➜ Map { 'u1' => { id: 'u1', name: 'Ann' }, 'u2' => { id: 'u2', name: 'Bob' } }
+toMapBy(users, user => user.id, user => user.name);
+// ➜ Map { 'u1' => 'Ann', 'u2' => 'Bob' }
 
 /**
  * Compose functions from left to right
@@ -709,7 +720,7 @@ function divide(a: number, b: number): number {
 ---
 
 - `isString(value: unknown): value is string` - Checks if a value is a `string`.
-- `isNilOrEmptyString(value: unknown): value is null | undefined` - Checks if a value is `null`, `undefined`, or an empty string.
+- `isNilOrEmptyString(value: unknown): value is null | undefined | ''` - Checks if a value is `null`, `undefined`, or an empty string.
 - `toKebabCase(input: string): string` - Converts a string to kebab-case.
 - `camelToDashCase(input: string): string` - Converts camelCase to dash-case.
 - `splitStringIntoWords(input: string): string[]` - Splits a string into an array of words.
@@ -744,7 +755,7 @@ function divide(a: number, b: number): number {
 
 ---
 
-- `definedProps<T extends object>(obj: T): DefinedProps<T>` - Creates a new object by removing all properties whose values are `undefined`.
+- `definedProps<T extends object>(obj: T): DefinedProps<T>` - Creates a new object by removing all properties whose values are `undefined`, symbol-keyed ones included. A key that may be `undefined` comes out optional.
 
 ### Array Utilities
 
@@ -754,8 +765,9 @@ function divide(a: number, b: number): number {
 - `isEmptyArray(value: unknown): value is []` - Checks if a value is an empty array.
 - `compact<T>(array: (T | Falsy)[]): T[]` – Returns a new array with all falsy values (false, null, undefined, 0, '', NaN) removed, preserving only truthy items of type `T`.
 - `unique<T>(array: T[]): T[]` - Returns a new array with all duplicate elements removed. Keeps only the first occurrence of each value.
-- `chunk<T>(array: T[], size: number): T[][]` - Splits an array into smaller arrays ("chunks") of the specified size.
-- `intersection<T>(...arrays: T[][]): T[]` - Returns an array of elements that exist in all provided arrays.
+- `toMapBy<Item, Key, Value>(items: readonly Item[], getKey: (item: Item, index: number) => Key, getValue?: (item: Item, index: number) => Value): Map<Key, Item | Value>` - Indexes an array by a key: a `Map` from each item's key to the item, or to what `getValue` returns for it. Where two items share a key, the later one wins.
+- `chunk<T>(array: T[], size: number): T[][]` - Splits an array into smaller arrays ("chunks") of the specified size. Throws unless `size` is a positive whole number.
+- `intersection<T>(...arrays: T[][]): T[]` - Returns an array of elements that exist in all provided arrays, each once, in the order of the first array.
 - `difference<T>(array: T[], exclude: T[]): T[]` - Returns a new array that contains items from `array` that are not present in `exclude`.
 - `pipe(...fns: Function[]): Function` - Composes unary functions left-to-right. Returns a new function that applies all given functions in a sequence.
 - `compose(...fns: Function[]): Function` - Composes unary functions **right-to-left**. Same as `pipe`, but applies functions in reverse order.
@@ -770,7 +782,7 @@ function divide(a: number, b: number): number {
 - `noop(): void` - A no-operation function.
 - `not<Args extends any[]>(fn: (...args: Args) => any): (...args: Args) => boolean` - Creates a new function that negates the result of the given predicate function. Useful for logical inversions, e.g., turning `isEven` into `isOdd`.
 - `invokeIfFunction<Args extends any[], Result>(input: ((...args: Args) => Result) | Result, ...args: Args): Result` - Invokes the input if it's a function, otherwise returns it as-is.
-- `once<T extends (...args: any[]) => any>(fn: T): T` - Wraps a function so it can only be executed once. The result of the first invocation is cached and returned for all subsequent calls. Preserves both the original function’s parameter types and `this` binding.
+- `once<T extends (...args: any[]) => any>(fn: T): T` - Wraps a function so it can only be executed once. The result of the first invocation is cached and returned for all subsequent calls; if it throws, every call throws that same error. Preserves both the original function’s parameter types and `this` binding.
 
 ### Type Guards
 
@@ -779,9 +791,9 @@ function divide(a: number, b: number): number {
 - `assert(condition: any, message: string): asserts condition` - Asserts that a condition is truthy, throwing an error with the provided message if it's not.
 - `isNumber(value: unknown): value is number` - Checks if a value is a `number`.
 - `isBool(value: unknown): value is boolean` - Checks if a value is a `boolean`.
-- `isObject(value: unknown): value is object` - Checks if a value is an `object`.
+- `isObject(value: unknown): value is object` - Checks if a value is an `object`, `null` excluded.
 - `isNil(value: unknown): value is null | undefined` - Checks if a value is `null` or `undefined`.
-- `isEmptyObject(value: unknown): value is Record<string, never>` - Checks if a value is an empty object.
+- `isEmptyObject(value: unknown): value is Record<string, never>` - Checks if a value is an empty object - no own enumerable properties, symbol-keyed ones included.
 - `isNull(value: unknown): value is null` - Checks if a value is `null`.
 - `isUndefined(value: unknown): value is undefined` - Checks if a value is `undefined`.
 - `isDefined<T>(value: T): value is NonNullable<T>` - Checks if a value is neither `null` nor `undefined`.
@@ -838,7 +850,7 @@ function divide(a: number, b: number): number {
 - `cloneBlob(blob: Blob): Blob` - Creates a clone of a Blob object with the same content and type as the original.
 - `getElementOffsetRect(element: HTMLElement): DOMRect` - Returns a `DOMRect` representing the element's layout position using `offsetLeft`, `offsetTop`, and `clientWidth`/`clientHeight`.
 - `isAnchorHtmlElement(element: HTMLElement): element is HTMLAnchorElement` - Determines whether the provided element is an `<a>` tag. Acts as a type guard that narrows the element to `HTMLAnchorElement`.
-- `isContentEditableHtmlElement(element: HTMLElement): boolean` - Returns `true` if the element has `contenteditable="true"`, making it user-editable and implicitly focusable.
+- `isContentEditableHtmlElement(element: HTMLElement): boolean` - Returns `true` if the element's `contenteditable` is `""`, `"true"` or `"plaintext-only"` (in any case), making it user-editable and implicitly focusable.
 
 #### File
 
@@ -890,8 +902,8 @@ function divide(a: number, b: number): number {
 - `everyAsync<Item>(array: Item[], predicate): Promise<boolean>` - Returns `true` if **all** items in the array pass the async predicate.
 - `findAsync<Item>(array: Item[], predicate): Promise<Nullable<Item>>` - Returns the first array item that passes the async predicate, or `null` if no match is found.
 - `delay(delayMs: number): Promise<void>` - Creates a promise that resolves after the specified delay in milliseconds.
-- `timeout<T>(promise: Promise<T>, timeoutMs: number, message?: string): Promise<T>` - Wraps a promise with a timeout. If the promise does not settle within the given duration, it rejects with a timeout error.
-- `retry<Task, TaskResult>(task: Task, options?: RetryOptions): Function` - Wraps an asynchronous function with retry logic, with configurable max attempts, delay between retries, exponential backoff, and retry callbacks.
+- `timeout<T>(promise: Promise<T>, timeoutMs: number, message?: string): Promise<T>` - Wraps a promise with a timeout. If the promise does not settle within the given duration, it rejects with a timeout error. Its timer is cleared however the race ends.
+- `retry<Args, TaskResult>(task: (...args: Args) => Promise<TaskResult>, options?: RetryOptions): (...args: Args) => Promise<TaskResult>` - Wraps an asynchronous function with retry logic, with configurable max attempts (at least one), delay between retries, exponential backoff, and retry callbacks.
 
 ### Intersection Utilities
 
@@ -906,7 +918,7 @@ function divide(a: number, b: number): number {
 
 #### Focus
 
-- `isHtmlElementFocusable(element: Nullable<HTMLElement>): boolean` - Checks whether an element is considered focusable according to browser rules. Factors include: visibility, `display`, `disabled`, `tabindex`, native focusable tags, `contenteditable`, and presence of a non-null `tabindex`.
+- `isHtmlElementFocusable(element: Nullable<HTMLElement>): boolean` - Checks whether an element is considered focusable according to browser rules. Factors include: visibility, `display` (an ancestor's too), `:disabled` (a disabled `<fieldset>`'s controls too), a valid `tabindex` (negative removes it, non-negative makes any element focusable), native focusable tags, and `contenteditable`.
 - `getFocusableHtmlElements(container: HTMLElement): HTMLElement[]` - Returns all focusable descendant elements within a container, using `isHtmlElementFocusable` to filter them.
 - `moveFocusWithinContainer(direction: FocusMoveDirection, container?: Nullable<HTMLElement>, options?: MoveFocusWithinContainerOptions): void` - Moves focus to the next or previous focusable element within a container. Supports cyclic navigation, optional wrapping control, and custom focus index resolution for advanced keyboard navigation patterns (e.g. roving tabindex).
 

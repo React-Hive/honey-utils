@@ -1,5 +1,5 @@
 import type { KeysWithNonArrayValues, KeysWithStringValues } from '~/types';
-import type { HoneyTreeFlatNode } from '~/tree';
+import type { HoneyTreeFlatNode } from './tree.types';
 import { assert, isNull, isUndefined } from '~/guards';
 import { splitStringIntoWords } from '~/string';
 

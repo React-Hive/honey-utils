@@ -57,6 +57,13 @@ export interface ResolveAxisDeltaOptions {
  * @param options - Resolution behavior configuration.
  *
  * @returns A normalized, axis-aligned delta suitable for further scroll or movement processing.
+ *
+ * @example
+ * ```ts
+ * // A vertical wheel scrolling a horizontal list
+ * resolveAxisDelta({ deltaX: 0, deltaY: 40 }, 'x');
+ * // { deltaX: -40, deltaY: 0 }
+ * ```
  */
 export const resolveAxisDelta = (
   delta: AxisDelta,
@@ -65,12 +72,15 @@ export const resolveAxisDelta = (
 ): AxisDelta => {
   const sign = invert ? -1 : 1;
 
+  // `|| 0` keeps an inverted zero `0` rather than `-0`
+  const resolve = (value: number) => sign * value || 0;
+
   switch (axis) {
     case 'x': {
       const value = delta.deltaX !== 0 ? delta.deltaX : allowFallback ? delta.deltaY : 0;
 
       return {
-        deltaX: sign * value,
+        deltaX: resolve(value),
         deltaY: 0,
       };
     }
@@ -78,13 +88,13 @@ export const resolveAxisDelta = (
     case 'y':
       return {
         deltaX: 0,
-        deltaY: sign * delta.deltaY,
+        deltaY: resolve(delta.deltaY),
       };
 
     default:
       return {
-        deltaX: sign * delta.deltaX,
-        deltaY: sign * delta.deltaY,
+        deltaX: resolve(delta.deltaX),
+        deltaY: resolve(delta.deltaY),
       };
   }
 };

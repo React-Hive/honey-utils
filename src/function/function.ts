@@ -1,3 +1,14 @@
+/**
+ * A function that does nothing and returns `undefined` - a default for an optional callback, so the
+ * caller can call it without checking it is there.
+ *
+ * @example
+ * ```ts
+ * const { onClose = noop } = props;
+ *
+ * onClose();
+ * ```
+ */
 export const noop = () => {};
 
 /**
@@ -7,7 +18,8 @@ export const noop = () => {};
  *
  * @returns `true` if the value is a function; otherwise, `false`.
  */
-export const isFunction = (value: unknown) => typeof value === 'function';
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type -- what `typeof value === 'function'` narrows `unknown` to
+export const isFunction = (value: unknown): value is Function => typeof value === 'function';
 
 /**
  * Creates a function that negates the result of the given predicate function.
@@ -36,6 +48,7 @@ export const not =
  * Wraps a function so that it can only be executed once.
  * The wrapped function remembers (caches) the result of the first invocation
  * and returns that same result for all subsequent calls, regardless of the arguments provided.
+ * Where the first invocation throws, every call throws that same error - `fn` is not run again.
  *
  * Common use cases include:
  * - initializing singletons
@@ -53,11 +66,23 @@ export const not =
 export const once = <T extends (...args: any[]) => any>(fn: T): T => {
   let called = false;
   let result: ReturnType<T>;
+  let hasThrown = false;
+  let error: unknown;
 
   return function (this: any, ...args: Parameters<T>) {
     if (!called) {
       called = true;
-      result = fn.apply(this, args);
+
+      try {
+        result = fn.apply(this, args);
+      } catch (e) {
+        hasThrown = true;
+        error = e;
+      }
+    }
+
+    if (hasThrown) {
+      throw error;
     }
 
     return result;

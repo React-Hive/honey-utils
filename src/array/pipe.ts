@@ -1,5 +1,10 @@
 type PipeFn = (arg: unknown) => unknown;
 
+/**
+ * Any unary function: one taking a typed argument is assignable here, where it is not to `PipeFn`.
+ */
+type AnyUnaryFn = (arg: never) => unknown;
+
 type Pipe = {
   <A, B>(fn1: (a: A) => B): (a: A) => B;
   <A, B, C>(fn1: (a: A) => B, fn2: (b: B) => C): (a: A) => C;
@@ -17,7 +22,7 @@ type Pipe = {
     fn4: (d: D) => E,
     fn5: (e: E) => F,
   ): (a: A) => F;
-  (...fns: PipeFn[]): (arg: unknown) => unknown;
+  (...fns: AnyUnaryFn[]): (arg: unknown) => unknown;
 };
 
 /**
@@ -42,6 +47,6 @@ type Pipe = {
  * ```
  */
 export const pipe: Pipe =
-  (...fns: PipeFn[]) =>
+  (...fns: AnyUnaryFn[]) =>
   (arg: unknown) =>
-    fns.reduce((prev, fn) => fn(prev), arg);
+    (fns as PipeFn[]).reduce((prev, fn) => fn(prev), arg);

@@ -10,11 +10,16 @@
  *          throw; otherwise `false`.
  */
 export const isLocalStorageReadable = (): boolean => {
-  if (typeof window === 'undefined' || !window.localStorage) {
+  if (typeof window === 'undefined') {
     return false;
   }
 
+  // Inside the `try`: in a sandboxed iframe, or with storage blocked, reading the property throws
   try {
+    if (!window.localStorage) {
+      return false;
+    }
+
     window.localStorage.getItem('__non_existing_key__');
     return true;
   } catch {
@@ -22,12 +27,7 @@ export const isLocalStorageReadable = (): boolean => {
   }
 };
 
-interface LocalStorageCapabilities {
-  readable: boolean;
-  writable: boolean;
-}
-
-interface LocalStorageCapabilities {
+export interface LocalStorageCapabilities {
   readable: boolean;
   writable: boolean;
 }

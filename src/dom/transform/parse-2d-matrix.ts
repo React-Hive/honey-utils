@@ -12,6 +12,11 @@ interface HTMLElementTransformationValues {
  *
  * Only works with 2D transforms (i.e., `matrix(a, b, c, d, e, f)`).
  *
+ * The values are the matrix's own entries rather than decomposed angles and factors: `scaleX` is
+ * `a`, `skewY` is `b`, `skewX` is `c`, `scaleY` is `d`, and the translation is `e` and `f`. They read
+ * as scale and skew only for a transform with no rotation - `rotate(90deg)` gives `scaleX` and
+ * `scaleY` of 0 - and a skew is its tangent (`skewX(30deg)` gives `skewX` ≈ 0.577), not its angle.
+ *
  * @param element - The element with a CSS transform applied.
  * @returns An object with parsed transformation values.
  *

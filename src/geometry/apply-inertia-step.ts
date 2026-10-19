@@ -1,5 +1,5 @@
 import type { Nullable } from '~/types';
-import { resolveBoundedDelta } from '~/geometry';
+import { resolveBoundedDelta } from './resolve-bounded-delta';
 
 export interface InertiaOptions {
   /**

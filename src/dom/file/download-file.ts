@@ -1,5 +1,5 @@
 import { isString } from '~/string';
-import { assert, isUndefined } from '~/guards';
+import { assert } from '~/guards';
 
 export type Downloadable = Blob | MediaSource | string;
 
@@ -41,8 +41,8 @@ export const downloadFile = (
   file: Downloadable,
   { fileName, target }: DownloadFileOptions = {},
 ): void => {
-  // Browser guard (SSR / non-DOM environments)
-  if (isUndefined(document)) {
+  // Browser guard (SSR / non-DOM environments) - `typeof`, as reading an undeclared `document` throws
+  if (typeof document === 'undefined') {
     return;
   }
 
