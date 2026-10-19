@@ -188,6 +188,36 @@ parseJson('{name:"Mike"}');
 // ➜ null
 ```
 
+### Storage Utilities
+
+```ts
+import { readLocalStorageJson, writeLocalStorageJson } from '@react-hive/honey-utils';
+
+/**
+ * Store a value in localStorage as JSON
+ */
+writeLocalStorageJson('basket', [{ productId: 'p1', quantity: 2 }]);
+// ➜ true
+
+/**
+ * Read it back
+ */
+readLocalStorageJson<{ productId: string; quantity: number }[]>('basket');
+// ➜ [{ productId: 'p1', quantity: 2 }]
+
+/**
+ * Nothing stored, invalid JSON, or storage that cannot be read returns null
+ */
+readLocalStorageJson('missing');
+// ➜ null
+
+/**
+ * A write that fails (storage full, private mode, a circular value) returns false rather than throwing
+ */
+writeLocalStorageJson('basket', circularValue);
+// ➜ false
+```
+
 ### Array Utilities
 
 ```ts
@@ -786,6 +816,8 @@ function divide(a: number, b: number): number {
 
 - `isLocalStorageReadable(): boolean` - Determines whether `localStorage` can be safely read from. This check works even when writes fail (e.g., due to `QuotaExceededError`) and ensures that calling `getItem()` does not throw in restricted environments.
 - `getLocalStorageCapabilities(): LocalStorageCapabilities` - Detects the browser's read and write capabilities for `localStorage`. Readability is determined by safe execution of `getItem()`, while writability requires successful `setItem()` and `removeItem()`.
+- `readLocalStorageJson<Value>(key: string): Nullable<Value>` - Reads the value stored as JSON under a key in `localStorage`. Returns `null` when nothing is stored, the stored value is not valid JSON, or storage cannot be read (SSR, disabled storage, sandboxed iframes). Never throws. The value is cast to `Value`, not validated.
+- `writeLocalStorageJson(key: string, value: unknown): boolean` - Stores a value under a key in `localStorage` as JSON. Returns `true` once stored, or `false` when storage cannot be written (`QuotaExceededError`, private mode, restricted contexts, SSR) or the value cannot be serialised. Never throws.
 
 ### Geometry
 
