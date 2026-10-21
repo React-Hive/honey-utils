@@ -4,6 +4,7 @@ export * from './difference';
 export * from './intersection';
 export * from './chunk';
 export * from './unique';
+export * from './has-unique-values';
 export * from './compact';
 export * from './is-array';
 export * from './is-empty-array';

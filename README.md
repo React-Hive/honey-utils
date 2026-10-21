@@ -107,8 +107,10 @@ const hash = hashString('background-color: red;');
 ```ts
 import {
   decodeBase64,
+  decodeBase64Bytes,
   decodeBase64Json,
   encodeBase64,
+  encodeBase64Bytes,
   encodeBase64Json,
 } from '@react-hive/honey-utils';
 
@@ -153,6 +155,18 @@ encodeBase64('Привет мир');
  */
 encodeBase64Json({ name: 'Mike', age: 33 });
 // ➜ 'eyJuYW1lIjoiTWlrZSIsImFnZSI6MzN9'
+
+/**
+ * Encode bytes - a binary file - as base64, and decode them back
+ */
+encodeBase64Bytes(new Uint8Array([0xff, 0x00, 0x80]));
+// ➜ '/wCA'
+
+decodeBase64Bytes('/wCA');
+// ➜ Uint8Array [255, 0, 128]
+
+decodeBase64Bytes('not base64!');
+// ➜ null
 ```
 
 ### JSON Utilities
@@ -226,6 +240,7 @@ import {
     isEmptyArray,
     compact,
     unique,
+    hasUniqueValues,
     chunk,
     intersection,
     difference,
@@ -262,6 +277,12 @@ compact([0, 1, false, 2, '', 3, null, undefined, true]);
  */
 unique([1, 2, 2, 3, 1, 4]);
 // ➜ [1, 2, 3, 4]
+
+/**
+ * Check that no value repeats
+ */
+hasUniqueValues(['a', 'b', 'a']);
+// ➜ false
 
 /**
  * Split an array into chunks of specified size
@@ -735,8 +756,10 @@ function divide(a: number, b: number): number {
 ---
 
 - `decodeBase64(value: string): Nullable<string>` - Decodes a base64-encoded string into UTF-8 text. Returns `null` when the value is not padded standard base64 or its bytes are not valid UTF-8.
+- `decodeBase64Bytes(value: string): Nullable<Uint8Array>` - Decodes base64 into the bytes it encodes, as a plain `Uint8Array`, whatever they are - the counterpart of `encodeBase64Bytes`. Returns `null` when the value is not padded standard base64, in every runtime alike.
 - `decodeBase64Json<Value>(value: string): Nullable<Value>` - Decodes a base64-encoded string and safely parses the decoded result as JSON. Returns `null` when base64 decoding fails or when the decoded value is not valid JSON.
 - `encodeBase64(value: string): string` - Encodes a string as base64 from its UTF-8 bytes - the counterpart of `decodeBase64`.
+- `encodeBase64Bytes(bytes: Uint8Array): string` - Encodes bytes as base64 - a binary file carried in JSON. Only the bytes the array views are encoded.
 - `encodeBase64Json<Value>(value: Value): string` - Serializes a value as JSON and encodes the result as base64 - the counterpart of `decodeBase64Json`. Throws as `JSON.stringify` does, for a circular structure or a `BigInt`.
 
 ### JSON Utilities
@@ -765,6 +788,7 @@ function divide(a: number, b: number): number {
 - `isEmptyArray(value: unknown): value is []` - Checks if a value is an empty array.
 - `compact<T>(array: (T | Falsy)[]): T[]` – Returns a new array with all falsy values (false, null, undefined, 0, '', NaN) removed, preserving only truthy items of type `T`.
 - `unique<T>(array: T[]): T[]` - Returns a new array with all duplicate elements removed. Keeps only the first occurrence of each value.
+- `hasUniqueValues(array: readonly unknown[]): boolean` - Checks whether every value appears only once, comparing as a `Set` does (by identity, `NaN` equal to itself). True for an empty array.
 - `toMapBy<Item, Key, Value>(items: readonly Item[], getKey: (item: Item, index: number) => Key, getValue?: (item: Item, index: number) => Value): Map<Key, Item | Value>` - Indexes an array by a key: a `Map` from each item's key to the item, or to what `getValue` returns for it. Where two items share a key, the later one wins.
 - `chunk<T>(array: T[], size: number): T[][]` - Splits an array into smaller arrays ("chunks") of the specified size. Throws unless `size` is a positive whole number.
 - `intersection<T>(...arrays: T[][]): T[]` - Returns an array of elements that exist in all provided arrays, each once, in the order of the first array.

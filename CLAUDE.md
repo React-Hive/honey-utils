@@ -49,14 +49,14 @@ both do.
 | Area | Where | Exports |
 | --- | --- | --- |
 | Guards | `guards.ts` | `assert`, `isNil` / `isNull` / `isUndefined` / `isDefined`, `isNumber` / `isFiniteNumber` / `isInteger` / `isDecimal`, `isBool`, `isObject` / `isEmptyObject`, `isDate` / `isValidDate`, `isBlob`, `isError`, `isRegExp`, `isMap`, `isSet`, `isSymbol`, `isEnumValue` |
-| Arrays | `array/` | `isArray`, `isEmptyArray`, `compact`, `unique`, `chunk`, `difference`, `intersection`, `toggleArrayItem`, `getAdjacentItems`, `toMapBy`, `pipe`, `compose` |
+| Arrays | `array/` | `isArray`, `isEmptyArray`, `compact`, `unique`, `hasUniqueValues`, `chunk`, `difference`, `intersection`, `toggleArrayItem`, `getAdjacentItems`, `toMapBy`, `pipe`, `compose` |
 | Async | `async/` | `delay`, `timeout`, `retry`, `isPromise`, `runParallel` / `runSequential`, `filterParallel` / `filterSequential`, `someAsync`, `everyAsync`, `reduceAsync`, `findAsync` |
 | Functions | `function/` | `noop`, `not`, `once`, `isFunction`, `invokeIfFunction` |
 | Strings | `string/` | `isString`, `isNilOrEmptyString`, `toKebabCase`, `camelToDashCase`, `camelToWords`, `splitStringIntoWords`, `getWordsInitials`, `splitMapJoin`, `findCharIndices`, `forEachChar`, `parseFileName` |
 | Math | `math/` | `clamp`, `hashString`, `calculateEuclideanDistance`, `calculateMovingSpeed`, `calculatePercentage` |
 | Geometry | `geometry/` | `applyInertiaStep`, `resolveBoundedDelta`, `calculateCenterOffset`, `clampOffsetToOverflow` |
 | Intersection | `intersection/` | `getDOMRectIntersectionRatio`, `resolveAxisDelta` |
-| Encoding | `encoding/` | `encodeBase64` / `decodeBase64`, `encodeBase64Json` / `decodeBase64Json` (UTF-8 safe; `Uint8Array.toBase64` → `Buffer` → `btoa` fallbacks) |
+| Encoding | `encoding/` | `encodeBase64` / `decodeBase64`, `encodeBase64Bytes` / `decodeBase64Bytes` (raw bytes), `encodeBase64Json` / `decodeBase64Json` (UTF-8 safe; `Uint8Array.toBase64` → `Buffer` → `btoa` fallbacks) |
 | JSON | `json/` | `parseJson` |
 | Env | `env/storage/` | `isLocalStorageReadable`, `getLocalStorageCapabilities`, `readLocalStorageJson`, `writeLocalStorageJson` |
 | DOM | `dom/` | `replaceHistorySearchParams`, `downloadFile`, `cloneBlob`, `getElementOffsetRect`, `isAnchorHtmlElement`, `isContentEditableHtmlElement`, `setDataTransferJson` / `getDataTransferJson`, overflow (`hasXOverflow`, `getXOverflowWidth`, `hasYOverflow`, `getYOverflowHeight`), `centerElementInContainer`, `parse2DMatrix` |
