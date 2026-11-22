@@ -65,7 +65,7 @@ both do.
 | Trees | `tree/` | `flattenTree`, `getTreeChildren`, `searchTree`, `HoneyTreeFlatNode` |
 | Colour | `color/` | `hexWithAlpha`, `HexColor` |
 | Ids | `id/` | `generateEphemeralId` |
-| Objects | `object.ts` | `definedProps` |
+| Objects | `object/` | `definedProps`, `isEqual` |
 | Types | `types.ts` | `Nullable`, `TimeoutId`, `KeysWithStringValues`, `KeysWithArrayValues`, `KeysWithNonArrayValues` |
 
 ## Rules the code relies on — do not break these
@@ -97,8 +97,8 @@ both do.
 
 - **One helper per file**, named the kebab-case of the export (`to-map-by.ts` → `toMapBy`), in the
   folder of its area, re-exported from the area's `index.ts`. The older multi-export files
-  (`guards.ts`, `async/async.ts`, `function/function.ts`, `math/math.ts`, `dom/dom.ts`, `file.ts`,
-  `object.ts`) take related additions; a new area gets a folder.
+  (`guards.ts`, `async/async.ts`, `function/function.ts`, `math/math.ts`, `dom/dom.ts`, `file.ts`)
+  take related additions; a new area gets a folder.
 - **`export const` arrow functions** with explicit parameter and return types. `function` only where
   the language needs it: `assert` for its `asserts condition` signature, and overloads.
 - **Imports:** another area through its barrel with the `~` alias (`import { delay } from

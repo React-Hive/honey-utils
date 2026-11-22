@@ -424,6 +424,30 @@ await findAsync([1, 3, 4, 5], async (n) => {
 // ➜ 4
 ```
 
+### Object Utilities
+
+```ts
+import { definedProps, isEqual } from '@react-hive/honey-utils';
+
+/**
+ * Drop the properties whose values are undefined
+ */
+definedProps({ a: 1, b: undefined, c: 'x' });
+// ➜ { a: 1, c: 'x' }
+
+/**
+ * Compare two values by what they hold - keys in any order, nested values included
+ */
+isEqual({ a: [1, { b: 2 }], c: null }, { c: null, a: [1, { b: 2 }] });
+// ➜ true
+
+/**
+ * A key holding undefined is not the same as a key left out
+ */
+isEqual({ a: undefined }, {});
+// ➜ false
+```
+
 ### Function Utilities
 
 ```ts
@@ -779,6 +803,7 @@ function divide(a: number, b: number): number {
 ---
 
 - `definedProps<T extends object>(obj: T): DefinedProps<T>` - Creates a new object by removing all properties whose values are `undefined`, symbol-keyed ones included. A key that may be `undefined` comes out optional.
+- `isEqual(a: unknown, b: unknown): boolean` - Whether two values hold the same: primitives as `SameValueZero`, arrays item by item, objects of the same prototype by their own enumerable keys in any order, and `Date`, `RegExp`, `Error`, `Map`, `Set` and binary data by what they hold. Handles circular structures.
 
 ### Array Utilities
 
