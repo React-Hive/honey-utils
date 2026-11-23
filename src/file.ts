@@ -166,7 +166,7 @@ export const traverseFileSystemDirectory = async (
  *
  * @returns A promise that resolves to a flat array of all extracted `File` objects.
  *   This includes:
- *   - direct files from the drag event,
+ *   - direct files from the drag or paste event, read with `getAsFile`,
  *   - files extracted from directory entries via `webkitGetAsEntry`,
  *   - and files found recursively within nested subdirectories.
  */
@@ -184,31 +184,23 @@ export const readFilesFromDataTransfer = async (
   for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
     const item = items[itemIndex];
 
-    // Prefer using webkitGetAsEntry when available (directory support)
+    // A directory's files are reached only through its entry, by the non-standard webkitGetAsEntry
     // https://developer.mozilla.org/en-US/docs/Web/API/DataTransferItem/webkitGetAsEntry#browser_compatibility
-    if ('webkitGetAsEntry' in item) {
-      // ?.() -> avoids throwing on Safari weirdness
-      const entry = item.webkitGetAsEntry?.();
+    const entry = 'webkitGetAsEntry' in item ? item.webkitGetAsEntry?.() : null;
 
-      if (entry?.isDirectory) {
-        tasks.push(traverseFileSystemDirectory(entry as FileSystemDirectoryEntry, traverseOptions));
+    if (entry?.isDirectory) {
+      tasks.push(traverseFileSystemDirectory(entry as FileSystemDirectoryEntry, traverseOptions));
 
-        continue;
-      }
-
-      if (entry?.isFile) {
-        tasks.push(
-          new Promise<File[]>((resolve, reject) =>
-            (entry as FileSystemFileEntry).file(file => resolve([file]), reject),
-          ),
-        );
-
-        continue;
-      }
+      continue;
     }
 
-    // Fallback to standard API
+    /**
+     * A file is read as it is rather than through its entry: Safari's entry for a file with nothing
+     * on disk behind it - an image pasted from the clipboard - fails to read, with a NotFoundError
+     * "Path does not exist".
+     */
     const file = item.getAsFile();
+
     if (file) {
       tasks.push(Promise.resolve([file]));
     }

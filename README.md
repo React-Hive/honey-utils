@@ -935,7 +935,7 @@ function divide(a: number, b: number): number {
 - `fileListToFiles(fileList: FileList | null): File[]` - Converts a `FileList` object (such as the one returned from an `<input type="file">`) into a standard array of `File` objects. Returns an empty array when the input is `null`.
 - `blobToFile(blob: Blob, fileName: string): File` - Converts a Blob object into a File object with the specified name.
 - `traverseFileSystemDirectory(directoryEntry: FileSystemDirectoryEntry, options?: TraverseDirectoryOptions): Promise<File[]>` — Recursively scans a directory using the File System API and returns all nested files as `File` objects. Supports skipping system files.
-- `readFilesFromDataTransfer(dataTransfer: DataTransfer | null, options?: TraverseDirectoryOptions): Promise<File[]>` — Extracts files from a `DataTransfer` object (e.g., drag-and-drop or paste events). Supports both regular files and entire directories via the non-standard `webkitGetAsEntry` API. Directories are traversed recursively using `traverseFileSystemDirectory`, producing a fully flattened list of all discovered `File` objects.
+- `readFilesFromDataTransfer(dataTransfer: DataTransfer | null, options?: TraverseDirectoryOptions): Promise<File[]>` — Extracts files from a `DataTransfer` object (e.g., drag-and-drop or paste events). Files are read with `getAsFile`, and entire directories through the non-standard `webkitGetAsEntry` API - not a file's entry, which Safari fails to read (`NotFoundError: Path does not exist`) for a file with nothing on disk behind it, such as a pasted image. Directories are traversed recursively using `traverseFileSystemDirectory`, producing a fully flattened list of all discovered `File` objects.
 
 ### Asynchronous Utilities
 

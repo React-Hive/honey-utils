@@ -272,15 +272,37 @@ describe('[readFilesFromDataTransfer]: read the files and directories of a drop'
     ).toStrictEqual([]);
   });
 
-  it('should read a file through its entry', async () => {
+  it('should read a file with getAsFile rather than through its entry', async () => {
     const file = createFile('report.pdf');
-    const item = createEntryItem(createFileEntry(file), file);
+    const entry = createFileEntry(file);
+    const readEntryFile = vi.spyOn(entry, 'file');
+    const item = createEntryItem(entry, file);
 
     const files = await readFilesFromDataTransfer(createDataTransfer([item]));
 
     expect(files).toHaveLength(1);
     expect(files[0]).toBe(file);
-    expect(item.getAsFile).not.toHaveBeenCalled();
+    expect(readEntryFile).not.toHaveBeenCalled();
+  });
+
+  it('should read a pasted file whose entry has nothing on disk behind it, as in Safari', async () => {
+    const file = createFile('screenshot.png');
+    const entry = {
+      isFile: true,
+      isDirectory: false,
+      name: file.name,
+      file: (_: FileCallback, errorCallback?: ErrorCallback) => {
+        queueMicrotask(() =>
+          errorCallback?.(new DOMException('Path does not exist', 'NotFoundError')),
+        );
+      },
+    } as unknown as FileSystemFileEntry;
+
+    const files = await readFilesFromDataTransfer(
+      createDataTransfer([createEntryItem(entry, file)]),
+    );
+
+    expect(files).toStrictEqual([file]);
   });
 
   it('should read every file of a dropped directory', async () => {
@@ -357,7 +379,7 @@ describe('[readFilesFromDataTransfer]: read the files and directories of a drop'
 
     const files = await readFilesFromDataTransfer(
       createDataTransfer([
-        createEntryItem(createFileEntry(createFile('a.txt'))),
+        createEntryItem(createFileEntry(createFile('a.txt')), createFile('a.txt')),
         createEntryItem(directory),
         createItem(createFile('d.txt')),
         createItem(null),
